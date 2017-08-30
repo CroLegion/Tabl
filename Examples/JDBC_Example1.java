@@ -1,3 +1,5 @@
+//Is this just sample code, or the start of our real code?
+
 package JDBC;
 
 import java.sql.*;

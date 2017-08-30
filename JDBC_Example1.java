@@ -5,6 +5,7 @@ import java.sql.*;
 public class Example {
 	public static void main(String[] args) throws Exception {
 		// Load and register a JDBC driver
+		// Branch Test
 		try {
 			// Load the driver (registers itself)
 			Class.forName("com.mysql.jdbc.Driver");

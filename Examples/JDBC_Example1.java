@@ -18,9 +18,9 @@ public class Example {
 		try {
 			// Connect to the database
 			Connection conn1;
-			String dbUrl = "jdbc:mysql://csdb.cs.iastate.edu:3306/db363devinj";
-			String user = "dbu363devinj";
-			String password = "rA78LbRG";
+			String dbUrl = "";
+			String user = "";
+			String password = "";
 			conn1 = DriverManager.getConnection(dbUrl, user, password);
 			System.out.println("*** Connected to the database ***");
 

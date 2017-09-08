@@ -64,6 +64,7 @@ public class jdbc {
                    "VALUES ("+Integer.toString(userID)+","+Integer.toString(usertype)+","+username+","+firstname+","+lastname+","+email+","+phone+","+passhash+")";
       			statement.executeUpdate(sql);
 			}
+
 			
 
 			

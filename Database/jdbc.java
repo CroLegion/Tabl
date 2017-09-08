@@ -25,7 +25,7 @@ public class jdbc {
 	}
 
 
-	public void add_users(ArrayList<User> users) throws SQLException{
+	public static void add_users(ArrayList<User> users) throws SQLException{
 		int userID;
 		int usertype;
 		String username;

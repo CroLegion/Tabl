@@ -19,6 +19,7 @@ public class jdbc {
 
 		//add_jobs(create_data.create_jobs());
 
+		System.out.println("worked");
 		return;
 
 
@@ -50,10 +51,17 @@ public class jdbc {
 			Statement statement = conn1.createStatement();
 			
 			for(i = 0; i < users.size(); i++) {
-				   
+				userID = users[i].userID;
+				usertype = users[i].usertype;
+				username = users[i].username;
+				firstname = users[i].firstname;
+				lastname = users[i].lastname;
+				email = users[i].email;
+				phone = users[i].phone;
+				passhash = users[i].passhash;
 
 				String sql = "INSERT INTO users " +
-                   "VALUES (, 'Zara', 'Ali', 18)";
+                   "VALUES ("+Integer.toString(userID)+","+Integer.toString(usertype)+","+username+","+firstname+","+lastname+","+email+","+phone+","+passhash+")";
       			statement.executeUpdate(sql);
 			}
 			

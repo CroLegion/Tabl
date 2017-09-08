@@ -49,7 +49,7 @@ public class jdbc {
 			// Create Statement and ResultSet variables to use throughout the project
 			Statement statement = conn1.createStatement();
 			
-			for(i = 0; i < users.size(); i++) {
+			for(int i = 0; i < users.size(); i++) {
 				   
 
 				String sql = "INSERT INTO users " +

@@ -50,12 +50,20 @@ public class jdbc {
 			Statement statement = conn1.createStatement();
 			
 			for(int i = 0; i < users.size(); i++) {
-				   
+				userID = users.get(i).userID;
+				usertype = users.get(i).usertype;
+				username = users.get(i).username;
+				firstname = users.get(i).firstname;
+				lastname = users.get(i).lastname;
+				email = users.get(i).email;
+				phone = users.get(i).phone;
+				passhash = users.get(i).passhash;
 
-				String sql = "INSERT INTO users " +
-                   "VALUES (, 'Zara', 'Ali', 18)";
+				String sql = "INSERT INTO project.users " +
+                   "VALUES ("+Integer.toString(userID)+","+Integer.toString(usertype)+","+username+","+firstname+","+lastname+","+email+","+phone+","+passhash+")";
       			statement.executeUpdate(sql);
 			}
+
 			
 
 			

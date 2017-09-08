@@ -26,14 +26,14 @@ public class jdbc {
 	}
 
 
-	public void add_users(ArrayList<User> users) throws SQLException{
+	public static void add_users(ArrayList<User> users) throws SQLException{
 		int userID;
 		int usertype;
 		String username;
 		String firstname;
 		String lastname;
-		String email;
-		String phone;
+		String email = "";
+		String phone = "";
 		String passhash;
 
 		try {
@@ -50,17 +50,17 @@ public class jdbc {
 			// Create Statement and ResultSet variables to use throughout the project
 			Statement statement = conn1.createStatement();
 			
-			for(i = 0; i < users.size(); i++) {
-				userID = users[i].userID;
-				usertype = users[i].usertype;
-				username = users[i].username;
-				firstname = users[i].firstname;
-				lastname = users[i].lastname;
-				email = users[i].email;
-				phone = users[i].phone;
-				passhash = users[i].passhash;
+			for(int i = 0; i < users.size(); i++) {
+				userID = users.get(i).userID;
+				usertype = users.get(i).usertype;
+				username = users.get(i).username;
+				firstname = users.get(i).firstname;
+				lastname = users.get(i).lastname;
+				email = users.get(i).email;
+				phone = users.get(i).phone;
+				passhash = users.get(i).passhash;
 
-				String sql = "INSERT INTO users " +
+				String sql = "INSERT INTO project.users " +
                    "VALUES ("+Integer.toString(userID)+","+Integer.toString(usertype)+","+username+","+firstname+","+lastname+","+email+","+phone+","+passhash+")";
       			statement.executeUpdate(sql);
 			}

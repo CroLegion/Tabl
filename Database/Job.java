@@ -17,7 +17,8 @@ public class Job {
    }
 
 
-   public void setparentID(String p) {
+
+   public void setparentID(int p) {
 		parentID = p;
    }
 }

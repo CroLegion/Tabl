@@ -1,4 +1,6 @@
 import java.sql.*;
+import java.util.ArrayList;
+import java.io.*;
 
 public class jdbc {
 	public static void main(String[] args) throws Exception {
@@ -12,46 +14,54 @@ public class jdbc {
 			E.printStackTrace();
 		}
 
-		ArrayList<String> list = new ArrayList<String>();
 
-		create_users()
+		add_users(create_data.create_users());
 
+		//add_jobs(create_data.create_jobs());
 
+		return;
 
 
 	}
 
-	/*This method is only used to DEMO purposes because it will creat FAKE users to load into the SQL database*/
-	public void create_users()
 
-	public void add_users(ArrayList<Entity> entities) throws SQLException{
+	public void add_users(ArrayList<User> users) throws SQLException{
+		int userID;
+		int usertype;
+		String username;
+		String firstname;
+		String lastname;
+		String email;
+		String phone;
+		String passhash;
 
 		try {
 			// Connect to the database
 			Connection conn1;
-			String dbUrl = "localhost:3306";
-			String user = "root";
+			//String dbUrl = "localhost:3306";
+			String dbUrl = "192.168.2.3:3306";
+			//String user = "root";
+			String user = "devinj";
 			String password = "hawk1282";
 			conn1 = DriverManager.getConnection(dbUrl, user, password);
 			System.out.println("*** Connected to the database ***");
 
 			// Create Statement and ResultSet variables to use throughout the project
 			Statement statement = conn1.createStatement();
-			ResultSet rs;
+			
+			for(i = 0; i < users.size(); i++) {
+				   
 
-			// get  of all instructors
-			rs = statement.executeQuery("select * from Instructor f");
-
-
-			while (rs.next()) {
-				//get value of salary from each tuple
-				salary = rs.getInt("Salary");			
-				totalSalary += salary;	
+				String sql = "INSERT INTO users " +
+                   "VALUES (, 'Zara', 'Ali', 18)";
+      			statement.executeUpdate(sql);
 			}
+			
+
+			
 		
 			// Close all statements and connections
 			statement.close();
-			rs.close();
 			conn1.close();
 
 		} catch (SQLException e) {

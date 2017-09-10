@@ -17,7 +17,7 @@ public static void main(String[] args) throws Exception {
 	}
 
 
-	add_users(create_data.create_users());
+	//add_users(create_data.create_users());
 
 	//add_jobs(create_data.create_jobs());
 

@@ -1,6 +1,7 @@
 import java.io.*;
+import java.util.ArrayList;
 
-//The idea for this is that this is the object that would be created when makign a new project
+//The idea for this is that this is the object that would be created when making a new project
 public class Master_Project
 {
 	String projName; 		//Name of the project

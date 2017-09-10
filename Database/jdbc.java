@@ -175,12 +175,23 @@ public static void get_projects() throws SQLException {
 		System.out.println("*** Connected to the database ***");
 
 
-		Statement statement = conn1.createStatement();
+		String query = "SELECT * FROM project.jobs";
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			int jobID = rs.getInt("jobID");
+   			String jobname = rs.getString("jobname");
+   			int jobtype = rs.getInt("jobtype");
+   			String jobdesc = rs.getString("jobdesc");
+   			int parentID = rs.getInt("parentID");
+   			System.out.println(jobID + "\t" + jobname + "\t" + jobtype + "\t" + jobdesc + "\t" + parentID);
+		}
 		
 
 
 		// Close all statements and connections
-		statement.close();
+		stmt.close();
 		conn1.close();
 
 	} catch (SQLException e) {

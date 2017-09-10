@@ -17,7 +17,7 @@ public static void main(String[] args) throws Exception {
 	}
 
 
-	//add_users(create_data.create_users());
+	add_users(create_data.create_users());
 
 	//add_jobs(create_data.create_jobs());
 
@@ -39,10 +39,10 @@ public static void add_users(ArrayList<User> users) throws SQLException {
 	try {
 		// Connect to the database
 		Connection conn1;
-		//String dbUrl = "localhost:3306";
-		String dbUrl = "192.168.2.3:3306";
-		//String user = "root";
-		String user = "devinj";
+		String dbUrl = "jdbc:mysql://localhost:3306/project";
+		//String dbUrl = "jdbc:mysql://192.168.2.3:3306/";
+		String user = "root";
+		//String user = "devinj";
 		String password = "hawk1282";
 		conn1 = DriverManager.getConnection(dbUrl, user, password);
 		System.out.println("*** Connected to the database ***");

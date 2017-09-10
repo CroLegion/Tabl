@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.io.*;
 public class create_data {
 
 
@@ -33,7 +32,10 @@ public class create_data {
           job_1.setJobdesc("Pouring concrete");
           job_1.setparentID(555);
 
+          Job job_2 = new Job(2589, "Tuesday Framing", 3);
+
           job_list.add(job_1);
+          job_list.add(job_2);
 
           System.out.println("Job name: "+ job_1.jobname);
 

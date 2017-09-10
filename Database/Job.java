@@ -1,4 +1,3 @@
-import java.io.*;
 public class Job {
    int jobID;
    String jobname;
@@ -13,7 +12,7 @@ public class Job {
    }
 
    public void setJobdesc(String e) {
-		jobdesc = e;
+		jobdesc = e;;
    }
 
 

@@ -1,10 +1,11 @@
 public class Qualifications {
    int qualID;
    int userID;
-   int jobID
+   int jobID;
 
-   public Qualifications(int userID, int usertype, String username, String firstname, String lastname, String passhash) {
+   public Qualifications(int qualID, int userID, int jobID) {
          this.qualID = qualID;
          this.userID = userID;
          this.jobID = jobID;
+}
 }

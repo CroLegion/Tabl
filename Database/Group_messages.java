@@ -1,3 +1,4 @@
+package AM_C_2_projectname.Database;
 public class Group_messages {
 	int msgID;
 	String msgsubject;

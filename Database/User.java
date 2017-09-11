@@ -1,3 +1,4 @@
+package AM_C_2_projectname.Database;
 public class User {
    int userID;
    int usertype;

@@ -18,9 +18,9 @@ public class Example {
 		try {
 			// Connect to the database
 			Connection conn1;
-			String dbUrl = "";
-			String user = "";
-			String password = "";
+			String dbUrl = "jdbc:mysql://mysql.cs.iastate.edu:3306/";
+			String user = "dbu309amc2";
+			String password = "xlcbBr23";
 			conn1 = DriverManager.getConnection(dbUrl, user, password);
 			System.out.println("*** Connected to the database ***");
 
@@ -29,17 +29,17 @@ public class Example {
 			ResultSet rs;
 
 			// get salaries of all instructors
-			rs = statement.executeQuery("select * from Instructor f");
+			rs = statement.executeQuery("SELECT * FROM users");
 
 			int totalSalary = 0;
 			int salary;
 
 			while (rs.next()) {
 				//get value of salary from each tuple
-				salary = rs.getInt("Salary");			
-				totalSalary += salary;	
+				id = rs.getInt("userID");			
+				System.out.println("userID: "+id);
 			}
-			System.out.println("Total Salary of all faculty: "+totalSalary);
+			
 		
 			// Close all statements and connections
 			statement.close();

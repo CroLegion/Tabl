@@ -40,9 +40,7 @@ public static void add_users(ArrayList<User> users) throws SQLException {
 		// Connect to the database
 		Connection conn1;
 		String dbUrl = "jdbc:mysql://mysql.cs.iastate.edu:3306/";
-		//String dbUrl = "jdbc:mysql://192.168.2.3:3306/";
 		String user = "dbu309amc2";
-		//String user = "devinj";
 		String password = "xlcbBr23";
 		conn1 = DriverManager.getConnection(dbUrl, user, password);
 		System.out.println("*** Connected to the database ***");

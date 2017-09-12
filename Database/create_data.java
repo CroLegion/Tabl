@@ -1,4 +1,3 @@
-package AM_C_2_projectname.Database;
 import java.util.ArrayList;
 public class create_data {
 

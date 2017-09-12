@@ -1,4 +1,3 @@
-package AM_C_2_projectname.Database;
 public class Job {
    int jobID;
    String jobname;

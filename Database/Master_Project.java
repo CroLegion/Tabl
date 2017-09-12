@@ -1,4 +1,3 @@
-package AM_C_2_projectname.Database;
 import java.io.*;
 import java.util.ArrayList;
 

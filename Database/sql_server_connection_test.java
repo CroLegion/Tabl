@@ -15,9 +15,9 @@ public class sql_server_connection_test {
 		try {
 			// Connect to the database
 			Connection conn1;
-			String dbUrl = "jdbc:mysql://localhost:3306/project";
-			String user = "root";
-			String password = "hawk1282";
+			String dbUrl = "jdbc:mysql://mysql.cs.iastate.edu:3306/db309amc2";
+			String user = "dbu309amc2";
+			String password = "x1cbBr23";
 			conn1 = DriverManager.getConnection(dbUrl, user, password);
 			System.out.println("*** Connected to the database ***");
 

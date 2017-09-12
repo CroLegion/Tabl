@@ -1,6 +1,7 @@
 # Compiled class file
 *.class
 
+
 # Log file
 *.log
 
@@ -17,5 +18,6 @@
 *.zip
 *.tar.gz
 *.rar
+*.project
 
 Makefile

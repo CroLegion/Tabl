@@ -1,5 +1,6 @@
 # Compiled class file
 *.class
+*.classpath
 
 
 # Log file
@@ -21,3 +22,4 @@
 *.project
 
 Makefile
+/bin/

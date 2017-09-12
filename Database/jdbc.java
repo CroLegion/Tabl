@@ -39,13 +39,12 @@ public static void add_users(ArrayList<User> users) throws SQLException {
 	try {
 		// Connect to the database
 		Connection conn1;
-		String dbUrl = "jdbc:mysql://mysql.cs.iastate.edu:3306/";
+		String dbUrl = "jdbc:mysql://mysql.cs.iastate.edu:3306/db309amc2";
 		String user = "dbu309amc2";
-		String password = "xlcbBr23";
+		String password = "x1cbBr23";
 		conn1 = DriverManager.getConnection(dbUrl, user, password);
 		System.out.println("*** Connected to the database ***");
 
-		// Create Statement and ResultSet variables to use throughout the project
 		Statement statement = conn1.createStatement();
 		
 		for(int i = 0; i < users.size(); i++) {
@@ -58,8 +57,8 @@ public static void add_users(ArrayList<User> users) throws SQLException {
 			phone = users.get(i).phone;
 			String passhash = users.get(i).passhash;
 
-			String sql = "INSERT INTO project.users " +
-               "VALUES ("+userID+","+usertype+","+username+","+firstname+","+lastname+","+email+","+phone+","+passhash+")";
+			String sql = "INSERT INTO users " +
+               "VALUES ("+userID+","+usertype+",'"+username+"','"+firstname+"','"+lastname+"','"+email+"','"+phone+"','"+passhash+"');";
   			statement.executeUpdate(sql);
 		}
 

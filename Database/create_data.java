@@ -11,8 +11,8 @@ public class create_data {
      	user_1.setEmail("Fake@iastate.edu");
      	user_1.setPhone("1134567890");
      	User user_2 = new User(2,2,"user 2","john","doe","password1234");
-     	User user_3 = new User(3,3,"user 3","harry","stiles","password");
-     	User user_4 = new User(3,3,"user 4","tom","platz","password1458");
+     	User user_3 = new User(5,43,"user 3","harry","stiles","password");
+     	User user_4 = new User(8,8,"user 4","tom","platz","password1458");
      	
      	user_list.add(user_1);
      	user_list.add(user_2);

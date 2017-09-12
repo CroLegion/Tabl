@@ -35,7 +35,14 @@ public class sql_server_connection_test {
 				System.out.println("userID: "+id);
 			}
 			
+			statement = conn1.createStatement();
 		
+			
+			
+			String sql = "INSERT INTO db309amc2.users " +
+		               "VALUES (2,3,'devinh','tom','platz','tom@email.com','1234587896','password234');";
+			statement.executeUpdate(sql);
+			
 			// Close all statements and connections
 			statement.close();
 			rs.close();

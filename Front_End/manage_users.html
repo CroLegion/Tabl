@@ -1,33 +1,107 @@
 <!DOCTYPE html>
 <html>
+
+<head>
+	<style type="text/css">
+		p {
+			text-align: right;
+			padding-right: 10px;
+		}
+
+		#button {
+			padding: 25px
+		}
+	</style>
+</head>
+
+
 <header><title>Manage Users</title></header>
 <body>
 
-<nav>
-	<a href="/account_settings/">Settings</a>
-	<a href="/notifications/">Notifications</a>
-	<a href="/admin_home/">Home</a>
-</nav>
+<center>
 
+<h1>Buddy Guy</h1>
+<form>
+<table width="99%">
+	<tbody>
+	<tr>
+		<td colspan="2"></td>
+	</tr>
+		<table cellspacing="0" cellpadding="2">
+			<tbody>
+				
+				<tr>
+					<td>
+						<p>First Name:<br><br>Last Name:<br><br>Username<br><br>Email Address:<br><br>Phone Number:</p>
+					</td>
+					<td>
+						<p>     </p>
+					</td>
+					<td style="padding-left:50px;padding-top:20px">
+						
+							<input  id="firstname" type="text" name="firstname" value="Buddy"><br><br>
+							<input  id="lastname" type="text" name="lastname" value="Guy"><br><br>
+							<input  id="username" type="text" name="username" value="buddy_guy"><br><br>
+							<input  id="email" type="text" name="email" value="guy@email.com"><br><br>
+							<input  id="phone" type="text" name="Phone" value="123-454-4567"><br><br>
+							
+						
+					</td>
+				</tr>
+			</tbody>
+		</table> 
+	</tbody>
+</table>
+<input  type="submit" value="SAVE"><br>
+</form>
 
-<aside>Side bar</aside>
-<section>
-	<h id="name">Buddy Guy</h1>
-	<br>
-	<br>
-	<p1 id="first_name">First Name</p1>
-	<br>
-	<p2 id="last_name">Last Name</p2>
-	<br>
-	<p3 id= "username">Username</p3>
-	<br>
-	<p4 id="email">Email Address</p4>
-	<br>
-	<p5 id="phone">Phone Number</p5>
-	<br>
-</section>
-</h>
 <hr>
+
+<h2>Permissons</h2>
+
+<table width="99%">
+	<tbody>
+	<tr>
+		<td colspan="2"></td>
+	</tr>
+		<table cellspacing="0" cellpadding="2">
+			<tbody>
+				<tr>
+					<td><b>Available</b></td>
+					<td></td>
+					<td><b><a id="assigned">Assigned</a></b></td>
+				</tr>
+				<tr>
+					<td>
+						<select name="unassigned_permissions" id="unassigned_permissions" size="16" multiple="multiple" style="width:180px">
+							<option value="716571">Electrical</option>
+							<option value="663392">Plumbing</option>
+							<option value="664069">Welding</option>
+							<option value="445926">Brick Laying</option>
+						</select>
+					</td>
+					<td>
+						<input type="submit" name="permission_assign" value=" -> " onclick="" id="permission_assign" style="width:60px;">
+						<br>
+						<input type="submit" name="permisson_remove" value=" <- " onclick="" id="permisson_remove" style="width:60px;">
+					</td>
+					<td>
+						<select name="current_permissons" id="current_permissons" size="16" multiple="multiple" style="width:180px">
+							<option value="421560">Stone Work</option>
+						</select>
+					</td>
+				</tr>
+			</tbody>
+		</table> 
+	</tbody>
+</table>
+
+<hr>
+
+<button id="button" type="button">DELETE USER</button>
+<button id="button" type="button">CHANGE PASSWORD</button>
+
+</center>
 
 </body>
 </html>

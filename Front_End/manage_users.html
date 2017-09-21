@@ -4,30 +4,73 @@
 <body>
 
 <nav>
-	<a href="/account_settings/">Settings</a>
-	<a href="/notifications/">Notifications</a>
-	<a href="/admin_home/">Home</a>
+	<a href="/account_settings.html/">Settings</a>
+	<a href="/notifications.html/">Notifications</a>
+	<a href="/admin_home.html/">Home</a>
 </nav>
 
+<h1>Buddy Guy</h1>
 
-<aside>Side bar</aside>
-<section>
-	<h id="name">Buddy Guy</h1>
-	<br>
-	<br>
-	<p1 id="first_name">First Name</p1>
-	<br>
-	<p2 id="last_name">Last Name</p2>
-	<br>
-	<p3 id= "username">Username</p3>
-	<br>
-	<p4 id="email">Email Address</p4>
-	<br>
-	<p5 id="phone">Phone Number</p5>
-	<br>
-</section>
-</h>
+<form action="/action_page.php" method="post">
+  First name:
+  <input type="text" name="firstname" value="Buddy">
+  <br>
+  Last name:
+  <input type="text" name="lastname" value="Guy">
+  <br>
+  Username:
+  <input type="text" name="username" value="buddy_guy">
+  <br>
+  Email Address:
+  <input type="text" name="email" value="guy@email.com">
+  <br>
+  Phone Number:
+  <input type="text" name="Phone" value="123-454-4567">
+  <br>
+  <input type="submit" value="Submit">
+</form> 
 <hr>
+
+
+<h2>Permissons</h2>
+
+<table width="99%">
+	<tbody>
+	<tr>
+		<td colspan="2"><hr></td>
+	</tr>
+		<table cellspacing="0" cellpadding="2">
+			<tbody>
+				<tr>
+					<td><b>Available</b></td>
+					<td></td>
+					<td><b><a id="ctl00_Content_assLink">Assigned</a></b></td>
+				</tr>
+				<tr>
+					<td>
+						<select name="ctl00$Content$newEmps" id="ctl00_Content_newEmps" size="16" multiple="multiple" style="width:180px">
+							<option value="716571">Electrical</option>
+							<option value="663392">Plumbing</option>
+							<option value="664069">Welding</option>
+							<option value="445926">Brick Laying</option>
+						</select>
+					</td>
+					<td>
+						<input type="submit" name="ctl00$Content$btnAssign" value=" -> " onclick="" id="permission_assign" style="width:60px;">
+						<br>
+						<input type="submit" name="ctl00$Content$btnRemove" value=" <- " onclick="" id="permisson_remove" style="width:60px;">
+					</td>
+					<td>
+						<select name="ctl00$Content$curEmps" id="ctl00_Content_curEmps" size="16" multiple="multiple" style="width:180px">
+							<option value="421560">Stone Work</option>
+						</select>
+					</td>
+				</tr>
+			</tbody>
+		</table> 
+	</tbody>
+</table>
+
 
 </body>
 </html>

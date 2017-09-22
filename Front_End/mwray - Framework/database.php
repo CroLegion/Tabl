@@ -47,4 +47,22 @@ SQL;
 			return -1;
 		}
 	}
+
+		//Performs a query on the users table and returns all users first and last names.
+	function data_usersList()
+	{
+		$sql = "SELECT firstname, lastname FROM users";
+		$conn = data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+
+		if($result->num_rows == 1)
+		{
+			return $result;
+		}
+		else
+		{
+			return -1;
+		}
+	}
 ?>

@@ -24,7 +24,7 @@ function initialize()
 function admin_initialize()
 {
 	//Get the default content pane from the server
-	getElement(server.admin_default, page.content);
+	getElement(server.admin_default, page.admin_content);
 }
 
 //Updates the content pane with the given data
@@ -75,4 +75,9 @@ function clickNotifications()
 function clickSettings()
 {
 	setElement(page.content, "<p>Looks like you clicked the 'Settings' button.");
+}
+
+function click_user_in_manage_users()
+{
+	setElement(page.admin_content, manage_users.html);
 }

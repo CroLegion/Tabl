@@ -1,7 +1,8 @@
 //This is a JavaScript object literal, it is comparable to an enum, and it is used to define filenames of data sources on the server.
 server = 
 {
-	default : 'default.php'
+	default : 'default.php',
+	admin_default: 'admin_default'
 }
 
 //This is a JavaScript object literal, it is comparable to an enum, and it is used to define names of HTML elements on the page.
@@ -9,7 +10,8 @@ page =
 {
 	content : 'contentpane',
 	projects: 'messagesButtons',
-	messages: 'projectsButtons'
+	messages: 'projectsButtons',
+	admin_content: 'admin_contentpane'
 }
 
 //This function should be called by the 'onload' attribute of the body element.
@@ -17,6 +19,12 @@ function initialize()
 {
 	//Get the default content pane from the server
 	getElement(server.default, page.content);
+}
+
+function admin_initialize()
+{
+	//Get the default content pane from the server
+	getElement(server.admin_default, page.content);
 }
 
 //Updates the content pane with the given data

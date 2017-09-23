@@ -4,10 +4,10 @@
 	require 'util.php';
 
 	//Define database parameters
-	$servername = "localhost";
-	$username = "root";
-	$password = "";
-	$database = "project";
+	$servername = "mysql.cs.iastate.edu";
+	$username = "dbu309amc2";
+	$password = "x1cbBr23";
+	$database = "db309amc2";
 	data_set($servername, $username, $password, $database);
 
 	//Check for valid login credentials
@@ -18,10 +18,10 @@
 		session_start();
 		$_SESSION['auth'] = TRUE;
 		$_SESSION['userID'] = $userID;
-		echo loadHTML('frame.html');
+		echo loadHTML('pages/frame.html');
 	}
 	else
 	{
-		echo loadHTML("tryagain.html");
+		echo loadHTML("pages/tryagain.html");
 	}
 ?>

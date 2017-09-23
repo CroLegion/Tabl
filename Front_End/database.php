@@ -24,12 +24,12 @@
 		return new mysqli($GLOBALS['servername'], $GLOBALS['username'], $GLOBALS['password'], $GLOBALS['database']);
 	}
 
-	//Performs a query on the users table, and returns the userID of the user if username and password are valid, -1 if they are not.
+	//Performs a query on the users table, and returns the userID and usertype of the user if username and password are valid, -1 if they are not.
 	function data_validUser($username, $password)
 	{
 		$hash = hash_login($username, $password, "");
 		$stmt = <<< SQL
-				SELECT userID
+				SELECT userID, usertype
 				FROM users
 				WHERE username = '{$username}'
 				AND passhash = '{$hash}';
@@ -40,7 +40,7 @@ SQL;
 
 		if($result->num_rows == 1)
 		{
-			return $result->fetch_assoc()['userID'];
+			return $result;
 		}
 		else
 		{

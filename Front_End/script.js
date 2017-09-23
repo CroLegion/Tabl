@@ -2,7 +2,7 @@
 server = 
 {
 	default : 'default.php',
-	admin_default: 'admin_default'
+	admin_default: 'admin_default.php'
 }
 
 //This is a JavaScript object literal, it is comparable to an enum, and it is used to define names of HTML elements on the page.
@@ -80,4 +80,10 @@ function clickSettings()
 function click_user_in_manage_users()
 {
 	setElement(page.admin_content, manage_users.html);
+}
+
+//Called when the Create New User button is click on the admin frame
+function clickNewUser()
+{
+	setElement(page.admin_content, new_user.html)
 }

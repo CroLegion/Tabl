@@ -84,6 +84,17 @@ SQL;
 			return -1;
 		}
 	}
+	//function that returns users with a qualification
+	function users_with_qualifications(qualification)
+	{
+		// will this work?
+		$sql = "SELECT firstname, lastname FROM users WHERE users.userID = qualification_assignment && quala";
+
+		
+		
+		return $result;
+
+	}
 	//function that returns a 2d array of users by qualifications
 	function users_by_qualifications()
 	{

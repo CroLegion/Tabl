@@ -13,7 +13,7 @@
 	//Check for valid login credentials, and return if user is admin, manager, or user
 	$result = data_validUser($_POST['login_user'], $_POST['login_pass']);
 
-	if($result > -1 && $result->fetch_assoc()['usertype'] == 0)
+	if($result > -1 && $result->fetch_assoc()['usertype'] == 1)
 	{
 		session_start();
 		$_SESSION['auth'] = TRUE;

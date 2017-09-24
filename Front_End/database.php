@@ -66,20 +66,35 @@ SQL;
 		}
 	}
 
-	//function that returns a 2d array of users by qualifications
-	function users_by_qualifications()
+	//Adds a new user to the database
+	function data_add_new_user($firstname, $lastname, $username, $email, $phone, $password)
 	{
-		$sql = "SELECT firstname, lastname, qualname FROM users,qualifications, qualification assignment where users.userID = qualification_assignment && quala";
+		$pass = hash_logn($username, $password, "");
+		$sql = "INSERT INTO users VALUES({$firstname},{$lastname},{$username},{$email},{$phone},{$pass})";
 		$conn = data_open();
 		$result = $conn->query($sql);
 		$conn->close();
 
-		//Modify result to be formated 3d arrary
+		if($result->num_rows == 1)
+		{
+			return 1;
+		}
+		else
+		{
+			return -1;
+		}
+	}
+	//function that returns a 2d array of users by qualifications
+	function users_by_qualifications()
+	{
+		$sql = "SELECT firstname, lastname, qualname FROM users,qualifications, qualification assignment where users.userID = qualification_assignment && quala";
 
-		return result;
-
+		//Modify result to be formated 2d arrary
+		
+		return $result;
 
 	}
+
 
 	//function that gets company details for view group
 	function get_company_details()
@@ -92,4 +107,4 @@ SQL;
 		return result;
 
 	}
-?>	
+?>

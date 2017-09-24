@@ -1,13 +1,8 @@
-<!DOCTYPE HTML>  
-<html>
-<head>
- <style>
- .error {color: #FF0000;}
-</style>
-</head>
-<body>  
-
 <?php
+  //Import required PHP files
+  require 'database.php';
+  require 'util.php';
+
 // define variables and set to empty values
 $first_name_err = $last_name_err = $username_err = "";
 $first_name = $last_name = $username = $email = $phone = "";
@@ -33,6 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   }
   $email = user_input($_POST["email"]);
   $phone = user_input($_POST["phone"]);
+  $password = user_input($_POST["password"]);
 }
 
 function user_input($data) {
@@ -41,34 +37,17 @@ function user_input($data) {
   $data = htmlspecialchars($data);
   return $data;
 }
-?>
 
-<h2>Enter User Information</h2>
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
-  First Name: <input type="text" name="first_name">
-  <br><br>
-  Last Name: <input type="text" name="last_name">
-  <br><br>
-  Username: <input type="text" name="username">
-  <br><br>
-  Email Address: <input type="text" name="email">
-  <br><br>
-  Phone Number: <input type="text" name="phone">
-  <br><br>
-  <input type="submit" name="submit" value="Submit">  
-</form>
 
-<?php
-// validate user information, send information to server and then return success if saved to SQL server
-if ($first_name != "Devin") {
-  $success = "New User created";
-} elseif ($first_name == "John") {
-  $success = "User info did not save";
+
+// Send information to server and then return success if saved to SQL server
+$success data_add_new_user()
+
+if ($success == 1)
+{
+  echo "<p>Added user to database.</p>";
+} else {
+  echo "<p>User not added to database.</p>";
 }
 
-
-echo $success;
 ?>
-
-</body>
-</html>

@@ -14,13 +14,20 @@
 	$staff=users_by_qualifications();
 
 	echo $companydetails;
-	
+	$state = 0;	
 	foreach($staff as $qualification)
 	{
 		foreach($qualification as $member)
 		{
 			echo $member;
+			if($state=0)
+			{
+				$state=1;
+				echo <br/>;
+			}
+
 		}
+		$state=0;
 		echo <br/>;
 	}
 

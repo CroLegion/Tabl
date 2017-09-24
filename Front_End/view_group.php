@@ -1,3 +1,31 @@
+<?php
+	//Import Statments
+	require 'database.php'
+	require	'util.php'
+
+	//Define database parameters
+	$servername = "mysql.cs.iastate.edu";
+	$username = "dbu309amc2";
+	$password = "x1cbBr23";
+	$database = "db309amc2";
+	data_set($servername, $username, $password, $database);
+
+	$companydetails = get_company_details();
+	$staff=users_by_qualifications();
+
+	echo $companydetails;
+	
+	foreach($staff as $qualification)
+	{
+		foreach($qualification as $member)
+		{
+			echo $member;
+		}
+		echo <br/>;
+	}
+
+//Code below this is for reference in how page should look	
+/*
 <html>
 	<header><title>View Group</title></header>
 	<body>
@@ -35,3 +63,5 @@
 		</ul>
 	</body>
 </html>
+ */
+?>

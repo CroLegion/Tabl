@@ -65,4 +65,31 @@ SQL;
 			return -1;
 		}
 	}
-?>
+
+	//function that returns a 2d array of users by qualifications
+	function users_by_qualifications()
+	{
+		$sql = "SELECT firstname, lastname, qualname FROM users,qualifications, qualification assignment where users.userID = qualification_assignment && quala";
+		$conn = data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+
+		//Modify result to be formated 3d arrary
+
+		return result;
+
+
+	}
+
+	//function that gets company details for view group
+	function get_company_details()
+	{
+		$sql = "Select * from companydetails";
+		$conn = data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+
+		return result;
+
+	}
+?>	

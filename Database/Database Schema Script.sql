@@ -141,6 +141,13 @@ CREATE TABLE userprefs
     PRIMARY KEY (varname, varuser),
     FOREIGN KEY (varuser) REFERENCES users(userID)
 );
+CREATE TABLE companydetails
+(
+    companyname varchar(64) not null,
+    email varchar(64),
+    phone varchar(11),
+    PRIMARY KEY (companyname)
+);
 
 /*Statements for dropping tables*/
 DROP TABLE users;

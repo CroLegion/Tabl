@@ -65,4 +65,23 @@ SQL;
 			return -1;
 		}
 	}
+
+	//Adds a new user to the database
+	function data_add_new_user($firstname, $lastname, $username, $email, $phone, $password)
+	{
+		$pass = hash_logn($username, $password, "");
+		$sql = "INSERT INTO users VALUES({$firstname},{$lastname},{$username},{$email},{$phone},{$pass})";
+		$conn = data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+
+		if($result->num_rows == 1)
+		{
+			return 1;
+		}
+		else
+		{
+			return -1;
+		}
+	}
 ?>

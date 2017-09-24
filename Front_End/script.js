@@ -12,6 +12,7 @@ page =
 	projects: 'messagesButtons',
 	messages: 'projectsButtons',
 	admin_content: 'admin_contentpane'
+,	admin_new_users: 'newUserButtons'
 }
 
 //This function should be called by the 'onload' attribute of the body element.

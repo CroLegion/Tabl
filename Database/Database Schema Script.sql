@@ -5,7 +5,7 @@
 CREATE SCHEMA `project` ;
 
 /*Creates a table to store a list of users*/
-/*NOTE: 'usertype' field is intended to represent admin, manager, or technician numerically*/
+/*NOTE: 'usertype' field is intended to represent admin = 1, manager = 2 (but 0 for now), or worker = 3 numerically*/
 /*NOTE: 'pashash' field is intended to contain a SHA256 hash of the user's password to facilitate (relatively) secure logins*/
 /*NOTE: SHA256 hash must be executed server-side, before insertion into database*/
 CREATE TABLE users
@@ -22,7 +22,7 @@ CREATE TABLE users
 );
 
 /*Creates a table to store a list of jobs*/
-/*NOTE: 'jobtype' field is intended to represent project, component, or task level jobs numerically*/
+/*NOTE: 'jobtype' field is intended to represent project = 1, or job = 2 numerrically*/
 /*NOTE: 'parentID' creates a circular reference back to the 'jobs' table, facilitating an arbitrary-depth task heirarchy*/
 /*NOTE: 'parentID' can be NULL, indicating that a job is root/top level (is a project)*/
 CREATE TABLE jobs
@@ -36,15 +36,31 @@ CREATE TABLE jobs
     FOREIGN KEY (parentID) REFERENCES jobs(jobID)
 );
 
+CREATE TABLE tasks
+(
+    taskID int auto_increment not null,
+    taskname varchar(32) not null,
+    taskdesc text,
+    parentID int not null,
+    PRIMARY KEY (taskID),
+    FOREIGN KEY (parentID) REFERENCES jobs(jobID)
+);
+
 /*Creates a table to store data about who is qualified to accept each task*/
 CREATE TABLE qualifications
 (
 	qualID int auto_increment not null,
+    qualname varchar(32) not null,
+    qualdescription text,
+    PRIMARY KEY (qualID)
+);
+
+CREATE TABLE qualification_assignments
+(
+    qualID int not null,
     userID int not null,
-    jobID int not null,
     PRIMARY KEY (qualID),
-    FOREIGN KEY (userID) REFERENCES users(userID),
-    FOREIGN KEY (jobID) REFERENCES jobs(jobID)
+    FOREIGN KEY (userID) REFERENCES users(userID)
 );
 
 /*Creates a table to record user-defined groups*/

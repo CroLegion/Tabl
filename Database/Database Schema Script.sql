@@ -41,7 +41,7 @@ CREATE TABLE tasks
     taskID int auto_increment not null,
     taskname varchar(32) not null,
     taskdesc text,
-    parentID int, not null,
+    parentID int not null,
     PRIMARY KEY (taskID),
     FOREIGN KEY (parentID) REFERENCES jobs(jobID)
 );

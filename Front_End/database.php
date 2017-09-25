@@ -107,9 +107,11 @@ SQL;
 	function users_with_qualifications($qualification)
 	{
 		// will this work?
-		$sql = "SELECT firstname, lastname  
-				FROM users
-				INNER join qualifications ON users.userID=qualifications.qualID" ;
+		$sql = "SELECT firstname, lastname
+				FROM ((db309amc2.users
+				INNER join db309amc2.qualification_assignments on users.userID=qualification_assignments.userID)
+				INNER join db309amc2.qualifications on qualification_assignments.qualID=qualifications.qualID)
+				WHERE db309amc2.qualifications.qualname= ({$qualification});" ;
 
 		
 		

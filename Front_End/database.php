@@ -66,6 +66,25 @@ SQL;
 		}
 	}
 
+	//Performs a query on the qualifications table and returns all the qualifications.
+	//added for job creation and project creation
+	function data_usersList()
+	{
+		$sql = "SELECT qualname FROM qualifications";
+		$conn = data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+
+		if($result->num_rows == 1)
+		{
+			return $result;
+		}
+		else
+		{
+			return -1;
+		}
+	}
+	
 	//Adds a new user to the database
 	function data_add_new_user($firstname, $lastname, $username, $email, $phone, $password)
 	{
@@ -85,10 +104,12 @@ SQL;
 		}
 	}
 	//function that returns users with a qualification
-	function users_with_qualifications(qualification)
+	function users_with_qualifications($qualification)
 	{
 		// will this work?
-		$sql = "SELECT firstname, lastname FROM users WHERE users.userID = qualification_assignment && quala";
+		$sql = "SELECT firstname, lastname  
+				FROM users
+				INNER join qualifications ON users.userID=qualifications.qualID" ;
 
 		
 		

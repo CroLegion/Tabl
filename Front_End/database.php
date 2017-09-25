@@ -111,7 +111,7 @@ SQL;
 				FROM ((db309amc2.users
 				INNER join db309amc2.qualification_assignments on users.userID=qualification_assignments.userID)
 				INNER join db309amc2.qualifications on qualification_assignments.qualID=qualifications.qualID)
-				WHERE db309amc2.qualifications.qualname= ({$qualification});" ;
+				WHERE db309amc2.qualifications.qualname= ({$qualification})" ;
 
 		
 		
@@ -121,8 +121,12 @@ SQL;
 	//function that returns a 2d array of users by qualifications
 	function users_by_qualifications()
 	{
-		$sql = "SELECT firstname, lastname, qualname FROM users,qualifications, qualification assignment where users.userID = qualification_assignment && quala";
-
+		//$sql = "SELECT firstname, lastname, qualname FROM users,qualifications, qualification assignment where users.userID = qualification_assignment && quala";
+		$sql = "SELECT firstname, lastname, qualname
+				FROM ((db309amc2.users
+				INNER join db309amc2.qualification_assignments on users.userID=qualification_assignments.userID)
+				INNER join db309amc2.qualifications on qualification_assignments.qualID=qualifications.qualID)
+				ORDER BY qualname ASC"; 
 		//Modify result to be formated 2d arrary
 		
 		return $result;

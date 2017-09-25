@@ -1,3 +1,8 @@
+<?php
+
+
+
+/*
 <html>
 	<head><link rel="stylesheet" href="../styles.css"></head>
 	<header><title>project name from db</title></header>
@@ -18,3 +23,5 @@
 		</ul>
 	</div>
 </html>
+*/
+?>

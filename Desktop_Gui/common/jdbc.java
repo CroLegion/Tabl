@@ -1,31 +1,8 @@
+package common;
 import java.sql.*;
 import java.util.ArrayList;
 
 public class jdbc {
-
-public static void main(String[] args) throws Exception {
-	// Load and register a JDBC driver
-
-	try {
-		// Load the driver (registers itself)
-		Class.forName("com.mysql.jdbc.Driver");
-
-
-	} catch (Exception E) {
-		System.err.println("Unable to load driver.");
-		E.printStackTrace();
-	}
-
-
-	add_users(create_data.create_users());
-
-	//add_jobs(create_data.create_jobs());
-
-	System.out.println("worked");
-	return;
-
-
-}
 
 
 public static void add_users(ArrayList<User> users) throws SQLException {
@@ -99,7 +76,7 @@ public static void add_project(ArrayList<Job> jobs) throws SQLException {
 			jobdesc = jobs.get(i).jobdesc;
 			parentID = jobs.get(i).parentID;
 
-			String sql = "INSERT INTO project.users " +
+			String sql = "INSERT INTO db309amc2.users " +
                "VALUES ("+jobID+","+jobname+","+jobtype+","+jobdesc+","+parentID+")";
   			statement.executeUpdate(sql);
 		}
@@ -115,7 +92,8 @@ public static void add_project(ArrayList<Job> jobs) throws SQLException {
 	}
 }
 
-public static void get_users() throws SQLException {
+public static ArrayList<User> get_users() {
+	ArrayList<User> users = new ArrayList<User>();
 		try {
 		// Connect to the database
 		Connection conn1;
@@ -125,7 +103,7 @@ public static void get_users() throws SQLException {
 		conn1 = DriverManager.getConnection(dbUrl, user, password);
 		System.out.println("*** Connected to the database ***");
 
-		String query = "SELECT * FROM project.users";
+		String query = "SELECT * FROM db309amc2.users";
 		Statement stmt = null;
 		stmt = conn1.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
@@ -137,20 +115,24 @@ public static void get_users() throws SQLException {
    			String lastname = rs.getString("lastname");
    			String email = rs.getString("email");
    			String phone = rs.getString("phone");
-   			System.out.println(userID + "\t" + usertype + "\t" + username + "\t" + firstname + "\t" + lastname + "\t" + email + "\t" + phone);
+   			User u = new User(userID, usertype, username, firstname, lastname);
+   			users.add(u);
 		}
 		
-
+		
 
 		// Close all statements and connections
 		stmt.close();
 		conn1.close();
+		
+		
 
 	} catch (SQLException e) {
 		System.out.println("SQLException: " + e.getMessage());
 		System.out.println("SQLState: " + e.getSQLState());
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
+	return users;
 
 }
 
@@ -166,7 +148,7 @@ public static void get_projects() throws SQLException {
 		System.out.println("*** Connected to the database ***");
 
 
-		String query = "SELECT * FROM project.jobs";
+		String query = "SELECT * FROM db309amc2.jobs";
 		Statement stmt = null;
 		stmt = conn1.createStatement();
 		ResultSet rs = stmt.executeQuery(query);

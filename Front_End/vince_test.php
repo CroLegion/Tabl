@@ -12,9 +12,11 @@
 	
 	$result = data_usersList();
 
-	$row = $result[1]->fetch_assoc()["firstname"];
+	while($row=$result->fetch_assoc()["firstname"])
+	{
+	//	$row = $result->fetch_assoc()["firstname"];
 
-	echo $row;
-
+		echo $row.", ";
+	}
 
 ?>

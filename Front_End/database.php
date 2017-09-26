@@ -56,7 +56,7 @@ SQL;
 		$result = $conn->query($sql);
 		$conn->close();
 
-		if($result->num_rows == 1)
+		if($result->num_rows >= 1)
 		{
 			return $result;
 		}

@@ -86,15 +86,15 @@ SQL;
 	}
 	
 	//Adds a new user to the database
-	function data_add_new_user($firstname, $lastname, $username, $email, $phone, $password)
+	function data_add_new_user($usertype, $firstname, $lastname, $username, $email, $phone, $password)
 	{
-		$pass = hash_logn($username, $password, "");
-		$sql = "INSERT INTO users VALUES({$firstname},{$lastname},{$username},{$email},{$phone},{$pass})";
+		$pass = hash_login($username, $password, "");
+		$userID = get_and_create_new_user_id();
+		$sql = "INSERT INTO users VALUES({$userID},{$username},{usertype},{$firstname},{$lastname},{$email},{$phone},{$pass})";
 		$conn = data_open();
 		$result = $conn->query($sql);
 		$conn->close();
-
-		if($result->num_rows == 1)
+		if($result->num_rows >= 1)
 		{
 			return 1;
 		}
@@ -102,6 +102,20 @@ SQL;
 		{
 			return -1;
 		}
+	}
+
+	function get_and_create_new_user_id()
+	{
+		
+		while ($result != 0) {
+			$val = rand(0,PHP_MAX_INT);
+			$sql = "SELECT COUNT(userID) FROM users WHERE userID = {$val}";
+			$conn = data_open();
+			$result = $conn->query($sql);
+			$result = $result[0];
+		}
+		
+		return $result;
 	}
 	//function that returns users with a qualification
 	function users_with_qualifications($qualification)

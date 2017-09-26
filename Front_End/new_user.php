@@ -29,6 +29,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $email = user_input($_POST["email"]);
   $phone = user_input($_POST["phone"]);
   $password = user_input($_POST["password"]);
+
+  if(isset($_POST["usertype"]) && $_POST["usertype"] == "Admin") {
+    $usertype = 1;
+  } else if (isset($_POST["usertype"]) && $_POST["usertype"] == "Manager") {
+    $usertype = 2;
+  } else if (isset($_POST["usertype"]) && $_POST["usertype"] == "Worker") {
+    $usertype = 3;
+  }
 }
 
 function user_input($data) {
@@ -41,7 +49,7 @@ function user_input($data) {
 
 
 // Send information to server and then return success if saved to SQL server
-$success data_add_new_user()
+$success data_add_new_user($usertype, $first_name, $last_name, $username, $email, $phone, $password);
 
 if ($success == 1)
 {

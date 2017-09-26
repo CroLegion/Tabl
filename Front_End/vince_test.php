@@ -12,7 +12,7 @@
 	
 	$result = data_usersList();
 
-	echo $result;
+	echo $result->fetch_assoc()['firstname'];
 
 
 ?>

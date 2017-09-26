@@ -1,7 +1,7 @@
 <?php
 	//Import Statments
-	require 'database.php'
-	require	'util.php'
+	require 'database.php';
+	require	'util.php';
 
 	//Define database parameters
 	$servername = "mysql.cs.iastate.edu";
@@ -12,8 +12,13 @@
 
 	$companydetails = get_company_details();
 	$staff=users_by_qualifications();
-
-	echo $companydetails;
+	
+	echo $companydetails->fetch_assoc()["companyname"];
+	echo" </br>" ;
+	echo "Email: ". $companydetails->fetch_assoc()["email"];
+	echo "<br/>";
+	echo "Phone: ". $companydetails->fetch_assoc()["phone"];
+	/*
 	$state = 0;	
 	foreach($staff as $qualification)
 	{
@@ -30,6 +35,7 @@
 		$state=0;
 		echo <br/>;
 	}
+*/
 
 //Code below this is for reference in how page should look	
 /*

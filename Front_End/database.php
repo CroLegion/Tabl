@@ -145,7 +145,7 @@ SQL;
 				ORDER BY qualname ASC"; 
 		//Modify result to be formated 2d arrary
 		
-		return $result;
+		return $sql;
 
 	}
 

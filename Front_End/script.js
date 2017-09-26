@@ -2,7 +2,8 @@
 server = 
 {
 	default : 'default.php',
-	admin_default: 'admin_default.php'
+	admin_default: 'admin_default.php',
+	new_user: 'get_new_user_page.php'
 }
 
 //This is a JavaScript object literal, it is comparable to an enum, and it is used to define names of HTML elements on the page.
@@ -11,8 +12,8 @@ page =
 	content : 'contentpane',
 	projects: 'messagesButtons',
 	messages: 'projectsButtons',
-	admin_content: 'admin_contentpane'
-,	admin_new_users: 'newUserButtons'
+	admin_content: 'admin_contentpane',
+	admin_new_users: 'newUserButtons'
 }
 
 //This function should be called by the 'onload' attribute of the body element.
@@ -80,11 +81,11 @@ function clickSettings()
 
 function click_user_in_manage_users()
 {
-	setElement(page.admin_content, manage_users.html);
+	//setElement(page.admin_content, "manage_users.html");
 }
 
 //Called when the Create New User button is click on the admin frame
 function clickNewUser()
 {
-	setElement(page.admin_content, new_user.html)
+	getElement(page.admin_content, server.new_user);
 }

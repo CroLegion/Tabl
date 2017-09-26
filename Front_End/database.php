@@ -68,7 +68,7 @@ SQL;
 
 	//Performs a query on the qualifications table and returns all the qualifications.
 	//added for job creation and project creation
-	function data_usersList()
+	function data_qual_List()
 	{
 		$sql = "SELECT qualname FROM qualifications";
 		$conn = data_open();
@@ -117,6 +117,8 @@ SQL;
 		
 		return $result;
 	}
+
+	
 	//function that returns users with a qualification
 	function users_with_qualifications($qualification)
 	{
@@ -151,12 +153,12 @@ SQL;
 	//function that gets company details for view group
 	function get_company_details()
 	{
-		$sql = "Select * from companydetails";
+		$sql = "SELECT * FROM companydetails";
 		$conn = data_open();
 		$result = $conn->query($sql);
 		$conn->close();
 
-		return result;
+		return $result;
 
 	}
 ?>

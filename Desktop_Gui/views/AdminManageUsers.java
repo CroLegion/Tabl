@@ -34,11 +34,14 @@ import common.Job;
 import javax.swing.JLabel;
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import javax.swing.UIManager;
+import javax.swing.JInternalFrame;
 
 public class AdminManageUsers extends JFrame {
 
 	private JPanel contentPane;
-	private JButton btnNewButton_1;
+	private JButton btn_create_new_user;
+	private JButton btn_preferences;
+	private JButton btn_settings;
 
 	/**
 	 * Launch the application.
@@ -79,22 +82,16 @@ public class AdminManageUsers extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		JButton btnNewButton = new JButton("Settings");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
+		btn_settings = new JButton("Settings");
 		
-		JButton btnPreferences = new JButton("Preferences");
-		btnPreferences.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+		
+		btn_preferences = new JButton("Preferences");
+		
 		
 		Panel panel = new Panel();
 		panel.setBackground(Color.LIGHT_GRAY);
 		
-		btnNewButton_1 = new JButton("Create New User");
+		btn_create_new_user = new JButton("Create New User");
 		
 		ArrayList<User> users = jdbc.get_users();
 		String[] users_names = get_users_names(users);
@@ -113,12 +110,12 @@ public class AdminManageUsers extends JFrame {
 						.addComponent(panel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addComponent(list, GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE)
+					.addComponent(btn_create_new_user, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE)
 					.addGap(713)
-					.addComponent(btnPreferences, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
+					.addComponent(btn_preferences, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(28, Short.MAX_VALUE))
+					.addComponent(btn_settings, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap())
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -128,20 +125,17 @@ public class AdminManageUsers extends JFrame {
 							.addComponent(panel, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(list, GroupLayout.PREFERRED_SIZE, 276, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-							.addComponent(btnPreferences)
-							.addComponent(btnNewButton))
-						.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE))
-					.addGap(452))
+						.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+								.addComponent(btn_preferences)
+								.addComponent(btn_settings))
+							.addComponent(btn_create_new_user, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap(452, Short.MAX_VALUE))
 		);
 		
 		JLabel lblUsers = DefaultComponentFactory.getInstance().createLabel("USERS");
 		lblUsers.setFont(new Font("Tahoma", Font.BOLD, 13));
 		panel.add(lblUsers);
-		
-		JLabel lblUsers_1 = DefaultComponentFactory.getInstance().createLabel("Users");
-		lblUsers_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel.add(lblUsers_1);
 		contentPane.setLayout(gl_contentPane);
 		setForeground(Color.BLACK);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(AdminManageUsers.class.getResource("/resources/Logo.PNG")));
@@ -149,8 +143,18 @@ public class AdminManageUsers extends JFrame {
 	
 	//This method contains all of the code for creating events
 	private void createEvents() {
-		btnNewButton_1.addActionListener(new ActionListener() {
+		btn_create_new_user.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		
+		btn_preferences.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		
+		btn_settings.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
 		

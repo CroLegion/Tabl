@@ -35,7 +35,7 @@ import javax.swing.JLabel;
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import javax.swing.UIManager;
 
-public class ExampleWindow extends JFrame {
+public class AdminManageUsers extends JFrame {
 
 	private JPanel contentPane;
 	private JButton btnNewButton_1;
@@ -47,7 +47,7 @@ public class ExampleWindow extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ExampleWindow frame = new ExampleWindow();
+					AdminManageUsers frame = new AdminManageUsers();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -59,7 +59,7 @@ public class ExampleWindow extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ExampleWindow() 
+	public AdminManageUsers() 
 	{
 		
 		initComponents();
@@ -138,9 +138,13 @@ public class ExampleWindow extends JFrame {
 		JLabel lblUsers = DefaultComponentFactory.getInstance().createLabel("USERS");
 		lblUsers.setFont(new Font("Tahoma", Font.BOLD, 13));
 		panel.add(lblUsers);
+		
+		JLabel lblUsers_1 = DefaultComponentFactory.getInstance().createLabel("Users");
+		lblUsers_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel.add(lblUsers_1);
 		contentPane.setLayout(gl_contentPane);
 		setForeground(Color.BLACK);
-		setIconImage(Toolkit.getDefaultToolkit().getImage(ExampleWindow.class.getResource("/resources/Logo.PNG")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(AdminManageUsers.class.getResource("/resources/Logo.PNG")));
 	}
 	
 	//This method contains all of the code for creating events

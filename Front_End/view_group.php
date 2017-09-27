@@ -24,12 +24,13 @@
 	
 	while($curQual=$qualList->fetch_assoc()["qualname"])
 	{
-		$userByQualList = users_with_qualifications($curQual);
+		$userByQualList = data_usersList();
 		echo $curQual;
 		echo "<br/>";
-		while($curUser=$userByQualList->fetch_assoc()["firstname","lastname"];)
+		
+		while($curUser=$userByQualList->fetch_assoc())
 		{
-			echo $curUser;
+			echo $curUser["firstname"]." ".$curUser["lastname"];
 			echo ", ";
 		}
 		echo "<br/>";

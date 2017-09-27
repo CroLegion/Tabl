@@ -131,7 +131,7 @@ SQL;
 
 		
 		
-		return $result;
+		return $sql;
 
 	}
 	//function that returns a 2d array of users by qualifications

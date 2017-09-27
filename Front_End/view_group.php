@@ -19,6 +19,22 @@
 	echo "<br/>";
 	$companydetails = get_company_details();
 	echo "Phone: ". $companydetails->fetch_assoc()["phone"];
+	echo "<br/>";
+	$qualList = data_qual_List();
+	
+	while($curQual=$qualList->fetch_assoc()["qualname"])
+	{
+		$userByQualList = users_with_qualifications($curQual);
+		echo $curQual;
+		echo "<br/>";
+		while($curUser=$userByQualList->fetch_assoc()["firstname","lastname"];)
+		{
+			echo $curUser;
+			echo ", ";
+		}
+		echo "<br/>";
+	}	
+
 	/*
 	$state = 0;	
 	foreach($staff as $qualification)

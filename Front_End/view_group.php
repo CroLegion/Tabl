@@ -11,12 +11,13 @@
 	data_set($servername, $username, $password, $database);
 
 	$companydetails = get_company_details();
-	$staff=users_by_qualifications();
-	
+		
 	echo $companydetails->fetch_assoc()["companyname"];
 	echo" </br>" ;
+	$companydetails = get_company_details();
 	echo "Email: ". $companydetails->fetch_assoc()["email"];
 	echo "<br/>";
+	$companydetails = get_company_details();
 	echo "Phone: ". $companydetails->fetch_assoc()["phone"];
 	/*
 	$state = 0;	

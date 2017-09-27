@@ -25,14 +25,19 @@
 	while($curQual=$qualList->fetch_assoc()["qualname"])
 	{
 		$userByQualList = users_with_qualifications($curQual);
-		echo $curQual;
+		if($userByQualList->num_rows>0)
+		{
+			echo $curQual;
+		}
 		echo "<br/>";	
+		$rowsleft = $userByQualList->num_rows;
 		while($curUser=$userByQualList->fetch_assoc())
 		{
 			echo $curUser["firstname"]." ".$curUser["lastname"];
-			echo ", ";
+			$rowsleft--;
+			if($rowsleft){echo ", ";}
 		}
-		echo "<br/>";
+		echo "<br/><br/>";
 	}	
 
 	/*

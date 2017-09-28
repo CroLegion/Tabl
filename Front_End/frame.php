@@ -1,9 +1,8 @@
-<!DOCTYPE html>
 <html>
 	<head>
 		<title>Tabl</title>
-		<script src='../script.js'></script>
-		<link rel="stylesheet" type="text/css" href="../styles.css">
+		<script src='script.js'></script>
+		<link rel="stylesheet" type="text/css" href="styles.css">
 	</head>
 	<body onload='initialize();'>
 		<div class='header'>

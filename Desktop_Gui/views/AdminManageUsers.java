@@ -13,7 +13,10 @@ import java.awt.Toolkit;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
 import java.awt.Panel;
 import java.awt.TextArea;
@@ -21,7 +24,9 @@ import javax.swing.JTextPane;
 import java.awt.Font;
 import java.awt.Button;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.border.MatteBorder;
+import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -47,12 +52,18 @@ public class AdminManageUsers extends JFrame {
 	private JButton btn_create_new_user;
 	private JButton btn_preferences;
 	private JButton btn_settings;
-	private JList<User[]> list;
+	private JList<User[]> listUsers;
 	private JTextField textFirstName;
 	private JTextField textLastName;
 	private JTextField textUsername;
 	private JTextField textEmail;
 	private JTextField textPhone;
+	ArrayList<User> users = jdbc.get_users();
+	String[] users_names = get_users_names(users);
+	private JButton btnSaveChanges;
+	DefaultListModel listModel;
+	int lastClickedIndex;
+	String lastClickedUser;
 
 	/**
 	 * Launch the application.
@@ -104,8 +115,7 @@ public class AdminManageUsers extends JFrame {
 		
 		btn_create_new_user = new JButton("Create New User");
 		
-		ArrayList<User> users = jdbc.get_users();
-		String[] users_names = get_users_names(users);
+		
 		
 		
 		JPanel pnlUserEditInfo = new JPanel();
@@ -188,7 +198,9 @@ public class AdminManageUsers extends JFrame {
 		textPhone = new JTextField();
 		textPhone.setColumns(10);
 		
-		JButton btnSaveChanges = new JButton("Save Changes");
+		btnSaveChanges = new JButton("Save Changes");
+		
+		btnSaveChanges.setToolTipText("Save Changes to Database");
 		
 		JSeparator separator = new JSeparator();
 		separator.setBackground(Color.BLACK);
@@ -204,11 +216,13 @@ public class AdminManageUsers extends JFrame {
 		JLabel lblAssigned = new JLabel("Assigned");
 		lblAssigned.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
-		JButton button = new JButton("->");
-		button.setFont(new Font("Tahoma", Font.BOLD, 16));
-		
 		JButton button_1 = new JButton("<-");
+		button_1.setToolTipText("Click to remove assigned Qualifications");
 		button_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+		
+		JButton button = new JButton("->");
+		button.setToolTipText("Click to move selected Qualifications to Assigned");
+		button.setFont(new Font("Tahoma", Font.BOLD, 16));
 		GroupLayout gl_pnlUserEditInfo = new GroupLayout(pnlUserEditInfo);
 		gl_pnlUserEditInfo.setHorizontalGroup(
 			gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
@@ -224,20 +238,20 @@ public class AdminManageUsers extends JFrame {
 								.addComponent(lblPhoneNumber))
 							.addGap(80)
 							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-								.addComponent(textPhone, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
 								.addComponent(textEmail, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
 								.addComponent(textUsername, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
 								.addComponent(textLastName, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
+								.addComponent(textPhone, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
 								.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
 								.addComponent(lblFullName, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
 							.addGap(123)
 							.addComponent(scrlPaneAvailableQuals, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-								.addComponent(button)
-								.addComponent(button_1, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE))
-							.addGap(21)
+								.addComponent(button_1, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
+								.addComponent(button, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE))
+							.addGap(18)
 							.addComponent(scrlPaneAssignedQuals, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE))
 						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
 							.addGap(24)
@@ -249,7 +263,7 @@ public class AdminManageUsers extends JFrame {
 				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
 					.addGap(179)
 					.addComponent(lblAvailable)
-					.addPreferredGap(ComponentPlacement.RELATED, 204, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED, 206, Short.MAX_VALUE)
 					.addComponent(lblAssigned, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE)
 					.addGap(202))
 		);
@@ -259,27 +273,26 @@ public class AdminManageUsers extends JFrame {
 					.addComponent(lblFullName, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
 					.addGap(30)
 					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addGap(29)
-							.addComponent(textLastName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addGap(30)
-							.addComponent(textUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addGap(31)
-							.addComponent(textEmail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addGap(33)
-							.addComponent(textPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
 							.addComponent(lblFirstName)
 							.addGap(29)
-							.addComponent(lblLastName)
+							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblLastName)
+								.addComponent(textLastName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 							.addGap(30)
-							.addComponent(lblUsername)
+							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblUsername)
+								.addComponent(textUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 							.addGap(31)
-							.addComponent(lblEmailAddress)
+							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblEmailAddress)
+								.addComponent(textEmail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 							.addGap(33)
-							.addComponent(lblPhoneNumber)))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblPhoneNumber)
+								.addComponent(textPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
+					.addGap(26)
 					.addComponent(btnSaveChanges)
 					.addGap(27)
 					.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -295,11 +308,13 @@ public class AdminManageUsers extends JFrame {
 								.addComponent(scrlPaneAssignedQuals, GroupLayout.PREFERRED_SIZE, 271, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
 							.addGap(127)
-							.addComponent(button)
+							.addComponent(button, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
 							.addGap(18)
 							.addComponent(button_1, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)))
 					.addGap(30))
 		);
+		
+		
 		
 		JList listAssignedQuals = new JList();
 		scrlPaneAssignedQuals.setViewportView(listAssignedQuals);
@@ -307,15 +322,17 @@ public class AdminManageUsers extends JFrame {
 		JList listAvailableQuals = new JList();
 		scrlPaneAvailableQuals.setViewportView(listAvailableQuals);
 		pnlUserEditInfo.setLayout(gl_pnlUserEditInfo);
-		list = new JList(users_names);
-		scrollPane.setViewportView(list);
-		list.setBackground(UIManager.getColor("Button.background"));
-		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		list.setLayoutOrientation(JList.VERTICAL);
-		list.setVisibleRowCount(1);
+		listUsers = new JList(users_names);
+		scrollPane.setViewportView(listUsers);
+		listUsers.setBackground(UIManager.getColor("Button.background"));
+		listUsers.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		listUsers.setLayoutOrientation(JList.VERTICAL);
+		listUsers.setVisibleRowCount(1);
 		contentPane.setLayout(gl_contentPane);
 		setForeground(Color.BLACK);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(AdminManageUsers.class.getResource("/resources/Logo.PNG")));
+		
+		//listModel = (DefaultListModel) listUsers.getModel();
 	}
 	
 	//This method contains all of the code for creating events
@@ -334,28 +351,69 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		list.addListSelectionListener(new ListSelectionListener() {
+		//Display user information that was clicked on the left.
+		listUsers.addListSelectionListener(new ListSelectionListener() {
 
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
-                  displayUserInfo((list.getSelectedValue().toString()));
+                  displayUserInfo(users_names[listUsers.getSelectedIndex()]);
+                  lastClickedIndex = listUsers.getSelectedIndex();
+                  System.out.println("last clicked index: "+lastClickedIndex);
                 }
             }
         });
+		//Save changes made the user
+		btnSaveChanges.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int id = jdbc.getIdOfUser(textUsername.getText());
+				
+				try {
+					jdbc.updateUser(id, textFirstName.getText(), textLastName.getText(), textUsername.getText(), textEmail.getText(), textPhone.getText());
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				//updateUserList();
+			}
+		});
 		
 	}
 	
 	private String[] get_users_names(ArrayList<User> data) {
 		String[] users = new String[data.size()];
 		for (int i = 0; i < data.size(); i++) {
-			users[i] = data.get(i).get_firstname()+" "+data.get(i).get_lastname()+" ["+data.get(i).get_username()+"]";
+			users[i] = String.format("%s, %s [%s]", data.get(i).get_lastname(), data.get(i).get_firstname(), data.get(i).get_username());
+			
 		}
 		return users;
 	}
 	
-	private void displayUserInfo(String username) {
+
+	
+	private void displayUserInfo(String name) {
+		String username = null;
+		Pattern p = Pattern.compile("\\[(.*?)\\]");
+		Matcher m = p.matcher(name);
+		//System.out.println(name);
+		if (m.find())
+		{
+		    System.out.println(m.group(1));
+		    username = m.group(1);
+		    lastClickedUser = username;
+		    System.out.println("Last Clicked Username: "+username);
+		}
 		User u = jdbc.get_user(username);
+		System.out.println(u.get_firstname());
+		textFirstName.setText(u.get_firstname());
+		textLastName.setText(u.get_lastname());
+		textUsername.setText(u.get_username());
+		if (u.get_email() != null) {textEmail.setText(u.get_email());} else {textEmail.setText("No Email Address in Database.");}
+		if (u.get_phone() != null) {textPhone.setText(u.get_phone());} else {textPhone.setText("No Phone Number in Database.");}
+	}
+	
+	private void updateUserList() {
+		User u = jdbc.get_user(lastClickedUser);
+		listUsers.setListData(listModel);;
 		
 	}
 }

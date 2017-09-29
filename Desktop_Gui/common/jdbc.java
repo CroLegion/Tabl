@@ -20,7 +20,6 @@ public static int get_user_id() throws SQLException {
 		// Connect to the database
 		Connection conn1;		
 		conn1 = DriverManager.getConnection(dbUrl, user, password);
-		System.out.println("*** Connected to the database ***");
 		String query = String.format("SELECT userID FROM db309amc2.users WHERE userID = %d", randomNum);
 		Statement stmt = null;
 		stmt = conn1.createStatement();
@@ -42,7 +41,6 @@ public static void add_user(int usertype, String username, String firstname, Str
 		// Connect to the database
 		Connection conn1;		
 		conn1 = DriverManager.getConnection(dbUrl, user, password);
-		System.out.println("*** Connected to the database ***");
 
 		Statement statement = conn1.createStatement();
 		String sql = "INSERT INTO users " +
@@ -72,7 +70,6 @@ public static void add_project(ArrayList<Job> jobs) throws SQLException {
 		// Connect to the database
 		Connection conn1;
 		conn1 = DriverManager.getConnection(dbUrl, user, password);
-		System.out.println("*** Connected to the database ***");
 
 
 		Statement statement = conn1.createStatement();
@@ -106,7 +103,6 @@ public static ArrayList<User> get_users() {
 		// Connect to the database
 		Connection conn1;
 		conn1 = DriverManager.getConnection(dbUrl, user, password);
-		System.out.println("*** Connected to the database ***");
 
 		String query = "SELECT * FROM db309amc2.users";
 		Statement stmt = null;
@@ -143,7 +139,6 @@ public static User get_user(String username) {
 	// Connect to the database
 	Connection conn1;
 	conn1 = DriverManager.getConnection(dbUrl, user, password);
-	System.out.println("*** Connected to the database ***");
 
 	String query = String.format("SELECT * FROM db309amc2.users WHERE username='%s'", username);
 	Statement stmt = null;
@@ -165,13 +160,61 @@ public static User get_user(String username) {
 	return u;
 }
 
+public static void updateUser(int id, String firstname, String lastname, String username, String email, String phone) throws SQLException {
+	try {
+		// Connect to the database
+		Connection conn1;		
+		conn1 = DriverManager.getConnection(dbUrl, user, password);
+
+		Statement statement = conn1.createStatement();
+		String sql = String.format("UPDATE db309amc2.users SET firstname='%s', lastname='%s', username='%s', email='%s', phone='%s' WHERE userID=%d", firstname, lastname, username, email, phone, id);
+		statement.executeUpdate(sql);
+		
+
+		// Close all statements and connections
+		statement.close();
+		conn1.close();
+
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+}
+
+public static int getIdOfUser(String username) {
+	int userID = 0;
+	try {
+		// Connect to the database
+		Connection conn1;		
+		conn1 = DriverManager.getConnection(dbUrl, user, password);
+
+		String query = String.format("SELECT userID FROM db309amc2.users WHERE username='%s'", username);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {userID = rs.getInt("userID");}
+		
+
+		// Close all statements and connections
+		stmt.close();
+		conn1.close();
+
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	return userID;
+}
+
 
 public static void get_projects() throws SQLException {
 		try {
 		// Connect to the database
 		Connection conn1;
 		conn1 = DriverManager.getConnection(dbUrl, user, password);
-		System.out.println("*** Connected to the database ***");
 
 
 		String query = "SELECT * FROM db309amc2.jobs";

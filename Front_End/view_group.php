@@ -1,3 +1,5 @@
+<head><link rel="stylesheet" href="styles.css"></head>
+<div class ="view_group">
 <?php
 	//Import Statments
 	require 'database.php';
@@ -28,7 +30,7 @@
 		if($userByQualList->num_rows>0)
 		{
 			echo $curQual;
-		}
+		
 		echo "<br/>";	
 		$rowsleft = $userByQualList->num_rows;
 		while($curUser=$userByQualList->fetch_assoc())
@@ -38,6 +40,7 @@
 			if($rowsleft){echo ", ";}
 		}
 		echo "<br/><br/>";
+		}
 	}	
 
 	/*

@@ -413,7 +413,7 @@ public class AdminManageUsers extends JFrame {
 	
 	private void updateUserList() {
 		User u = jdbc.get_user(lastClickedUser);
-		listUsers.setListData(listModel);;
+		//listUsers.setListData(listModel);;
 		
 	}
 }

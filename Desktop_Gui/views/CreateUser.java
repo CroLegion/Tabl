@@ -65,16 +65,14 @@ public class CreateUser extends JFrame {
 			}
 		});
 	}
-
+	
 	/**
 	 * Create the frame.
 	 */
 	public CreateUser() {
 		setResizable(false);
 		initComponents();
-		createEvents();
-		
-		
+		createEvents();		
 	}
 
 	private void initComponents() {

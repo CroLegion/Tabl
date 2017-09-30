@@ -26,6 +26,10 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import common.jdbc;
+import common.User;
+import common.Job;
+
 public class CreateProject extends JFrame {
 
 	private JPanel contentPane;

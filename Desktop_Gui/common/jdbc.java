@@ -244,6 +244,34 @@ public static void get_projects() throws SQLException {
 
 }
 
+//FIXME This should return a list of qualifications
+public static void get_qualifications() throws SQLException{
+		try{// Connect to the database
+		Connection conn1;
+		String dbUrl = "jdbc:mysql://mysql.cs.iastate.edu:3306/db309amc2";
+		String user = "dbu309amc2";
+		String password = "x1cbBr23";
+		conn1 = DriverManager.getConnection(dbUrl, user, password);
+		System.out.println("*** Connected to the database ***");
+		
+		String query = "SELECT * FROM db309amc2.qualifications";
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			    int qualification = rs.getInt("qualification");
+				System.out.println(qualification);
+		}
+		
+		// Close all statements and connections
+		stmt.close();
+		conn1.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+}
 
 
 }

@@ -166,12 +166,12 @@ SQL;
 	//Get project root from jobs table
 	function get_root_of_tree($project_name)
 	{
-		$sql = "Select jobID, jobname, jobdesc from db309amc.jobs where db309amc2.jobs.jobtype=1 && jobname=\"$project_name\" && parentID IS NULL;";
+		$sql = "Select jobID, jobname, jobdesc from jobs where jobs.jobname=\"$project_name\";";
 		
 		$conn = data_open();
 		$result = $conn->query($sql);
 		$conn->close();
-
+		echo $result->num_rows."<br/>";
 		return $result;
 	}
 ?>

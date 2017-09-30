@@ -17,10 +17,16 @@
 
 	echo $row;
 
-while($row=$result->fetch_assoc())
+	while($row=$result->fetch_assoc())
 	{
 	//	$row ["firstname"];
 
 		echo $row["firstname"];
 	}
+	
+	echo "<br/><br/><br/>";
+	$result2= get_root_of_tree("Build School");
+	
+	$row2=$result2->fetch_assoc();
+	echo $row2["jobID"].$row2["jobname"];
 ?>

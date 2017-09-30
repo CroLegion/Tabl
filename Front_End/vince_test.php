@@ -29,4 +29,8 @@
 	
 	$row2=$result2->fetch_assoc();
 	echo $row2["jobID"].$row2["jobname"];
+
+	$result3=get_children($row2["jobID"]);
+	$row3=$result3->fetch_assoc();
+	echo $row3["jobname"];
 ?>

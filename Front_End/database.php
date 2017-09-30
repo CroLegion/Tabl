@@ -174,4 +174,16 @@ SQL;
 		echo $result->num_rows."<br/>";
 		return $result;
 	}
+
+	//Get children of node by jobID
+	function get_children($jobID)
+	{	
+		$sql="Select jobID, jobname, jobdesc from jobs where jobs.parentID=\"$jobID\";";
+		
+		$conn = data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+		echo $result->num_rows."<br/>";
+		return $result;
+	}
 ?>

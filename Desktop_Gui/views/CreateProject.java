@@ -2,6 +2,7 @@ package views;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -15,17 +16,22 @@ import javax.swing.JList;
 import javax.swing.JSeparator;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
+import javax.swing.UIManager;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JTextPane;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class CreateProject extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
-    private JButton btnNewButton;
-    private JButton button;
+    private JButton addButton;
+    private JButton removeButton;
 	/**
 	 * Launch the application.
 	 */
@@ -49,119 +55,127 @@ public class CreateProject extends JFrame {
 		initComponents();
 		createEvents();
 	}
+
 	public void initComponents(){
+		setTitle("TABL");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(CreateUser.class.getResource("/resources/Logo.PNG")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 783, 544);
 		contentPane = new JPanel();
+		contentPane.setBackground(UIManager.getColor("Button.background"));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		JLabel lblNewLabel = new JLabel("Project Name:");
+		JLabel lblProjectName = new JLabel("Project Name:");
 		
-		JLabel lblNewLabel_1 = new JLabel("Description:");
+		JLabel lblDescription = new JLabel("Description:");
 		
+		JList list = new JList();
+		JList list_1 = new JList();
+		JList list_2 = new JList();		
+
 		textField = new JTextField();
 		textField.setColumns(10);
 		
-		JTextArea textArea = new JTextArea();
-		
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setViewportView(list);		
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		
-		JList list = new JList();
-		scrollPane.setViewportView(list);
+		scrollPane_1.setViewportView(list_1);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setViewportView(list_2);		
 		
-		JButton btnNewButton = new JButton("Add");
+		addButton = new JButton("Add");			
+		removeButton = new JButton("Remove");
+				
+		JLabel lblQualification = new JLabel("Qualification:");		
+		JLabel lblUserToAdd = new JLabel("Users to add:");		
+		JLabel lblUsersAdded = new JLabel("Users added:");
 		
-		JList list_1 = new JList();
-		scrollPane_1.setViewportView(list_1);
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
-		
-		JButton button = new JButton("Remove");
-		
-		JList list_2 = new JList();
-		scrollPane_2.setViewportView(list_2);
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		
-		JLabel lblQualification = new JLabel("Qualification");
-		
-		JLabel lblUserToAdd = new JLabel("Users to add");
-		
-		JLabel lblUsersAdded = new JLabel("Users added");
+		JScrollPane scrollPane_3 = new JScrollPane();
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGap(139)
-					.addComponent(lblNewLabel)
-					.addGap(217)
-					.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGap(153)
-					.addComponent(lblNewLabel_1)
-					.addGap(217)
-					.addComponent(textArea, GroupLayout.PREFERRED_SIZE, 245, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGap(94)
-					.addComponent(lblQualification)
-					.addGap(130)
-					.addComponent(lblUserToAdd)
-					.addGap(174)
-					.addComponent(lblUsersAdded))
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGap(94)
-					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)
-					.addGap(46)
-					.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 123, GroupLayout.PREFERRED_SIZE)
-					.addGap(20)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)
-						.addComponent(button, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE))
-					.addGap(6)
-					.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 153, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGap(94)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblQualification))
+							.addGap(46)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_contentPane.createSequentialGroup()
+									.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 123, GroupLayout.PREFERRED_SIZE)
+									.addGap(10)
+									.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+										.addGroup(gl_contentPane.createSequentialGroup()
+											.addGap(1)
+											.addComponent(addButton, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE))
+										.addComponent(removeButton, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)))
+								.addComponent(lblUserToAdd))
+							.addGap(18)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblUsersAdded)
+								.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 153, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_contentPane.createSequentialGroup()
+									.addGap(139)
+									.addComponent(lblProjectName))
+								.addGroup(gl_contentPane.createSequentialGroup()
+									.addGap(153)
+									.addComponent(lblDescription)))
+							.addGap(214)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(textField)
+								.addComponent(scrollPane_3, GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE))))
+					.addGap(50))
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGap(72)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_contentPane.createSequentialGroup()
-							.addGap(3)
-							.addComponent(lblNewLabel))
-						.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(32)
+							.addGap(75)
+							.addComponent(lblProjectName))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGap(72)
+							.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+					.addGap(37)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNewLabel_1)
-						.addComponent(textArea, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE))
-					.addGap(13)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblDescription)
+						.addComponent(scrollPane_3, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE))
+					.addGap(25)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblQualification)
 						.addComponent(lblUserToAdd)
 						.addComponent(lblUsersAdded))
-					.addGap(6)
+					.addGap(18)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
 						.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_contentPane.createSequentialGroup()
-							.addGap(38)
-							.addComponent(btnNewButton)
-							.addGap(20)
-							.addComponent(button))
+							.addGap(18)
+							.addComponent(addButton)
+							.addGap(37)
+							.addComponent(removeButton))
 						.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)))
 		);
+		
+		JTextPane textPane = new JTextPane();
+		scrollPane_3.setViewportView(textPane);
 		contentPane.setLayout(gl_contentPane);
 	}
 	public void createEvents(){
-		
-		
+		addButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		removeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 	}
 }

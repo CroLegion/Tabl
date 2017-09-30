@@ -171,7 +171,7 @@ SQL;
 		$conn = data_open();
 		$result = $conn->query($sql);
 		$conn->close();
-		echo $result->num_rows."<br/>";
+		//echo $result->num_rows."<br/>";
 		return $result;
 	}
 
@@ -183,7 +183,7 @@ SQL;
 		$conn = data_open();
 		$result = $conn->query($sql);
 		$conn->close();
-		echo $result->num_rows."<br/>";
+		//echo $result->num_rows."<br/>";
 		return $result;
 	}
 ?>

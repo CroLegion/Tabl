@@ -1,7 +1,9 @@
+<head><link rel="stylesheet" href="styles.css"></head>
+<div class ="view_group">
 <?php
 	//Import Statments
-	require 'database.php'
-	require	'util.php'
+	require 'database.php';
+	require	'util.php';
 
 	//Define database parameters
 	$servername = "mysql.cs.iastate.edu";
@@ -11,9 +13,37 @@
 	data_set($servername, $username, $password, $database);
 
 	$companydetails = get_company_details();
-	$staff=users_by_qualifications();
+		
+	echo $companydetails->fetch_assoc()["companyname"];
+	echo" </br>" ;
+	$companydetails = get_company_details();
+	echo "Email: ". $companydetails->fetch_assoc()["email"];
+	echo "<br/>";
+	$companydetails = get_company_details();
+	echo "Phone: ". $companydetails->fetch_assoc()["phone"];
+	echo "<br/>";
+	$qualList = data_qual_List();
+	
+	while($curQual=$qualList->fetch_assoc()["qualname"])
+	{
+		$userByQualList = users_with_qualifications($curQual);
+		if($userByQualList->num_rows>0)
+		{
+			echo $curQual;
+		
+		echo "<br/>";	
+		$rowsleft = $userByQualList->num_rows;
+		while($curUser=$userByQualList->fetch_assoc())
+		{
+			echo $curUser["firstname"]." ".$curUser["lastname"];
+			$rowsleft--;
+			if($rowsleft){echo ", ";}
+		}
+		echo "<br/><br/>";
+		}
+	}	
 
-	echo $companydetails;
+	/*
 	$state = 0;	
 	foreach($staff as $qualification)
 	{
@@ -30,6 +60,7 @@
 		$state=0;
 		echo <br/>;
 	}
+*/
 
 //Code below this is for reference in how page should look	
 /*

@@ -32,8 +32,10 @@ CREATE TABLE jobs
     jobtype tinyint not null,
     jobdesc text,
     parentID int,
+    taskID int,
     PRIMARY KEY (jobID),
-    FOREIGN KEY (parentID) REFERENCES jobs(jobID)
+    FOREIGN KEY (parentID) REFERENCES jobs(jobID),
+    FOREIGN KEY (taskID) REFERENCES tasks(taskID)
 );
 
 CREATE TABLE tasks
@@ -59,7 +61,7 @@ CREATE TABLE qualification_assignments
 (
     qualID int not null,
     userID int not null,
-    PRIMARY KEY (qualID),
+    PRIMARY KEY (qualID,userID),
     FOREIGN KEY (userID) REFERENCES users(userID)
 );
 
@@ -97,18 +99,19 @@ CREATE TABLE group_messages
     FOREIGN KEY (msgdest) REFERENCES groups(groupID)
 );
 
-/*Creates a table to store chat messages to individuals*/
-CREATE TABLE direct_messages
+CREATE TABLE conversations
 (
-	msgID int auto_increment not null,
-    msgsubject varchar(32),
-    msgcontent text not null,
-    msgsender int not null,
-    msgdest int not null,
-    timesent timestamp not null,
-    PRIMARY KEY (msgID),
-    FOREIGN KEY (msgsender) REFERENCES users(userID),
-    FOREIGN KEY (msgdest) REFERENCES users(userID)
+	conversationID int auto_increment not null,
+	conversationName varchar(32),
+	PRIMARY KEY (conversationID)
+);
+
+CREATE TABLE conversation_assignments
+(
+	conversationID int not null,
+	memberID itn not null,
+	FOREIGN KEY (conversationID) REFERENCES conversations(conversationID),
+	FOREIGN KEY (memberID) REFERENCES users(userID)
 );
 
 /*Creates a table to store message attachment locations*/

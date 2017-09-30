@@ -56,7 +56,7 @@ SQL;
 		$result = $conn->query($sql);
 		$conn->close();
 
-		if($result->num_rows == 1)
+		if($result->num_rows >= 1)
 		{
 			return $result;
 		}
@@ -75,7 +75,7 @@ SQL;
 		$result = $conn->query($sql);
 		$conn->close();
 
-		if($result->num_rows == 1)
+		if($result->num_rows >= 1)
 		{
 			return $result;
 		}
@@ -127,10 +127,11 @@ SQL;
 				FROM ((db309amc2.users
 				INNER join db309amc2.qualification_assignments on users.userID=qualification_assignments.userID)
 				INNER join db309amc2.qualifications on qualification_assignments.qualID=qualifications.qualID)
-				WHERE db309amc2.qualifications.qualname= ({$qualification})" ;
-
-		
-		
+				WHERE db309amc2.qualifications.qualname= (\"$qualification\")" ;
+		$conn = data_open();
+		$result=$conn->query($sql);
+		$conn->close();
+	
 		return $result;
 
 	}
@@ -145,7 +146,7 @@ SQL;
 				ORDER BY qualname ASC"; 
 		//Modify result to be formated 2d arrary
 		
-		return $result;
+		return $sql;
 
 	}
 
@@ -160,5 +161,17 @@ SQL;
 
 		return $result;
 
+	}
+
+	//Get project root from jobs table
+	function get_root_of_tree($project_name)
+	{
+		$sql = "Select jobID, jobname, jobdesc from db309amc.jobs where db309amc2.jobs.jobtype=1 && jobname=\"$project_name\" && parentID IS NULL;";
+		
+		$conn = data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+
+		return $result;
 	}
 ?>

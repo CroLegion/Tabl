@@ -2,9 +2,11 @@ package views;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -37,9 +39,12 @@ public class CreateTask extends JFrame {
 		createEvents();
 	}
 	public void initComponents(){
+		setTitle("TABL");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(CreateUser.class.getResource("/resources/Logo.PNG")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
-		contentPane = new JPanel();
+		contentPane = new JPanel();		
+		contentPane.setBackground(UIManager.getColor("Button.background"));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);

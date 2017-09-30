@@ -47,15 +47,13 @@ public class CreateUser extends JFrame {
 			}
 		});
 	}
-
+	
 	/**
 	 * Create the frame.
 	 */
 	public CreateUser() {
 		initComponents();
-		createEvents();
-		
-		
+		createEvents();		
 	}
 
 	private void initComponents() {

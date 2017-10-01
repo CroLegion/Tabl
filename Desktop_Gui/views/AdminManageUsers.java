@@ -36,6 +36,7 @@ import javax.swing.JComboBox;
 import common.jdbc;
 import common.User;
 import common.Job;
+import common.Qualification;
 import javax.swing.JLabel;
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import javax.swing.UIManager;
@@ -45,6 +46,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.JTextField;
 import javax.swing.JSeparator;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class AdminManageUsers extends JFrame {
 
@@ -52,17 +55,22 @@ public class AdminManageUsers extends JFrame {
 	private JButton btn_create_new_user;
 	private JButton btn_preferences;
 	private JButton btn_settings;
-	private JList listUsers;
 	private JTextField textFirstName;
 	private JTextField textLastName;
 	private JTextField textUsername;
 	private JTextField textEmail;
 	private JTextField textPhone;
-	
 	private JButton btnSaveChanges;
 	int lastClickedIndex;
 	String lastClickedUser;
+	private JList listUsers;
 	DefaultListModel userList = new DefaultListModel();
+	private JList listAvailableQuals;
+	private JList listAssignedQuals;
+	DefaultListModel availableQualList = new DefaultListModel();
+	DefaultListModel assignedQualList = new DefaultListModel();
+	private JButton assignQual;
+	private JButton unassignQual;
 
 	/**
 	 * Launch the application.
@@ -85,7 +93,8 @@ public class AdminManageUsers extends JFrame {
 	 */
 	public AdminManageUsers() 
 	{
-		
+
+		jdbc.openSQLConnection();
 		initComponents();
 		createEvents();
 		
@@ -109,9 +118,6 @@ public class AdminManageUsers extends JFrame {
 		pnlUsers.setBackground(Color.LIGHT_GRAY);
 		
 		btn_create_new_user = new JButton("Create New User");
-		
-		
-		
 		
 		JPanel pnlUserEditInfo = new JPanel();
 		pnlUserEditInfo.setBorder(new TitledBorder(null, "User Edit/Info", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -205,13 +211,15 @@ public class AdminManageUsers extends JFrame {
 		JLabel lblAssigned = new JLabel("Assigned");
 		lblAssigned.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
-		JButton button_1 = new JButton("<-");
-		button_1.setToolTipText("Click to remove assigned Qualifications");
-		button_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+		unassignQual = new JButton("<-");
+
+		unassignQual.setToolTipText("Click to remove assigned Qualifications");
+		unassignQual.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
-		JButton button = new JButton("->");
-		button.setToolTipText("Click to move selected Qualifications to Assigned");
-		button.setFont(new Font("Tahoma", Font.BOLD, 16));
+		assignQual = new JButton("->");
+
+		assignQual.setToolTipText("Click to move selected Qualifications to Assigned");
+		assignQual.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
 		GroupLayout gl_pnlUserEditInfo = new GroupLayout(pnlUserEditInfo);
 		gl_pnlUserEditInfo.setHorizontalGroup(
@@ -239,8 +247,8 @@ public class AdminManageUsers extends JFrame {
 							.addComponent(scrlPaneAvailableQuals, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-								.addComponent(button_1, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
-								.addComponent(button, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE))
+								.addComponent(unassignQual, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
+								.addComponent(assignQual, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE))
 							.addGap(18)
 							.addComponent(scrlPaneAssignedQuals, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE))
 						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
@@ -298,26 +306,24 @@ public class AdminManageUsers extends JFrame {
 								.addComponent(scrlPaneAssignedQuals, GroupLayout.PREFERRED_SIZE, 271, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
 							.addGap(127)
-							.addComponent(button, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+							.addComponent(assignQual, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
 							.addGap(18)
-							.addComponent(button_1, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(unassignQual, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)))
 					.addGap(30))
 		);
 		
 		
 		
-		JList listAssignedQuals = new JList();
+		listAssignedQuals = new JList(assignedQualList);
 		scrlPaneAssignedQuals.setViewportView(listAssignedQuals);
 		
-		JList listAvailableQuals = new JList();
+		listAvailableQuals = new JList(availableQualList);
 		scrlPaneAvailableQuals.setViewportView(listAvailableQuals);
 		pnlUserEditInfo.setLayout(gl_pnlUserEditInfo);
 		
 		
 		createUserList();
 		listUsers = new JList(userList);
-		
-		
 		
 		scrollPane.setViewportView(listUsers);
 		listUsers.setBackground(UIManager.getColor("Button.background"));
@@ -332,6 +338,12 @@ public class AdminManageUsers extends JFrame {
 	
 	//This method contains all of the code for creating events
 	private void createEvents() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				jdbc.closeSQLConnection();
+			}
+		});
 		btn_create_new_user.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -354,7 +366,6 @@ public class AdminManageUsers extends JFrame {
                 if (!arg0.getValueIsAdjusting()) {
                   displayUserInfo(listUsers.getSelectedValue().toString());
                   lastClickedIndex = listUsers.getSelectedIndex();
-                  System.out.println("last clicked index: "+lastClickedIndex);
                 }
             }
         });
@@ -372,16 +383,23 @@ public class AdminManageUsers extends JFrame {
 			}
 		});
 		
+		assignQual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				jdbc.assignQuals(listAvailableQuals.getSelectedIndices());
+			}
+		});
 		
-		
-		
+		unassignQual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jdbc.UnassignQuals(listAssignedQuals.getSelectedIndices());
+			}
+		});
 	}
 	
 	private void createUserList() {
 		ArrayList<User> users = jdbc.get_users();
 		for (int i = 0; i < users.size(); i++) {
 			userList.addElement(String.format("%s, %s [%s]", users.get(i).get_lastname(), users.get(i).get_firstname(), users.get(i).get_username()));
-			
 		}
 	}
 	
@@ -391,28 +409,37 @@ public class AdminManageUsers extends JFrame {
 		String username = null;
 		Pattern p = Pattern.compile("\\[(.*?)\\]");
 		Matcher m = p.matcher(name);
-		//System.out.println(name);
 		if (m.find())
 		{
-		    System.out.println(m.group(1));
 		    username = m.group(1);
 		    lastClickedUser = username;
-		    System.out.println("Last Clicked Username: "+username);
 		}
 		User u = jdbc.get_user(username);
-		System.out.println(u.get_firstname());
 		textFirstName.setText(u.get_firstname());
 		textLastName.setText(u.get_lastname());
 		textUsername.setText(u.get_username());
 		if (u.get_email() != null) {textEmail.setText(u.get_email());} else {textEmail.setText("No Email Address in Database.");}
 		if (u.get_phone() != null) {textPhone.setText(u.get_phone());} else {textPhone.setText("No Phone Number in Database.");}
+		
+		
+		createQualLists(u.get_userID());
 	}
 	
 	private void updateUserList() {
 		User u = jdbc.get_user(lastClickedUser);
 		String s = String.format("%s, %s [%s]", u.get_lastname(), u.get_firstname(), u.get_username());
 		userList.setElementAt(s, lastClickedIndex);
-		
 	}
 	
+	
+	private void createQualLists(int userID) {
+		assignedQualList.clear();
+		availableQualList.clear();
+		ArrayList<Qualification> quals = new ArrayList<Qualification>();
+		quals = jdbc.getUserQuals(userID);
+		for (Qualification q : quals) { 
+			assignedQualList.addElement(q.getQualName());
+		}
+		
+	}
 }

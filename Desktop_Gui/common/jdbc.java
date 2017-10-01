@@ -13,6 +13,7 @@ public static Connection conn1;
 public static void openSQLConnection() {
 	try {
 		conn1 = DriverManager.getConnection(dbUrl, user, password);
+		System.out.println("Opening Database connection");
 	} catch (SQLException e) {
 		System.out.println("SQLException: " + e.getMessage());
 		System.out.println("SQLState: " + e.getSQLState());
@@ -23,6 +24,7 @@ public static void openSQLConnection() {
 public static void closeSQLConnection() {
 	try {
 		conn1.close();
+		System.out.println("Closing Database connection");
 	} catch (SQLException e) {
 		System.out.println("SQLException: " + e.getMessage());
 		System.out.println("SQLState: " + e.getSQLState());
@@ -244,7 +246,7 @@ public static void get_qualifications() throws SQLException{
 	}
 }
 
-public static ArrayList<Qualification> getUserQuals(int userID) {
+public static ArrayList<Qualification> getUserAssignedQuals(int userID) {
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();
 	try {		
 		String query = String.format("SELECT qualifications.qualID, qualname, qualdescription FROM ((db309amc2.users "
@@ -271,15 +273,78 @@ public static ArrayList<Qualification> getUserQuals(int userID) {
 	return quals;
 }
 
+public static ArrayList<Qualification> getUserAvailQuals(int userID) {
+	ArrayList<Qualification> quals = new ArrayList<Qualification>();
+	try {		
+		String query = String.format("SELECT distinct q.qualID, q.qualname, q.qualdescription FROM qualifications q WHERE q.qualID in "+ 
+				"(select distinct qualID from qualifications q) and not"+ 
+				"(q.qualID in (select distinct qualID from qualification_assignments qa where qa.userID = '%d'));", userID);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			Qualification qual = new Qualification(rs.getInt("qualID"), rs.getString("qualname"), rs.getString("qualdescription"));
+			quals.add(qual);
+			
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return quals;
+}
 
-public static void UnassignQuals(int[] selectedIndices) {
-	// TODO Auto-generated method stub
-	
+public static void UnassignQuals(int lastClickeduserID, ArrayList<Qualification> assignedQuals, int[] selectedIndices) {
+	StringBuilder s = new StringBuilder();
+	s.append('(');
+	for (int i = 0; i < selectedIndices.length; i++) {
+		if (i == selectedIndices.length-1) {
+			s.append(assignedQuals.get(selectedIndices[i]).getQualID()+")");
+			break;
+		} else {
+			s.append(assignedQuals.get(selectedIndices[i]).getQualID()+",");
+		}
+		
+	}
+	try {
+		
+		Statement statement = conn1.createStatement();
+		String sql = String.format("DELETE FROM db309amc2.qualification_assignments WHERE qualID in %s AND userID=%d", s, lastClickeduserID);
+		statement.executeUpdate(sql);
+		
+		statement.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
 }
 
 
-public static void assignQuals(int[] selectedIndices) {
-	// TODO Auto-generated method stub
+public static void assignQuals(int lastClickeduserID, ArrayList<Qualification> availQuals, int[] selectedIndices) {
+	try {
+		for (int i = 0; i < selectedIndices.length; i++) {
+			int qualID = availQuals.get(selectedIndices[i]).getQualID();
+			
+			Statement statement = conn1.createStatement();
+			String sql = String.format("INSERT INTO db309amc2.qualification_assignments VALUES(%d, %d)", qualID ,lastClickeduserID);
+			statement.executeUpdate(sql);
+			// Close all statements and connections
+			statement.close();
+		}
+		
+		
+
+		
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
 	
 }
 

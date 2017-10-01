@@ -48,6 +48,9 @@ import javax.swing.JTextField;
 import javax.swing.JSeparator;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
+import javax.swing.JPasswordField;
 
 public class AdminManageUsers extends JFrame {
 
@@ -62,6 +65,7 @@ public class AdminManageUsers extends JFrame {
 	private JTextField textPhone;
 	private JButton btnSaveChanges;
 	int lastClickedIndex;
+	int lastClickeduserID;
 	String lastClickedUser;
 	private JList listUsers;
 	DefaultListModel userList = new DefaultListModel();
@@ -71,6 +75,24 @@ public class AdminManageUsers extends JFrame {
 	DefaultListModel assignedQualList = new DefaultListModel();
 	private JButton assignQual;
 	private JButton unassignQual;
+	ArrayList<Qualification> assignedQuals = new ArrayList<Qualification>();
+	ArrayList<Qualification> availQuals = new ArrayList<Qualification>();
+	private JPanel pnlCreateUser;
+	private JLabel lblEnterUserInfo;
+	private JLabel lblFirstName_1;
+	private JButton btnCreateUser;
+	private JLabel lblUserType;
+	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private JRadioButton rdbtnAdmin;
+	private JRadioButton rdbtnManager;
+	private JRadioButton rdbtnWorker;
+	private JTextField txtCreateFirstName;
+	private JTextField txtCreateLastName;
+	private JTextField txtCreateUsername;
+	private JTextField txtCreateEmailAddress;
+	private JTextField txtCreatePhoneNumber;
+	private JPasswordField txtCreatePassword;
+	
 
 	/**
 	 * Launch the application.
@@ -111,6 +133,11 @@ public class AdminManageUsers extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
+		contentPane.setVisible(true);
+		
+		pnlCreateUser = new JPanel();
+		pnlCreateUser.setVisible(false);
+		
 		btn_settings = new JButton("Settings");
 		btn_preferences = new JButton("Preferences");
 		
@@ -128,42 +155,42 @@ public class AdminManageUsers extends JFrame {
 		
 		JScrollPane scrollPane = new JScrollPane();
 		
+		
+		
+		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addComponent(pnlUsers, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE)
+						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(pnlUsers, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btn_create_new_user, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
 							.addGap(329)
 							.addComponent(btn_preferences, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
 							.addGap(10)
 							.addComponent(btn_settings, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(pnlUserEditInfo, GroupLayout.PREFERRED_SIZE, 743, GroupLayout.PREFERRED_SIZE)))
-					.addGap(313))
+						.addComponent(pnlUserEditInfo, GroupLayout.PREFERRED_SIZE, 743, GroupLayout.PREFERRED_SIZE))
+					.addGap(4))
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(pnlUsers, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
+						.addComponent(pnlUserEditInfo, GroupLayout.PREFERRED_SIZE, 733, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_contentPane.createSequentialGroup()
 							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-								.addComponent(btn_preferences)
-								.addComponent(btn_settings))
-							.addComponent(btn_create_new_user)))
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_contentPane.createSequentialGroup()
+								.addComponent(pnlUsers, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
+									.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+										.addComponent(btn_preferences)
+										.addComponent(btn_settings))
+									.addComponent(btn_create_new_user)))
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 720, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addGap(1)
-							.addComponent(pnlUserEditInfo, GroupLayout.PREFERRED_SIZE, 733, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 720, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 		);
 		JLabel lblFullName = new JLabel("Full Name");
@@ -221,13 +248,17 @@ public class AdminManageUsers extends JFrame {
 		assignQual.setToolTipText("Click to move selected Qualifications to Assigned");
 		assignQual.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
+		
+		
 		GroupLayout gl_pnlUserEditInfo = new GroupLayout(pnlUserEditInfo);
 		gl_pnlUserEditInfo.setHorizontalGroup(
 			gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(pnlCreateUser, GroupLayout.PREFERRED_SIZE, 722, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addGap(63)
 							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
 								.addComponent(lblFirstName)
 								.addComponent(lblLastName)
@@ -243,7 +274,6 @@ public class AdminManageUsers extends JFrame {
 								.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
 								.addComponent(lblFullName, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addGap(123)
 							.addComponent(scrlPaneAvailableQuals, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
@@ -251,13 +281,9 @@ public class AdminManageUsers extends JFrame {
 								.addComponent(assignQual, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE))
 							.addGap(18)
 							.addComponent(scrlPaneAssignedQuals, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addGap(24)
-							.addComponent(separator, GroupLayout.PREFERRED_SIZE, 699, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addGap(278)
-							.addComponent(btnSaveChanges)))
-					.addContainerGap(8, Short.MAX_VALUE))
+						.addComponent(separator, GroupLayout.PREFERRED_SIZE, 699, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnSaveChanges))
+					.addContainerGap(731, Short.MAX_VALUE))
 				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
 					.addGap(179)
 					.addComponent(lblAvailable)
@@ -268,49 +294,185 @@ public class AdminManageUsers extends JFrame {
 		gl_pnlUserEditInfo.setVerticalGroup(
 			gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-					.addComponent(lblFullName, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-					.addGap(30)
 					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-						.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addComponent(lblFirstName)
-							.addGap(29)
-							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lblLastName)
-								.addComponent(textLastName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addComponent(lblFullName, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
 							.addGap(30)
-							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lblUsername)
-								.addComponent(textUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addGap(31)
-							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lblEmailAddress)
-								.addComponent(textEmail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addGap(33)
-							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lblPhoneNumber)
-								.addComponent(textPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
-					.addGap(26)
-					.addComponent(btnSaveChanges)
-					.addGap(27)
-					.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addGap(13)
-							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lblAvailable)
-								.addComponent(lblAssigned, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE))
-							.addGap(18)
-							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.TRAILING)
-								.addComponent(scrlPaneAvailableQuals, GroupLayout.PREFERRED_SIZE, 271, GroupLayout.PREFERRED_SIZE)
-								.addComponent(scrlPaneAssignedQuals, GroupLayout.PREFERRED_SIZE, 271, GroupLayout.PREFERRED_SIZE)))
-						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addGap(127)
-							.addComponent(assignQual, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(unassignQual, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)))
-					.addGap(30))
+							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+								.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+									.addComponent(lblFirstName)
+									.addGap(29)
+									.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
+										.addComponent(lblLastName)
+										.addComponent(textLastName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+									.addGap(30)
+									.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
+										.addComponent(lblUsername)
+										.addComponent(textUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+									.addGap(31)
+									.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
+										.addComponent(lblEmailAddress)
+										.addComponent(textEmail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+									.addGap(33)
+									.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
+										.addComponent(lblPhoneNumber)
+										.addComponent(textPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
+							.addGap(26)
+							.addComponent(btnSaveChanges)
+							.addGap(27)
+							.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+									.addGap(13)
+									.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
+										.addComponent(lblAvailable)
+										.addComponent(lblAssigned, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE))
+									.addGap(18)
+									.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.TRAILING)
+										.addComponent(scrlPaneAvailableQuals, GroupLayout.PREFERRED_SIZE, 271, GroupLayout.PREFERRED_SIZE)
+										.addComponent(scrlPaneAssignedQuals, GroupLayout.PREFERRED_SIZE, 271, GroupLayout.PREFERRED_SIZE)))
+								.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+									.addGap(127)
+									.addComponent(assignQual, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+									.addGap(18)
+									.addComponent(unassignQual, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))))
+						.addComponent(pnlCreateUser, GroupLayout.PREFERRED_SIZE, 703, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap())
 		);
+		
+		lblEnterUserInfo = new JLabel("Enter User Info");
+		lblEnterUserInfo.setFont(new Font("Tahoma", Font.BOLD, 20));
+		
+		lblFirstName_1 = new JLabel("First Name:");
+		lblFirstName_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		
+		btnCreateUser = new JButton("Create User");
+
+		btnCreateUser.setFont(new Font("Tahoma", Font.BOLD, 16));
+		
+		lblUserType = new JLabel("User Type:");
+		lblUserType.setFont(new Font("Tahoma", Font.BOLD, 14));
+		
+		rdbtnAdmin = new JRadioButton("Admin");
+		buttonGroup.add(rdbtnAdmin);
+		rdbtnAdmin.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		rdbtnManager = new JRadioButton("Manager");
+		buttonGroup.add(rdbtnManager);
+		rdbtnManager.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		rdbtnWorker = new JRadioButton("Worker");
+		buttonGroup.add(rdbtnWorker);
+		rdbtnWorker.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		JLabel lblLastName_1 = new JLabel("Last Name:");
+		lblLastName_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		
+		JLabel lblUsername_1 = new JLabel("Username:");
+		lblUsername_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		
+		JLabel lblEmailAddress_1 = new JLabel("Email Address:");
+		lblEmailAddress_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		
+		JLabel lblPhoneNumber_1 = new JLabel("Phone Number");
+		lblPhoneNumber_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		
+		JLabel lblPassword = new JLabel("Password:");
+		lblPassword.setFont(new Font("Tahoma", Font.BOLD, 14));
+		
+		txtCreateFirstName = new JTextField();
+		txtCreateFirstName.setColumns(10);
+		
+		txtCreateLastName = new JTextField();
+		txtCreateLastName.setColumns(10);
+		
+		txtCreateUsername = new JTextField();
+		txtCreateUsername.setColumns(10);
+		
+		txtCreateEmailAddress = new JTextField();
+		txtCreateEmailAddress.setColumns(10);
+		
+		txtCreatePhoneNumber = new JTextField();
+		txtCreatePhoneNumber.setColumns(10);
+		
+		txtCreatePassword = new JPasswordField();
+		GroupLayout gl_pnlCreateUser = new GroupLayout(pnlCreateUser);
+		gl_pnlCreateUser.setHorizontalGroup(
+			gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_pnlCreateUser.createSequentialGroup()
+					.addGap(91)
+					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.TRAILING)
+						.addComponent(lblPassword)
+						.addComponent(lblPhoneNumber_1)
+						.addComponent(lblEmailAddress_1)
+						.addComponent(lblUsername_1)
+						.addComponent(lblLastName_1)
+						.addComponent(lblUserType)
+						.addComponent(lblFirstName_1))
+					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_pnlCreateUser.createSequentialGroup()
+							.addGap(33)
+							.addComponent(rdbtnAdmin)
+							.addGap(25)
+							.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_pnlCreateUser.createSequentialGroup()
+									.addComponent(rdbtnManager)
+									.addGap(31)
+									.addComponent(rdbtnWorker))
+								.addComponent(btnCreateUser)
+								.addComponent(lblEnterUserInfo)))
+						.addGroup(gl_pnlCreateUser.createSequentialGroup()
+							.addGap(62)
+							.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+								.addComponent(txtCreateLastName, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE)
+								.addComponent(txtCreateFirstName, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE)
+								.addComponent(txtCreateUsername, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE)
+								.addComponent(txtCreateEmailAddress, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE)
+								.addComponent(txtCreatePhoneNumber, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE)
+								.addComponent(txtCreatePassword, GroupLayout.PREFERRED_SIZE, 292, GroupLayout.PREFERRED_SIZE))))
+					.addContainerGap(173, Short.MAX_VALUE))
+		);
+		gl_pnlCreateUser.setVerticalGroup(
+			gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_pnlCreateUser.createSequentialGroup()
+					.addGap(21)
+					.addComponent(lblEnterUserInfo)
+					.addGap(18)
+					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblFirstName_1)
+						.addComponent(txtCreateFirstName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(42)
+					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.TRAILING)
+						.addComponent(lblLastName_1)
+						.addComponent(txtCreateLastName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(33)
+					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.TRAILING)
+						.addComponent(lblUsername_1)
+						.addComponent(txtCreateUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(36)
+					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.TRAILING)
+						.addComponent(lblEmailAddress_1)
+						.addComponent(txtCreateEmailAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(37)
+					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.TRAILING)
+						.addComponent(lblPhoneNumber_1)
+						.addComponent(txtCreatePhoneNumber, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(36)
+					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblPassword)
+						.addComponent(txtCreatePassword, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
+					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblUserType)
+						.addComponent(rdbtnAdmin)
+						.addComponent(rdbtnManager)
+						.addComponent(rdbtnWorker))
+					.addGap(38)
+					.addComponent(btnCreateUser)
+					.addGap(176))
+		);
+		pnlCreateUser.setLayout(gl_pnlCreateUser);
 		
 		
 		
@@ -346,6 +508,7 @@ public class AdminManageUsers extends JFrame {
 		});
 		btn_create_new_user.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				pnlCreateUser.setVisible(true);
 			}
 		});
 		
@@ -366,6 +529,8 @@ public class AdminManageUsers extends JFrame {
                 if (!arg0.getValueIsAdjusting()) {
                   displayUserInfo(listUsers.getSelectedValue().toString());
                   lastClickedIndex = listUsers.getSelectedIndex();
+                  int id = jdbc.getIdOfUser(textUsername.getText());
+                  lastClickeduserID = id;
                 }
             }
         });
@@ -373,7 +538,7 @@ public class AdminManageUsers extends JFrame {
 		btnSaveChanges.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int id = jdbc.getIdOfUser(textUsername.getText());
-				
+				lastClickeduserID = id;
 				try {
 					jdbc.updateUser(id, textFirstName.getText(), textLastName.getText(), textUsername.getText(), textEmail.getText(), textPhone.getText());
 				} catch (SQLException e) {
@@ -385,18 +550,42 @@ public class AdminManageUsers extends JFrame {
 		
 		assignQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				jdbc.assignQuals(listAvailableQuals.getSelectedIndices());
+				jdbc.assignQuals(lastClickeduserID, availQuals, listAvailableQuals.getSelectedIndices());
+				createQualLists(lastClickeduserID);
 			}
 		});
 		
 		unassignQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				jdbc.UnassignQuals(listAssignedQuals.getSelectedIndices());
+				jdbc.UnassignQuals(lastClickeduserID, assignedQuals, listAssignedQuals.getSelectedIndices());
+				createQualLists(lastClickeduserID);
+			}
+		});
+		
+		btnCreateUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int usertype = 0;
+				if (rdbtnAdmin.isSelected()) {
+					usertype = 1;
+				} else if (rdbtnManager.isSelected()) {
+					usertype = 2;
+				} else if (rdbtnWorker.isSelected()) {
+					usertype = 3;
+				}
+				try {
+					jdbc.add_user(usertype,txtCreateUsername.getText(),txtCreateFirstName.getText(), txtCreateLastName.getText(), txtCreateEmailAddress.getText(), txtCreatePhoneNumber.getText(), txtCreatePassword.getPassword().toString());
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				JOptionPane.showMessageDialog(null, "User Created!");
+				pnlCreateUser.setVisible(false);
+				createUserList();
 			}
 		});
 	}
 	
 	private void createUserList() {
+		userList.clear();
 		ArrayList<User> users = jdbc.get_users();
 		for (int i = 0; i < users.size(); i++) {
 			userList.addElement(String.format("%s, %s [%s]", users.get(i).get_lastname(), users.get(i).get_firstname(), users.get(i).get_username()));
@@ -435,10 +624,17 @@ public class AdminManageUsers extends JFrame {
 	private void createQualLists(int userID) {
 		assignedQualList.clear();
 		availableQualList.clear();
-		ArrayList<Qualification> quals = new ArrayList<Qualification>();
-		quals = jdbc.getUserQuals(userID);
-		for (Qualification q : quals) { 
+		
+		
+		assignedQuals = jdbc.getUserAssignedQuals(userID);
+		for (Qualification q : assignedQuals) { 
 			assignedQualList.addElement(q.getQualName());
+		}
+		
+		
+		availQuals = jdbc.getUserAvailQuals(userID);
+		for (Qualification q : availQuals) { 
+			availableQualList.addElement(q.getQualName());
 		}
 		
 	}

@@ -52,18 +52,17 @@ public class AdminManageUsers extends JFrame {
 	private JButton btn_create_new_user;
 	private JButton btn_preferences;
 	private JButton btn_settings;
-	private JList<User[]> listUsers;
+	private JList listUsers;
 	private JTextField textFirstName;
 	private JTextField textLastName;
 	private JTextField textUsername;
 	private JTextField textEmail;
 	private JTextField textPhone;
-	ArrayList<User> users = jdbc.get_users();
-	String[] users_names = get_users_names(users);
+	
 	private JButton btnSaveChanges;
-	DefaultListModel listModel;
 	int lastClickedIndex;
 	String lastClickedUser;
+	DefaultListModel userList = new DefaultListModel();
 
 	/**
 	 * Launch the application.
@@ -94,7 +93,6 @@ public class AdminManageUsers extends JFrame {
 
 	//This method contains all of the code for creating and intializing components.
 	private void initComponents() {
-		// TODO Auto-generated method stub
 		setBackground(Color.RED);
 		setTitle("TABL");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -105,10 +103,7 @@ public class AdminManageUsers extends JFrame {
 		setContentPane(contentPane);
 		
 		btn_settings = new JButton("Settings");
-		
-		
 		btn_preferences = new JButton("Preferences");
-		
 		
 		Panel pnlUsers = new Panel();
 		pnlUsers.setBackground(Color.LIGHT_GRAY);
@@ -126,6 +121,7 @@ public class AdminManageUsers extends JFrame {
 		lblUsers.setFont(new Font("Tahoma", Font.BOLD, 13));
 		
 		JScrollPane scrollPane = new JScrollPane();
+		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -164,7 +160,6 @@ public class AdminManageUsers extends JFrame {
 							.addComponent(pnlUserEditInfo, GroupLayout.PREFERRED_SIZE, 733, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 		);
-		
 		JLabel lblFullName = new JLabel("Full Name");
 		lblFullName.setFont(new Font("Tahoma", Font.BOLD, 20));
 		
@@ -185,16 +180,12 @@ public class AdminManageUsers extends JFrame {
 		
 		textFirstName = new JTextField();
 		textFirstName.setColumns(10);
-		
 		textLastName = new JTextField();
 		textLastName.setColumns(10);
-		
 		textUsername = new JTextField();
 		textUsername.setColumns(10);
-		
 		textEmail = new JTextField();
 		textEmail.setColumns(10);
-		
 		textPhone = new JTextField();
 		textPhone.setColumns(10);
 		
@@ -207,12 +198,10 @@ public class AdminManageUsers extends JFrame {
 		separator.setForeground(Color.BLACK);
 		
 		JScrollPane scrlPaneAvailableQuals = new JScrollPane();
-		
 		JScrollPane scrlPaneAssignedQuals = new JScrollPane();
 		
 		JLabel lblAvailable = new JLabel("Available");
 		lblAvailable.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
 		JLabel lblAssigned = new JLabel("Assigned");
 		lblAssigned.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
@@ -223,6 +212,7 @@ public class AdminManageUsers extends JFrame {
 		JButton button = new JButton("->");
 		button.setToolTipText("Click to move selected Qualifications to Assigned");
 		button.setFont(new Font("Tahoma", Font.BOLD, 16));
+		
 		GroupLayout gl_pnlUserEditInfo = new GroupLayout(pnlUserEditInfo);
 		gl_pnlUserEditInfo.setHorizontalGroup(
 			gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
@@ -322,7 +312,13 @@ public class AdminManageUsers extends JFrame {
 		JList listAvailableQuals = new JList();
 		scrlPaneAvailableQuals.setViewportView(listAvailableQuals);
 		pnlUserEditInfo.setLayout(gl_pnlUserEditInfo);
-		listUsers = new JList(users_names);
+		
+		
+		createUserList();
+		listUsers = new JList(userList);
+		
+		
+		
 		scrollPane.setViewportView(listUsers);
 		listUsers.setBackground(UIManager.getColor("Button.background"));
 		listUsers.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -332,7 +328,6 @@ public class AdminManageUsers extends JFrame {
 		setForeground(Color.BLACK);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(AdminManageUsers.class.getResource("/resources/Logo.PNG")));
 		
-		//listModel = (DefaultListModel) listUsers.getModel();
 	}
 	
 	//This method contains all of the code for creating events
@@ -357,7 +352,7 @@ public class AdminManageUsers extends JFrame {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
-                  displayUserInfo(users_names[listUsers.getSelectedIndex()]);
+                  displayUserInfo(listUsers.getSelectedValue().toString());
                   lastClickedIndex = listUsers.getSelectedIndex();
                   System.out.println("last clicked index: "+lastClickedIndex);
                 }
@@ -373,19 +368,21 @@ public class AdminManageUsers extends JFrame {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				//updateUserList();
+				updateUserList();
 			}
 		});
 		
+		
+		
+		
 	}
 	
-	private String[] get_users_names(ArrayList<User> data) {
-		String[] users = new String[data.size()];
-		for (int i = 0; i < data.size(); i++) {
-			users[i] = String.format("%s, %s [%s]", data.get(i).get_lastname(), data.get(i).get_firstname(), data.get(i).get_username());
+	private void createUserList() {
+		ArrayList<User> users = jdbc.get_users();
+		for (int i = 0; i < users.size(); i++) {
+			userList.addElement(String.format("%s, %s [%s]", users.get(i).get_lastname(), users.get(i).get_firstname(), users.get(i).get_username()));
 			
 		}
-		return users;
 	}
 	
 
@@ -413,7 +410,9 @@ public class AdminManageUsers extends JFrame {
 	
 	private void updateUserList() {
 		User u = jdbc.get_user(lastClickedUser);
-		//listUsers.setListData(listModel);;
+		String s = String.format("%s, %s [%s]", u.get_lastname(), u.get_firstname(), u.get_username());
+		userList.setElementAt(s, lastClickedIndex);
 		
 	}
+	
 }

@@ -248,11 +248,7 @@ public static void get_projects() throws SQLException {
 public static void get_qualifications() throws SQLException{
 		try{// Connect to the database
 		Connection conn1;
-		String dbUrl = "jdbc:mysql://mysql.cs.iastate.edu:3306/db309amc2";
-		String user = "dbu309amc2";
-		String password = "x1cbBr23";
 		conn1 = DriverManager.getConnection(dbUrl, user, password);
-		System.out.println("*** Connected to the database ***");
 		
 		String query = "SELECT * FROM db309amc2.qualifications";
 		Statement stmt = null;

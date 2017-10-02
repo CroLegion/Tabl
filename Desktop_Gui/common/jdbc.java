@@ -224,16 +224,19 @@ public static void get_projects() throws SQLException {
 }
 
 //FIXME This should return a list of qualifications
-public static void get_qualifications() throws SQLException{
-		try{
+public static ArrayList<Qualification> get_qualifications() throws SQLException{
+	ArrayList<Qualification> quals = new ArrayList<Qualification>();	
+	try{
 		
 		String query = "SELECT * FROM db309amc2.qualifications";
 		Statement stmt = null;
 		stmt = conn1.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		while (rs.next()) {
-			    int qualification = rs.getInt("qualification");
-				System.out.println(qualification);
+			    Qualification qual = new Qualification(rs.getInt("qualID"), rs.getString("qualname"), rs.getString("qualdescription"));
+				quals.add(qual);
+				System.out.println(qual);
+				
 		}
 		
 		// Close all statements
@@ -244,6 +247,7 @@ public static void get_qualifications() throws SQLException{
 		System.out.println("SQLState: " + e.getSQLState());
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
+	return quals;
 }
 
 public static ArrayList<Qualification> getUserAssignedQuals(int userID) {

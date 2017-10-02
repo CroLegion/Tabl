@@ -14,14 +14,27 @@
 
 	$companydetails = get_company_details();
 		
-	echo $companydetails->fetch_assoc()["companyname"];
-	echo" </br>" ;
+	echo "<h2>".$companydetails->fetch_assoc()["companyname"]."</h2>";
+
 	$companydetails = get_company_details();
 	echo "Email: ". $companydetails->fetch_assoc()["email"];
 	echo "<br/>";
 	$companydetails = get_company_details();
-	echo "Phone: ". $companydetails->fetch_assoc()["phone"];
+	echo "Phone:". $companydetails->fetch_assoc()["phone"];
 	echo "<br/>";
+	
+	echo "<h3>Projects:<br/></h3>";
+	$projects=get_roots();
+	$numProj=$projects->num_rows;
+	while($curProj=$projects->fetch_assoc()["jobname"])
+	{
+		echo $curProj;
+		$numProj=$numProj-1;
+		if($numProj>0){echo", ";}
+		else{echo "<br/>";}
+	}	
+	echo "<br/>";
+	
 	$qualList = data_qual_List();
 	
 	while($curQual=$qualList->fetch_assoc()["qualname"])
@@ -29,9 +42,7 @@
 		$userByQualList = users_with_qualifications($curQual);
 		if($userByQualList->num_rows>0)
 		{
-			echo $curQual;
-		
-		echo "<br/>";	
+			echo "<h3>".$curQual.":</h3>";	
 		$rowsleft = $userByQualList->num_rows;
 		while($curUser=$userByQualList->fetch_assoc())
 		{
@@ -42,64 +53,4 @@
 		echo "<br/><br/>";
 		}
 	}	
-
-	/*
-	$state = 0;	
-	foreach($staff as $qualification)
-	{
-		foreach($qualification as $member)
-		{
-			echo $member;
-			if($state=0)
-			{
-				$state=1;
-				echo <br/>;
-			}
-
-		}
-		$state=0;
-		echo <br/>;
-	}
-*/
-
-//Code below this is for reference in how page should look	
-/*
-<html>
-	<header><title>View Group</title></header>
-	<body>
-		<h1>Company name</h1>
-		<h2>Active Projects</h2>
-		<ul>
-			<li><a href="link to project details">Church</a></li>
-			<li><a href="link to project details">Upgrade School</a></li>
-			<li><a href="link to project details">Other queried elements</a></li>
-		</ul>
-		<h2>Current Staff</h2>
-		<h3>Drivers</h3>
-		<ul>
-			<li>Tom Toyota</li>
-			<li>Frank Ford</li>
-			<li>Perry Pontiac</li>
-			<li>John Jalopey</li>
-			<li>Dan Dodge</li>
-		</ul>
-		<h3>Construction</h3>
-		<ul>
-			<li>Henry Hammer</li>
-			<li>Frank Ford</li>
-			<li>Perry Pontiac</li>
-			<li>John Jalopey</li>
-			<li>Dan Dodge</li>
-		</ul>
-		<h3>Electricians</h3>
-		<ul>
-			<li>Tom Toyota</li>
-			<li>Frank Ford</li>
-			<li>Perry Pontiac</li>
-			<li>John Jalopey</li>
-			<li>Dan Dodge</li>
-		</ul>
-	</body>
-</html>
- */
 ?>

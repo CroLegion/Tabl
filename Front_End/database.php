@@ -186,4 +186,15 @@ SQL;
 		//echo $result->num_rows."<br/>";
 		return $result;
 	}
+	//Get all root nodes in database
+	function get_roots()
+	{
+		$sql="Select jobID, jobname, jobdesc from jobs where jobs.jobtype=1;";
+		
+		$conn = data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+		//echo $result->num_rows."<br/>";
+		return $result;
+	}
 ?>

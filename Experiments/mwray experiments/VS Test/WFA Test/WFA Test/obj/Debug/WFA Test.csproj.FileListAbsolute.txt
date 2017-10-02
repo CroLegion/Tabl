@@ -1,9 +1,0 @@
-D:\Documents\Git\AM_C_2_ProjectName\Experiments\mwray experiments\VS Test\WFA Test\WFA Test\bin\Debug\WFA Test.exe.config
-D:\Documents\Git\AM_C_2_ProjectName\Experiments\mwray experiments\VS Test\WFA Test\WFA Test\bin\Debug\WFA Test.exe
-D:\Documents\Git\AM_C_2_ProjectName\Experiments\mwray experiments\VS Test\WFA Test\WFA Test\bin\Debug\WFA Test.pdb
-D:\Documents\Git\AM_C_2_ProjectName\Experiments\mwray experiments\VS Test\WFA Test\WFA Test\obj\Debug\WFA Test.csprojResolveAssemblyReference.cache
-D:\Documents\Git\AM_C_2_ProjectName\Experiments\mwray experiments\VS Test\WFA Test\WFA Test\obj\Debug\WFA_Test.Home.resources
-D:\Documents\Git\AM_C_2_ProjectName\Experiments\mwray experiments\VS Test\WFA Test\WFA Test\obj\Debug\WFA_Test.Properties.Resources.resources
-D:\Documents\Git\AM_C_2_ProjectName\Experiments\mwray experiments\VS Test\WFA Test\WFA Test\obj\Debug\WFA Test.csproj.GenerateResource.Cache
-D:\Documents\Git\AM_C_2_ProjectName\Experiments\mwray experiments\VS Test\WFA Test\WFA Test\obj\Debug\WFA Test.exe
-D:\Documents\Git\AM_C_2_ProjectName\Experiments\mwray experiments\VS Test\WFA Test\WFA Test\obj\Debug\WFA Test.pdb

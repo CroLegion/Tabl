@@ -58,15 +58,15 @@ HTML;
 
 	//Build content pane in HTML
 	$content = <<< HTML
-		<h2> $company_name </h2>
+		<h2> { $company_name } </h2>
 			Email: $company_email <br>
 			Phone: $company_phone <br>
 		<br>
 		<h3>Projects: </h3>
 		<br>
-		$projectlist;
+		{ $projectlist }
 		<br>
-		$qualificationlist;
+		{ $qualificationlist }
 HTML;
 
 	//Insert page elements into frame

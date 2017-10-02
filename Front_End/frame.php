@@ -13,15 +13,8 @@
 				<input class='topButton' type='button' value='Settings' onclick='clickSettings();'>
 			</div>
 			<div class='page'>
-				<div class='navbar'>
-					<input class='navbutton' type='button' value='Projects' onclick='clickProjects();'>
-					<div class='navlist' id='projectsButtons'></div>
-					<input class='navbutton' type='button' value='Messaging' onclick='clickMessages();'>
-					<div class='navlist' id='messagesButtons'></div>
-				</div>
-				<div class='content' id='contentpane'>
-					<p>Could not connect to server!</p>
-				</div>
+				<div class='navbar'> {$navbar} </div>
+				<div class='content' id='contentpane'> {$content} </div>
 				<div class='clear'><!-- --></div>
 			</div>
 		</body>

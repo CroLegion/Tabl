@@ -1,5 +1,4 @@
 <?php
-
 	$frame = <<< HTML 
 	<html>
 		<head>

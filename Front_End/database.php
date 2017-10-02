@@ -197,4 +197,16 @@ SQL;
 		//echo $result->num_rows."<br/>";
 		return $result;
 	}
+	
+	//Get task details for task details page
+	function get_task_by_id($taskID)
+	{
+		$sql="Select * from tasks where taskID =".$taskID.";";
+		
+		$conn = data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+		//echo $result->num_rows."<br/>";
+		return $result;
+	}
 ?>

@@ -26,7 +26,7 @@
 		$numProj = $numProj - 1;
 		($numProj > 0) ? $projectlist = $projectlist . ", " : $projectlist = $projectlist . "<br/>";
 	}
-	$projectlist = $projectlist . "<br/>";
+	$projectlist = $projectlist . "<br/>"
 
 	//Get qualification data
 	$qualList = data_qual_List();
@@ -42,10 +42,7 @@
 			{
 				$qualificationlist = $qualificationlist . $curUser["firstname"] . " " . $curUser["lastname"];
 				$rowsleft--;
-				if($rowsleft)
-				{
-					$qualificationlist = $qualificationlist . ", ";
-				}
+				($rowsleft) ? $qualificationlist = $qualificationlist . ", ";
 			}
 			$qualificationlist = $qualificationlist . "<br/><br/>";
 		}

@@ -1,13 +1,13 @@
 package common;
 public class User {
-   int userID;
-   int usertype;
-   String username;
-   String firstname;
-   String lastname;
-   String email;
-   String phone;
-   String passhash;
+   private int userID;
+   private int usertype;
+   private  String username;
+   private String firstname;
+   private String lastname;
+   private String email;
+   private String phone;
+   private String passhash;
 
    public User(int userID, int usertype, String username, String firstname, String lastname) {
          this.userID = userID;
@@ -16,6 +16,8 @@ public class User {
          this.firstname = firstname;
          this.lastname = lastname;
    }
+   
+   
 
    public void setPass(String p) {
 	  passhash = p;
@@ -25,9 +27,16 @@ public class User {
       email = e;
    }
 
-
    public void setPhone(String p) {
       phone = p;
+   }
+   
+   public int get_userID() {
+	   return userID;
+   }
+   
+   public int get_usertype() {
+	   return usertype;
    }
    
    public String get_firstname() {

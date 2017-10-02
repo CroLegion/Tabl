@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.SpringLayout;
 import javax.swing.JTextField;
@@ -20,12 +21,16 @@ import javax.swing.UIManager;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import org.omg.CORBA.PRIVATE_MEMBER;
+
+import common.Qualification;
 import common.jdbc;
 import common.User;
 import common.Job;
@@ -36,6 +41,23 @@ public class CreateProject extends JFrame {
 	private JTextField textField;
     private JButton addButton;
     private JButton removeButton;
+    private JLabel lblQualification;
+    private JLabel lblUserToAdd;
+    private JLabel lblUsersAdded;
+    private JLabel lblProjectName;
+    private JLabel lblDescription;
+    private JScrollPane scrollPane;
+    private JScrollPane scrollPane_1;
+    private JScrollPane scrollPane_2;
+    private JScrollPane scrollPane_3;
+    private JTextPane textPane;
+    private JList qualifications;
+	private JList availableUsers;
+	private JList assignedUsers;	
+	DefaultListModel selectableQualList = new DefaultListModel();
+	DefaultListModel availableWorkersList = new DefaultListModel();
+	DefaultListModel assignedWorkersList = new DefaultListModel();
+	ArrayList<Qualification> selectableQuals = new ArrayList<Qualification>();
 	/**
 	 * Launch the application.
 	 */
@@ -60,7 +82,7 @@ public class CreateProject extends JFrame {
 		createEvents();
 	}
 
-	public void initComponents(){
+	private void initComponents(){
 		setTitle("TABL");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(CreateUser.class.getResource("/resources/Logo.PNG")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -70,35 +92,36 @@ public class CreateProject extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		JLabel lblProjectName = new JLabel("Project Name:");
+		lblProjectName = new JLabel("Project Name:");
+		lblDescription = new JLabel("Description:");
+		lblQualification = new JLabel("Qualification:");		
+		lblUserToAdd = new JLabel("Users to add:");		
+		lblUsersAdded = new JLabel("Users added:");
 		
-		JLabel lblDescription = new JLabel("Description:");
-		
-		JList list = new JList();
-		JList list_1 = new JList();
-		JList list_2 = new JList();		
+		qualifications = new JList(selectableQualList);
+		availableUsers = new JList(availableWorkersList);
+		assignedUsers = new JList(assignedWorkersList);		
 
 		textField = new JTextField();
 		textField.setColumns(10);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setViewportView(list);		
-		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setViewportView(list_1);
-		
-		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setViewportView(list_2);		
+		scrollPane = new JScrollPane();
+		scrollPane.setViewportView(qualifications);				
+		scrollPane_1 = new JScrollPane();
+		scrollPane_1.setViewportView(availableUsers);
+		scrollPane_2 = new JScrollPane();
+		scrollPane_2.setViewportView(assignedUsers);		
 		
 		addButton = new JButton("Add");			
 		removeButton = new JButton("Remove");
-				
-		JLabel lblQualification = new JLabel("Qualification:");		
-		JLabel lblUserToAdd = new JLabel("Users to add:");		
-		JLabel lblUsersAdded = new JLabel("Users added:");
-		
-		JScrollPane scrollPane_3 = new JScrollPane();
+			
+		scrollPane_3 = new JScrollPane();
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
+		
+		textPane = new JTextPane();
+		scrollPane_3.setViewportView(textPane);
+		contentPane.setLayout(gl_contentPane);
+		
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
@@ -168,11 +191,9 @@ public class CreateProject extends JFrame {
 						.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)))
 		);
 		
-		JTextPane textPane = new JTextPane();
-		scrollPane_3.setViewportView(textPane);
-		contentPane.setLayout(gl_contentPane);
+		
 	}
-	public void createEvents(){
+	private void createEvents(){
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
@@ -181,5 +202,13 @@ public class CreateProject extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
+	}
+	private void createQualsList(){
+		selectableQualList.clear();
+		
+		selectableQuals = jdbc.get_qualifications();
+		for (Qualification q : selectableQuals) { 
+			selectableQualList.addElement(q.getQualName());
+		}
 	}
 }

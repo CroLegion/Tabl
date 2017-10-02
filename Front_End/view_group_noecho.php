@@ -11,10 +11,10 @@
 	data_set($servername, $username, $password, $database);
 
 	//Get company data
-	$companydetails = get_company_details();
-	$company_name = $companydetails->fetch_assoc()["companyname"];
-	$company_email = $companydetails->fetch_assoc()["email"];
-	$company_phone = $companydetails->fetch_assoc()["phone"];
+	$companydetails = get_company_details()->fetch_assoc();
+	$company_name = $companydetails["companyname"];
+	$company_email = $companydetails["email"];
+	$company_phone = $companydetails["phone"];
 
 	//Get project data
 	$projects=get_roots();
@@ -58,15 +58,15 @@ HTML;
 
 	//Build content pane in HTML
 	$content = <<< HTML
-		<h2> { $company_name } </h2>
-			Email: { $company_email } <br>
-			Phone: { $company_phone } <br>
+		<h2> $company_name </h2>
+		<label> Email: </label> $company_email <br>
+		<label> Phone: </label> $company_phone <br>
 		<br>
 		<h3>Projects: </h3>
 		<br>
-		{ $projectlist }
+		$projectlist 
 		<br>
-		{ $qualificationlist }
+		$qualificationlist 
 HTML;
 
 	//Insert page elements into frame

@@ -69,12 +69,16 @@ public class AdminManageUsers extends JFrame {
 	String lastClickedUser;
 	private JList listUsers;
 	DefaultListModel userList = new DefaultListModel();
+
+	//lists and models to display the qualifications on the gui to the user
 	private JList listAvailableQuals;
 	private JList listAssignedQuals;
 	DefaultListModel availableQualList = new DefaultListModel();
 	DefaultListModel assignedQualList = new DefaultListModel();
 	private JButton assignQual;
 	private JButton unassignQual;
+
+	//The following ArrayLists are used to save the qualifications once a user is clicked
 	ArrayList<Qualification> assignedQuals = new ArrayList<Qualification>();
 	ArrayList<Qualification> availQuals = new ArrayList<Qualification>();
 	private JPanel pnlCreateUser;
@@ -82,10 +86,13 @@ public class AdminManageUsers extends JFrame {
 	private JLabel lblFirstName_1;
 	private JButton btnCreateUser;
 	private JLabel lblUserType;
+
+	//Group for allowing only one radio button to be clicked at one time
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JRadioButton rdbtnAdmin;
 	private JRadioButton rdbtnManager;
 	private JRadioButton rdbtnWorker;
+	//List of entry fields that are displayed after a user clicks the "Create User button"
 	private JTextField txtCreateFirstName;
 	private JTextField txtCreateLastName;
 	private JTextField txtCreateUsername;
@@ -115,7 +122,7 @@ public class AdminManageUsers extends JFrame {
 	 */
 	public AdminManageUsers() 
 	{
-
+		//creations a connection to the SQL server that is persistent until the GUI window is closed
 		jdbc.openSQLConnection();
 		initComponents();
 		createEvents();
@@ -136,7 +143,8 @@ public class AdminManageUsers extends JFrame {
 		contentPane.setVisible(true);
 		
 		pnlCreateUser = new JPanel();
-		pnlCreateUser.setVisible(false);
+		//hides the create user window until the user click "Create new user" button
+		pnlCreateUser.setVisible(false); 
 		
 		btn_settings = new JButton("Settings");
 		btn_preferences = new JButton("Preferences");
@@ -483,7 +491,7 @@ public class AdminManageUsers extends JFrame {
 		scrlPaneAvailableQuals.setViewportView(listAvailableQuals);
 		pnlUserEditInfo.setLayout(gl_pnlUserEditInfo);
 		
-		
+		//creates the list of all the users on the left side of the window
 		createUserList();
 		listUsers = new JList(userList);
 		
@@ -500,12 +508,17 @@ public class AdminManageUsers extends JFrame {
 	
 	//This method contains all of the code for creating events
 	private void createEvents() {
+
+		//called when the 'X' button of the GUI in the top right is clicked
+		//Closes the SQL connection conn1
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				jdbc.closeSQLConnection();
 			}
 		});
+
+		//moves the create user panel to the front to allow the user to enter the new user info
 		btn_create_new_user.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateUser.setVisible(true);
@@ -528,8 +541,10 @@ public class AdminManageUsers extends JFrame {
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
                   displayUserInfo(listUsers.getSelectedValue().toString());
+                  //saves the index of the array that was clicked on
                   lastClickedIndex = listUsers.getSelectedIndex();
                   int id = jdbc.getIdOfUser(textUsername.getText());
+                  //saved the userID of the user that is displayed
                   lastClickeduserID = id;
                 }
             }
@@ -547,21 +562,26 @@ public class AdminManageUsers extends JFrame {
 				updateUserList();
 			}
 		});
-		
+		//Called when the -> button is clicked to add some qualifications to a user
+		//all edits are done with the jdbc function assignQuals()
+		//parameters are the userId, the ArrayList of available qualifications and the selected indices of the qualification list
 		assignQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				//parameters are the userId, the ArrayList of available qualifications and the selected indices of the qualification list
 				jdbc.assignQuals(lastClickeduserID, availQuals, listAvailableQuals.getSelectedIndices());
 				createQualLists(lastClickeduserID);
 			}
 		});
-		
+		//Called when the <- button is clicked to remove some qualifications from a user
+		//all edits are done with the jdbc function UnassignQuals()
 		unassignQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//parameters are the userId, the ArrayList of assigned qualifications and the selected indices of the qualification list
 				jdbc.UnassignQuals(lastClickeduserID, assignedQuals, listAssignedQuals.getSelectedIndices());
 				createQualLists(lastClickeduserID);
 			}
 		});
-		
+		//Send the information to the SQL server after the information in entered
 		btnCreateUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int usertype = 0;
@@ -578,12 +598,15 @@ public class AdminManageUsers extends JFrame {
 					e1.printStackTrace();
 				}
 				JOptionPane.showMessageDialog(null, "User Created!");
+				//hides the create user panel
 				pnlCreateUser.setVisible(false);
+				//Refreshes the list of user on the left side panel
 				createUserList();
 			}
 		});
 	}
-	
+	//Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
+	//This string is then added to the userList that is displayed on the left panel
 	private void createUserList() {
 		userList.clear();
 		ArrayList<User> users = jdbc.get_users();
@@ -593,7 +616,9 @@ public class AdminManageUsers extends JFrame {
 	}
 	
 
-	
+	//This function takes the string from the userList and uses a regular expression to get the username between the []
+	//then it gets the user from the database, and displayes that information in the view user panel
+	//it also calls the createQualList method that gets both assigned and available qualifications 
 	private void displayUserInfo(String name) {
 		String username = null;
 		Pattern p = Pattern.compile("\\[(.*?)\\]");
@@ -614,13 +639,17 @@ public class AdminManageUsers extends JFrame {
 		createQualLists(u.get_userID());
 	}
 	
+	//This function is used when a user is updated because their firstname, lastname, or username could have changed
+	//meaning they need to be displayed correctly on the left side panel
+	//it gets the new information from the server and then users the lastClickedIndex to update the string at that spot
 	private void updateUserList() {
 		User u = jdbc.get_user(lastClickedUser);
 		String s = String.format("%s, %s [%s]", u.get_lastname(), u.get_firstname(), u.get_username());
 		userList.setElementAt(s, lastClickedIndex);
 	}
 	
-	
+	//Populates both the assigned and available qualification lists for a user after clicked on one
+	//Is also called each time a qualification is assigned or unassigned to update the lists.
 	private void createQualLists(int userID) {
 		assignedQualList.clear();
 		availableQualList.clear();

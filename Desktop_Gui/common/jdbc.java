@@ -10,6 +10,8 @@ public static final String user = "dbu309amc2";
 public static final String password = "x1cbBr23";
 public static Connection conn1;
 
+
+//called each time a GUI is opened to speed up the process. sets the global conn1 variable
 public static void openSQLConnection() {
 	try {
 		conn1 = DriverManager.getConnection(dbUrl, user, password);
@@ -21,6 +23,9 @@ public static void openSQLConnection() {
 	}
 }
 
+
+//called when the 'X' button of the GUI in the top right is clicked
+//Closes the SQL connection conn1
 public static void closeSQLConnection() {
 	try {
 		conn1.close();
@@ -52,7 +57,7 @@ public static int get_user_id() throws SQLException {
 	
 }
 	
-	
+//adds a user to the database, first randomly generates a userID using the get_user_id() function
 public static void add_user(int usertype, String username, String firstname, String lastname, String email, String phone, String passhash) throws SQLException {
 	int userID = get_user_id();
 	try {
@@ -102,6 +107,8 @@ public static void add_project(ArrayList<Job> jobs) throws SQLException {
 	}
 }
 
+
+//Gets a list of all of the users for the Admin.  These users are displayed in the contentpane on the left side
 public static ArrayList<User> get_users() {
 	ArrayList<User> users = new ArrayList<User>();
 		try {
@@ -133,6 +140,7 @@ public static ArrayList<User> get_users() {
 	return users;
 }
 
+//gets a single user given its username.
 public static User get_user(String username) {
 	User u = null;
 	try {
@@ -156,6 +164,8 @@ public static User get_user(String username) {
 	return u;
 }
 
+
+//Updates a user's information, called when the Admin clicks SAVE on the update user panel
 public static void updateUser(int id, String firstname, String lastname, String username, String email, String phone) throws SQLException {
 	try {
 
@@ -174,6 +184,7 @@ public static void updateUser(int id, String firstname, String lastname, String 
 	}
 }
 
+//Gets tue userID of a user given its usernaeme
 public static int getIdOfUser(String username) {
 	int userID = 0;
 	try {
@@ -196,6 +207,7 @@ public static int getIdOfUser(String username) {
 	
 	return userID;
 }
+
 
 
 public static void get_projects() throws SQLException {
@@ -246,6 +258,7 @@ public static void get_qualifications() throws SQLException{
 	}
 }
 
+//Gets an ArrayList of all assigned qualifications given a userID
 public static ArrayList<Qualification> getUserAssignedQuals(int userID) {
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();
 	try {		
@@ -273,6 +286,8 @@ public static ArrayList<Qualification> getUserAssignedQuals(int userID) {
 	return quals;
 }
 
+//Gets an ArrayList of all available qualifications for a user, passed in a userID
+//returns all unassigned qualifications
 public static ArrayList<Qualification> getUserAvailQuals(int userID) {
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();
 	try {		
@@ -298,6 +313,10 @@ public static ArrayList<Qualification> getUserAvailQuals(int userID) {
 	return quals;
 }
 
+
+//removes a row from the qualification_assignments table to unassign a qualifications.
+//can remove more than one at a time by building a string of qualID's to match
+//example (1,2,5) or (1)
 public static void UnassignQuals(int lastClickeduserID, ArrayList<Qualification> assignedQuals, int[] selectedIndices) {
 	StringBuilder s = new StringBuilder();
 	s.append('(');
@@ -325,6 +344,7 @@ public static void UnassignQuals(int lastClickeduserID, ArrayList<Qualification>
 }
 
 
+//Adds a row to the qualification_assignments table to assign a qualification to a user.
 public static void assignQuals(int lastClickeduserID, ArrayList<Qualification> availQuals, int[] selectedIndices) {
 	try {
 		for (int i = 0; i < selectedIndices.length; i++) {

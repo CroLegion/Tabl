@@ -86,7 +86,7 @@ CREATE TABLE placements
 );
 
 /*Creates a table to store chat messages to groups*/
-CREATE TABLE group_messages
+CREATE TABLE messages
 (
 	msgID int auto_increment not null,
     msgsubject varchar(32),

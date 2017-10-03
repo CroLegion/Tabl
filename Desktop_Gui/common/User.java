@@ -8,14 +8,13 @@ public class User {
    private String email;
    private String phone;
    private String passhash;
-   public String lengthError="The length of your password is %d characters long, it should be at least 6 characters long.";
-   public String numberError="Your password doesn't have a number in it.";
-   public String letterError="Your password doesn't have a letter in it.";
-   public String capitalError="Your password doesn't have a capital letter in it.";
-   private Boolean charLength=false;
-   private Boolean hasNumber=false;
-   private Boolean hasLetter=false;
-   private Boolean hasCapital=false;
+   public String[] errors=new String[]{
+   "Your password doesn't have a length of at least 6",
+   "Your password doesn't have a number in it.",
+   "Your password doesn't have a letter in it.",
+   "Your password doesn't have a capital letter in it."
+   };
+   public Boolean[] haveErrors=new Boolean[]{false,false,false,false};
    
    public User(int userID, int usertype, String username, String firstname, String lastname) {
          this.userID = userID;
@@ -32,31 +31,32 @@ public class User {
     * 3. Have at least 1 letter
     * 4. Have at least 1 Capital letter
     */
-   public void setPass(String p) {
-	
-	   
+   public String[] setPass(String p) {   
 	   for(int i=0;i<p.length();i++){   
-		   if(p.charAt(i)>=0 &&p.charAt(i)<=9){
-			   hasNumber=true;
+		   if(p.charAt(i)>=0 &&p.charAt(i)<=9){//number
+			   haveErrors[1]=true;
 		   }
-		   if(p.charAt(i)>=65 &&p.charAt(i)<=90){
-			   hasCapital=true;
+		   if(p.charAt(i)>=97 &&p.charAt(i)<=122){//letter
+			   haveErrors[2]=true;
 		   }
-		   if(p.charAt(i)>=97 &&p.charAt(i)<=122){
-			   hasLetter=true;
+		   if(p.charAt(i)>=65 &&p.charAt(i)<=90){//capital letter
+			   haveErrors[3]=true;
 		   }
-	   }if(p.length()<6){
-		  //return error
-	   }else charLength = true;
-	   
-	   if(hasLetter ==false){
-		  //return error
-	   }if(hasCapital ==false){
-		  //return error
-	   }if(hasNumber ==false){
-		  //return error
-	   }if(charLength==true &&hasLetter==true && hasCapital==true&& hasNumber==true)passhash = p;
+		   
+	   }if(p.length()>=6){//length >6
+		   haveErrors[0]=true;
+	   }if(haveErrors[0]==true &&haveErrors[1]==true && haveErrors[2]==true&& haveErrors[3]==true)passhash = p;
+	   return getErrorMessages(haveErrors);
   }
+   
+   //given boolean array, checks against error array and returns errors
+   private String[] getErrorMessages(Boolean[] bool){
+	   String[]string =new String[3];
+	   for (int i=0; i<bool.length;i++) {
+		   if(bool[i]==false)string[i]=errors[i];
+	   }
+	   return string;
+   }
    
    public void setEmail(String e) {
       email = e;
@@ -70,34 +70,26 @@ public class User {
     * to be XXX-XXX-XXXX format
     */
    public boolean setPhone(String p) {
-	  phone = p;
-	  return true;
-//	  StringBuilder str = new StringBuilder(p);
-//      if(p.charAt(3)=='-' && p.charAt(7)=='-'){
-//    	  phone = p;
-//    	  return true;
-//      }else if(p.charAt(3)=='-' || p.charAt(7)=='-'){
-//    	  if(p.charAt(3)=='-'){
-//    		  str.insert(3, '-');
-//    		  p = new String(str);
-//    		  phone = p;
-//    		  return true;
-//    		  //set char 7 to be -
-//    	  }
-//    	  str.insert(7, '-');
-//		  p = new String(str);
-//		  phone = p;
-//		  return true;
-//      }else{
-//    	  str.insert(3, '-');
-//    	  str.insert(7, '-');
-//		  p = new String(str);
-//		  if(p.length()==12){
-//			  phone = p;
-//			  return true;
-//		  }
-//		  // set 3 and 7 to -
-//      }return false;
+	  StringBuilder str = new StringBuilder(p);
+      if(p.charAt(3)=='-' && p.charAt(7)=='-' &&p.length()==12){//properly formated
+    	  phone = p;
+    	  return true;
+      }else if((p.charAt(3)=='-' &&p.length()==11) || (p.charAt(7)=='-' &&p.length()==11)){//format missing a -
+    	  if(p.charAt(3)=='-'){//left -
+    		  str.insert(3, '-');
+    		  p = new String(str);
+    		  phone = p;
+    		  return true;
+    	  }str.insert(7, '-');//right -
+		  p = new String(str);
+		  phone = p;
+		  return true;
+      }else{//format missing both or wrong
+    	  if(p.length()!=10)return false;
+    	  str.insert(3, '-');
+    	  str.insert(7, '-');
+		  p = new String(str);
+      }return false;
    }
    
    public int get_userID() {

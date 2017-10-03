@@ -171,7 +171,7 @@ SQL;
 		$conn = data_open();
 		$result = $conn->query($sql);
 		$conn->close();
-		echo $result->num_rows."<br/>";
+		//echo $result->num_rows."<br/>";
 		return $result;
 	}
 
@@ -183,7 +183,30 @@ SQL;
 		$conn = data_open();
 		$result = $conn->query($sql);
 		$conn->close();
-		echo $result->num_rows."<br/>";
+		//echo $result->num_rows."<br/>";
+		return $result;
+	}
+	//Get all root nodes in database
+	function get_roots()
+	{
+		$sql="Select jobID, jobname, jobdesc from jobs where jobs.jobtype=1;";
+		
+		$conn = data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+		//echo $result->num_rows."<br/>";
+		return $result;
+	}
+	
+	//Get task details for task details page
+	function get_task_by_id($taskID)
+	{
+		$sql="Select * from tasks where taskID =".$taskID.";";
+		
+		$conn = data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+		//echo $result->num_rows."<br/>";
 		return $result;
 	}
 ?>

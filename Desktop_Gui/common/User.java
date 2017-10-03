@@ -70,32 +70,34 @@ public class User {
     * to be XXX-XXX-XXXX format
     */
    public boolean setPhone(String p) {
-	  StringBuilder str = new StringBuilder(p);
-      if(p.charAt(3)=='-' && p.charAt(7)=='-'){
-    	  phone = p;
-    	  return true;
-      }else if(p.charAt(3)=='-' || p.charAt(7)=='-'){
-    	  if(p.charAt(3)=='-'){
-    		  str.insert(3, '-');
-    		  p = new String(str);
-    		  phone = p;
-    		  return true;
-    		  //set char 7 to be -
-    	  }
-    	  str.insert(7, '-');
-		  p = new String(str);
-		  phone = p;
-		  return true;
-      }else{
-    	  str.insert(3, '-');
-    	  str.insert(7, '-');
-		  p = new String(str);
-		  if(p.length()==12){
-			  phone = p;
-			  return true;
-		  }
-		  // set 3 and 7 to -
-      }return false;
+	  phone = p;
+	  return true;
+//	  StringBuilder str = new StringBuilder(p);
+//      if(p.charAt(3)=='-' && p.charAt(7)=='-'){
+//    	  phone = p;
+//    	  return true;
+//      }else if(p.charAt(3)=='-' || p.charAt(7)=='-'){
+//    	  if(p.charAt(3)=='-'){
+//    		  str.insert(3, '-');
+//    		  p = new String(str);
+//    		  phone = p;
+//    		  return true;
+//    		  //set char 7 to be -
+//    	  }
+//    	  str.insert(7, '-');
+//		  p = new String(str);
+//		  phone = p;
+//		  return true;
+//      }else{
+//    	  str.insert(3, '-');
+//    	  str.insert(7, '-');
+//		  p = new String(str);
+//		  if(p.length()==12){
+//			  phone = p;
+//			  return true;
+//		  }
+//		  // set 3 and 7 to -
+//      }return false;
    }
    
    public int get_userID() {

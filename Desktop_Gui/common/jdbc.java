@@ -76,6 +76,22 @@ public static void add_user(int usertype, String username, String firstname, Str
 	}
 }
 
+public static void deleteUser(int userID) {
+	try {
+		Statement statement = conn1.createStatement();
+		String sql = String.format("DELETE FROM db309amc2.users WHERE userID=%d", userID);
+		statement.executeUpdate(sql);
+		
+
+		// Close all statements and connections
+		statement.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+}
+
 public static void add_project(ArrayList<Job> jobs) throws SQLException {
 	int jobID;
 	String jobname;

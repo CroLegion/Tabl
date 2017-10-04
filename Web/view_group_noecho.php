@@ -37,7 +37,7 @@
 		$userByQualList = users_with_qualifications($curQual);
 		if($userByQualList->num_rows > 0)
 		{
-			$qualificationlist = $qualificationlist . "<h3>" . $curQual . ":</h3>";	
+			$qualificationlist = $qualificationlist . "<h3>" . $curQual . ":</h3><hr>";	
 			$rowsleft = $userByQualList->num_rows;
 			while($curUser = $userByQualList->fetch_assoc())
 			{
@@ -66,12 +66,11 @@ HTML;
 
 	//Build content pane in HTML
 	$content = <<< HTML
-		<h2> $company_name </h2>
+		<h2> $company_name </h2><hr>
 		<label> Email: </label> $company_email <br>
 		<label> Phone: </label> $company_phone <br>
 		<br>
-		<h3>Projects: </h3>
-		<br>
+		<h3>Projects: </h3><hr>
 		$projectlist 
 		<br>
 		$qualificationlist 

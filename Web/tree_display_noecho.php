@@ -25,7 +25,7 @@
 	
 
 	}
-	$html
+	$html="";
 	//Define database parameters
 	$servername = "mysql.cs.iastate.edu";
 	$username = "dbu309amc2";
@@ -43,7 +43,22 @@
 	process_children($rootChildren);
 	echo "</ul>";
 	echo "</li></ul>";
-	$content = <<HTML
+
+
+	//Build navbar pane in HTML
+	$navbar = <<< HTML
+		
+			<div class='navbar'>
+				<input class='navbutton' type='button' value='Projects' onclick='clickProjects();'>
+				<div class='navlist' id='projectsButtons'></div>
+				<input class='navbutton' type='button' value='Messaging' onclick='clickMessages();'>
+				<div class='navlist' id='messagesButtons'></div>
+			</div>
+		
+HTML;
+
+
+	$content = <<< HTML
 		<head><link rel="stylesheet" href="styles.css"></head>
 
 		<div class="tree">

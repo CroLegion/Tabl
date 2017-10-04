@@ -1,13 +1,13 @@
 Vince
- - View Group
- - Tree
- - Admin Manage Users
- - New Project
- - New Job
+ - View Group	Done
+ - Tree		Friday
+ - Manage Users	Monday
+ - New Project	Monday
+ - New Job	
 
 Mason
- - Messaging
- - New User
+ - Messaging	Monday
+ - New User	Friday
  - Tickets
- - Settings
- - New Task
+ - Settings	Friday
+ - New Task	

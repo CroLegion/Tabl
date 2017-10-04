@@ -1,3 +1,4 @@
+
 <?php
 	//Import Statments
 	require 'database.php';
@@ -53,7 +54,14 @@
 
 	//Build navbar pane in HTML
 	$navbar = <<< HTML
-		//TODO
+		
+			<div class='navbar'>
+				<input class='navbutton' type='button' value='Projects' onclick='clickProjects();'>
+				<div class='navlist' id='projectsButtons'></div>
+				<input class='navbutton' type='button' value='Messaging' onclick='clickMessages();'>
+				<div class='navlist' id='messagesButtons'></div>
+			</div>
+		
 HTML;
 
 	//Build content pane in HTML

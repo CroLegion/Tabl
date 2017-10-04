@@ -10,6 +10,9 @@ public static final String user = "dbu309amc2";
 public static final String password = "x1cbBr23";
 public static Connection conn1;
 
+/*
+ * opens server connection
+ */
 public static void openSQLConnection() {
 	try {
 		conn1 = DriverManager.getConnection(dbUrl, user, password);
@@ -21,6 +24,9 @@ public static void openSQLConnection() {
 	}
 }
 
+/*
+ * closes server connection
+ */
 public static void closeSQLConnection() {
 	try {
 		conn1.close();
@@ -32,7 +38,7 @@ public static void closeSQLConnection() {
 	}
 }
 
-/*Create a randon integer to be used as a user's userID between 1 and the max integer value.  
+/*Create a random integer to be used as a user's userID between 1 and the max integer value.  
  * Checks the data base to see if that Id is present, and then keeps trying until a new one is created.*/
 public static int get_user_id() throws SQLException {
 	int randomNum = 0;
@@ -52,7 +58,9 @@ public static int get_user_id() throws SQLException {
 	
 }
 	
-	
+/*adds user to database with listed properties
+ * 	
+ */
 public static void add_user(int usertype, String username, String firstname, String lastname, String email, String phone, String passhash) throws SQLException {
 	int userID = get_user_id();
 	try {
@@ -70,7 +78,9 @@ public static void add_user(int usertype, String username, String firstname, Str
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
 }
-
+/*
+ * FIXME
+ */
 public static void add_project(ArrayList<Job> jobs) throws SQLException {
 	int jobID;
 	String jobname;
@@ -101,7 +111,9 @@ public static void add_project(ArrayList<Job> jobs) throws SQLException {
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
 }
-
+/*
+ * gets an array of users
+ */
 public static ArrayList<User> get_users() {
 	ArrayList<User> users = new ArrayList<User>();
 		try {
@@ -132,7 +144,9 @@ public static ArrayList<User> get_users() {
 	}
 	return users;
 }
-
+/*
+ * gets a user with certain username
+ */
 public static User get_user(String username) {
 	User u = null;
 	try {
@@ -156,6 +170,9 @@ public static User get_user(String username) {
 	return u;
 }
 
+/*
+ * updates user with information provided
+ */
 public static void updateUser(int id, String firstname, String lastname, String username, String email, String phone) throws SQLException {
 	try {
 
@@ -173,7 +190,9 @@ public static void updateUser(int id, String firstname, String lastname, String 
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
 }
-
+/*
+ * get ID of user with given username
+ */
 public static int getIdOfUser(String username) {
 	int userID = 0;
 	try {
@@ -197,7 +216,9 @@ public static int getIdOfUser(String username) {
 	return userID;
 }
 
-
+/*
+ * gets a list of projects
+ */
 public static void get_projects() throws SQLException {
 		try {
 		String query = "SELECT * FROM db309amc2.jobs";
@@ -222,9 +243,10 @@ public static void get_projects() throws SQLException {
 	}
 
 }
-
-//FIXME This should return a list of qualifications
-public static ArrayList<Qualification> get_qualifications() throws SQLException{
+/*
+ * returns a list of qualifications
+ */
+public static ArrayList<Qualification> get_qualifications(){
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();	
 	try{
 		
@@ -249,7 +271,9 @@ public static ArrayList<Qualification> get_qualifications() throws SQLException{
 	}
 	return quals;
 }
-
+/*
+ * returns a list of qualifications a userID's user has
+ */
 public static ArrayList<Qualification> getUserAssignedQuals(int userID) {
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();
 	try {		
@@ -276,7 +300,9 @@ public static ArrayList<Qualification> getUserAssignedQuals(int userID) {
 	
 	return quals;
 }
-
+/*
+ *gets a list of qualifications a userID's user can have
+ */
 public static ArrayList<Qualification> getUserAvailQuals(int userID) {
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();
 	try {		
@@ -301,7 +327,9 @@ public static ArrayList<Qualification> getUserAvailQuals(int userID) {
 	}
 	return quals;
 }
-
+/*
+ * gets a list of qualifications FIXME
+ */
 public static void UnassignQuals(int lastClickeduserID, ArrayList<Qualification> assignedQuals, int[] selectedIndices) {
 	StringBuilder s = new StringBuilder();
 	s.append('(');
@@ -328,7 +356,9 @@ public static void UnassignQuals(int lastClickeduserID, ArrayList<Qualification>
 	}
 }
 
-
+/*
+ * assigns a user the array of qualities past in
+ */
 public static void assignQuals(int lastClickeduserID, ArrayList<Qualification> availQuals, int[] selectedIndices) {
 	try {
 		for (int i = 0; i < selectedIndices.length; i++) {

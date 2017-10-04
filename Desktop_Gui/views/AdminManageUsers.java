@@ -584,6 +584,7 @@ public class AdminManageUsers extends JFrame {
 		});
 	}
 	
+	//creates a list of users
 	private void createUserList() {
 		userList.clear();
 		ArrayList<User> users = jdbc.get_users();
@@ -592,8 +593,7 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 	
-
-	
+	//
 	private void displayUserInfo(String name) {
 		String username = null;
 		Pattern p = Pattern.compile("\\[(.*?)\\]");
@@ -614,13 +614,14 @@ public class AdminManageUsers extends JFrame {
 		createQualLists(u.get_userID());
 	}
 	
+	//
 	private void updateUserList() {
 		User u = jdbc.get_user(lastClickedUser);
 		String s = String.format("%s, %s [%s]", u.get_lastname(), u.get_firstname(), u.get_username());
 		userList.setElementAt(s, lastClickedIndex);
 	}
 	
-	
+	//creates a list of qualities a userID's user has or can have
 	private void createQualLists(int userID) {
 		assignedQualList.clear();
 		availableQualList.clear();

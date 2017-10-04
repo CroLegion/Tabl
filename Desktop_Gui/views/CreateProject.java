@@ -211,4 +211,5 @@ public class CreateProject extends JFrame {
 			selectableQualList.addElement(q.getQualName());
 		}
 	}
+	
 }

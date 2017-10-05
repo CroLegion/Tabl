@@ -51,6 +51,11 @@ import java.awt.event.WindowEvent;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JPasswordField;
+import javax.swing.JTabbedPane;
+import javax.swing.JLayeredPane;
+import javax.swing.SwingConstants;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.border.BevelBorder;
 
 public class AdminManageUsers extends JFrame {
 
@@ -69,12 +74,16 @@ public class AdminManageUsers extends JFrame {
 	String lastClickedUser;
 	private JList listUsers;
 	DefaultListModel userList = new DefaultListModel();
+
+	//lists and models to display the qualifications on the gui to the user
 	private JList listAvailableQuals;
 	private JList listAssignedQuals;
 	DefaultListModel availableQualList = new DefaultListModel();
 	DefaultListModel assignedQualList = new DefaultListModel();
 	private JButton assignQual;
 	private JButton unassignQual;
+
+	//The following ArrayLists are used to save the qualifications once a user is clicked
 	ArrayList<Qualification> assignedQuals = new ArrayList<Qualification>();
 	ArrayList<Qualification> availQuals = new ArrayList<Qualification>();
 	private JPanel pnlCreateUser;
@@ -82,16 +91,25 @@ public class AdminManageUsers extends JFrame {
 	private JLabel lblFirstName_1;
 	private JButton btnCreateUser;
 	private JLabel lblUserType;
+
+	//Group for allowing only one radio button to be clicked at one time
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JRadioButton rdbtnAdmin;
 	private JRadioButton rdbtnManager;
 	private JRadioButton rdbtnWorker;
+	//List of entry fields that are displayed after a user clicks the "Create User button"
 	private JTextField txtCreateFirstName;
 	private JTextField txtCreateLastName;
 	private JTextField txtCreateUsername;
 	private JTextField txtCreateEmailAddress;
 	private JTextField txtCreatePhoneNumber;
 	private JPasswordField txtCreatePassword;
+	private JButton btnChangePassword;
+	private JPanel pnlDeleteUser;
+	private JButton btnDeleteUser;
+	private JPanel pnlUserEditInfo;
+	private JLayeredPane layeredPane;
+	private JButton btnCancel;
 	
 
 	/**
@@ -115,7 +133,7 @@ public class AdminManageUsers extends JFrame {
 	 */
 	public AdminManageUsers() 
 	{
-
+		//creations a connection to the SQL server that is persistent until the GUI window is closed
 		jdbc.openSQLConnection();
 		initComponents();
 		createEvents();
@@ -127,7 +145,7 @@ public class AdminManageUsers extends JFrame {
 		setBackground(Color.RED);
 		setTitle("TABL");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 938, 815);
+		setBounds(100, 100, 951, 815);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -135,355 +153,26 @@ public class AdminManageUsers extends JFrame {
 		
 		contentPane.setVisible(true);
 		
-		pnlCreateUser = new JPanel();
-		pnlCreateUser.setVisible(false);
-		
 		btn_settings = new JButton("Settings");
+		btn_settings.setBounds(756, 5, 89, 23);
 		btn_preferences = new JButton("Preferences");
+		btn_preferences.setBounds(631, 5, 115, 23);
 		
 		Panel pnlUsers = new Panel();
+		pnlUsers.setBounds(5, 5, 157, 28);
 		pnlUsers.setBackground(Color.LIGHT_GRAY);
 		
 		btn_create_new_user = new JButton("Create New User");
-		
-		JPanel pnlUserEditInfo = new JPanel();
-		pnlUserEditInfo.setBorder(new TitledBorder(null, "User Edit/Info", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		btn_create_new_user.setBounds(172, 5, 130, 23);
 		
 		JLabel lblUsers = DefaultComponentFactory.getInstance().createLabel("USERS");
 		pnlUsers.add(lblUsers);
 		lblUsers.setFont(new Font("Tahoma", Font.BOLD, 13));
 		
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(5, 43, 155, 720);
 		
-		
-		
-		
-		GroupLayout gl_contentPane = new GroupLayout(contentPane);
-		gl_contentPane.setHorizontalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(pnlUsers, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE)
-						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(btn_create_new_user, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
-							.addGap(329)
-							.addComponent(btn_preferences, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
-							.addGap(10)
-							.addComponent(btn_settings, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE))
-						.addComponent(pnlUserEditInfo, GroupLayout.PREFERRED_SIZE, 743, GroupLayout.PREFERRED_SIZE))
-					.addGap(4))
-		);
-		gl_contentPane.setVerticalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-						.addComponent(pnlUserEditInfo, GroupLayout.PREFERRED_SIZE, 733, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-								.addComponent(pnlUsers, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-								.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-									.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-										.addComponent(btn_preferences)
-										.addComponent(btn_settings))
-									.addComponent(btn_create_new_user)))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 720, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap())
-		);
-		JLabel lblFullName = new JLabel("Full Name");
-		lblFullName.setFont(new Font("Tahoma", Font.BOLD, 20));
-		
-		JLabel lblFirstName = new JLabel("First Name:");
-		lblFirstName.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		JLabel lblLastName = new JLabel("Last Name:");
-		lblLastName.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		JLabel lblUsername = new JLabel("Username:");
-		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		JLabel lblEmailAddress = new JLabel("Email Address:");
-		lblEmailAddress.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		JLabel lblPhoneNumber = new JLabel("Phone Number:");
-		lblPhoneNumber.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		textFirstName = new JTextField();
-		textFirstName.setColumns(10);
-		textLastName = new JTextField();
-		textLastName.setColumns(10);
-		textUsername = new JTextField();
-		textUsername.setColumns(10);
-		textEmail = new JTextField();
-		textEmail.setColumns(10);
-		textPhone = new JTextField();
-		textPhone.setColumns(10);
-		
-		btnSaveChanges = new JButton("Save Changes");
-		
-		btnSaveChanges.setToolTipText("Save Changes to Database");
-		
-		JSeparator separator = new JSeparator();
-		separator.setBackground(Color.BLACK);
-		separator.setForeground(Color.BLACK);
-		
-		JScrollPane scrlPaneAvailableQuals = new JScrollPane();
-		JScrollPane scrlPaneAssignedQuals = new JScrollPane();
-		
-		JLabel lblAvailable = new JLabel("Available");
-		lblAvailable.setFont(new Font("Tahoma", Font.BOLD, 14));
-		JLabel lblAssigned = new JLabel("Assigned");
-		lblAssigned.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		unassignQual = new JButton("<-");
-
-		unassignQual.setToolTipText("Click to remove assigned Qualifications");
-		unassignQual.setFont(new Font("Tahoma", Font.BOLD, 16));
-		
-		assignQual = new JButton("->");
-
-		assignQual.setToolTipText("Click to move selected Qualifications to Assigned");
-		assignQual.setFont(new Font("Tahoma", Font.BOLD, 16));
-		
-		
-		
-		GroupLayout gl_pnlUserEditInfo = new GroupLayout(pnlUserEditInfo);
-		gl_pnlUserEditInfo.setHorizontalGroup(
-			gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(pnlCreateUser, GroupLayout.PREFERRED_SIZE, 722, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblFirstName)
-								.addComponent(lblLastName)
-								.addComponent(lblUsername)
-								.addComponent(lblEmailAddress)
-								.addComponent(lblPhoneNumber))
-							.addGap(80)
-							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-								.addComponent(textEmail, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
-								.addComponent(textUsername, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
-								.addComponent(textLastName, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
-								.addComponent(textPhone, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
-								.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblFullName, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)))
-						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addComponent(scrlPaneAvailableQuals, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-								.addComponent(unassignQual, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
-								.addComponent(assignQual, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE))
-							.addGap(18)
-							.addComponent(scrlPaneAssignedQuals, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE))
-						.addComponent(separator, GroupLayout.PREFERRED_SIZE, 699, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnSaveChanges))
-					.addContainerGap(731, Short.MAX_VALUE))
-				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-					.addGap(179)
-					.addComponent(lblAvailable)
-					.addPreferredGap(ComponentPlacement.RELATED, 206, Short.MAX_VALUE)
-					.addComponent(lblAssigned, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE)
-					.addGap(202))
-		);
-		gl_pnlUserEditInfo.setVerticalGroup(
-			gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addComponent(lblFullName, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-							.addGap(30)
-							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-								.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-									.addComponent(lblFirstName)
-									.addGap(29)
-									.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
-										.addComponent(lblLastName)
-										.addComponent(textLastName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-									.addGap(30)
-									.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
-										.addComponent(lblUsername)
-										.addComponent(textUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-									.addGap(31)
-									.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
-										.addComponent(lblEmailAddress)
-										.addComponent(textEmail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-									.addGap(33)
-									.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
-										.addComponent(lblPhoneNumber)
-										.addComponent(textPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
-							.addGap(26)
-							.addComponent(btnSaveChanges)
-							.addGap(27)
-							.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-									.addGap(13)
-									.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
-										.addComponent(lblAvailable)
-										.addComponent(lblAssigned, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE))
-									.addGap(18)
-									.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.TRAILING)
-										.addComponent(scrlPaneAvailableQuals, GroupLayout.PREFERRED_SIZE, 271, GroupLayout.PREFERRED_SIZE)
-										.addComponent(scrlPaneAssignedQuals, GroupLayout.PREFERRED_SIZE, 271, GroupLayout.PREFERRED_SIZE)))
-								.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-									.addGap(127)
-									.addComponent(assignQual, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-									.addGap(18)
-									.addComponent(unassignQual, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))))
-						.addComponent(pnlCreateUser, GroupLayout.PREFERRED_SIZE, 703, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
-		);
-		
-		lblEnterUserInfo = new JLabel("Enter User Info");
-		lblEnterUserInfo.setFont(new Font("Tahoma", Font.BOLD, 20));
-		
-		lblFirstName_1 = new JLabel("First Name:");
-		lblFirstName_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		btnCreateUser = new JButton("Create User");
-
-		btnCreateUser.setFont(new Font("Tahoma", Font.BOLD, 16));
-		
-		lblUserType = new JLabel("User Type:");
-		lblUserType.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		rdbtnAdmin = new JRadioButton("Admin");
-		buttonGroup.add(rdbtnAdmin);
-		rdbtnAdmin.setFont(new Font("Tahoma", Font.BOLD, 11));
-		
-		rdbtnManager = new JRadioButton("Manager");
-		buttonGroup.add(rdbtnManager);
-		rdbtnManager.setFont(new Font("Tahoma", Font.BOLD, 11));
-		
-		rdbtnWorker = new JRadioButton("Worker");
-		buttonGroup.add(rdbtnWorker);
-		rdbtnWorker.setFont(new Font("Tahoma", Font.BOLD, 11));
-		
-		JLabel lblLastName_1 = new JLabel("Last Name:");
-		lblLastName_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		JLabel lblUsername_1 = new JLabel("Username:");
-		lblUsername_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		JLabel lblEmailAddress_1 = new JLabel("Email Address:");
-		lblEmailAddress_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		JLabel lblPhoneNumber_1 = new JLabel("Phone Number");
-		lblPhoneNumber_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		JLabel lblPassword = new JLabel("Password:");
-		lblPassword.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		txtCreateFirstName = new JTextField();
-		txtCreateFirstName.setColumns(10);
-		
-		txtCreateLastName = new JTextField();
-		txtCreateLastName.setColumns(10);
-		
-		txtCreateUsername = new JTextField();
-		txtCreateUsername.setColumns(10);
-		
-		txtCreateEmailAddress = new JTextField();
-		txtCreateEmailAddress.setColumns(10);
-		
-		txtCreatePhoneNumber = new JTextField();
-		txtCreatePhoneNumber.setColumns(10);
-		
-		txtCreatePassword = new JPasswordField();
-		GroupLayout gl_pnlCreateUser = new GroupLayout(pnlCreateUser);
-		gl_pnlCreateUser.setHorizontalGroup(
-			gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnlCreateUser.createSequentialGroup()
-					.addGap(91)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lblPassword)
-						.addComponent(lblPhoneNumber_1)
-						.addComponent(lblEmailAddress_1)
-						.addComponent(lblUsername_1)
-						.addComponent(lblLastName_1)
-						.addComponent(lblUserType)
-						.addComponent(lblFirstName_1))
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(33)
-							.addComponent(rdbtnAdmin)
-							.addGap(25)
-							.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_pnlCreateUser.createSequentialGroup()
-									.addComponent(rdbtnManager)
-									.addGap(31)
-									.addComponent(rdbtnWorker))
-								.addComponent(btnCreateUser)
-								.addComponent(lblEnterUserInfo)))
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(62)
-							.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-								.addComponent(txtCreateLastName, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE)
-								.addComponent(txtCreateFirstName, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE)
-								.addComponent(txtCreateUsername, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE)
-								.addComponent(txtCreateEmailAddress, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE)
-								.addComponent(txtCreatePhoneNumber, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE)
-								.addComponent(txtCreatePassword, GroupLayout.PREFERRED_SIZE, 292, GroupLayout.PREFERRED_SIZE))))
-					.addContainerGap(173, Short.MAX_VALUE))
-		);
-		gl_pnlCreateUser.setVerticalGroup(
-			gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnlCreateUser.createSequentialGroup()
-					.addGap(21)
-					.addComponent(lblEnterUserInfo)
-					.addGap(18)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblFirstName_1)
-						.addComponent(txtCreateFirstName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(42)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lblLastName_1)
-						.addComponent(txtCreateLastName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(33)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lblUsername_1)
-						.addComponent(txtCreateUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(36)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lblEmailAddress_1)
-						.addComponent(txtCreateEmailAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(37)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lblPhoneNumber_1)
-						.addComponent(txtCreatePhoneNumber, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(36)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblPassword)
-						.addComponent(txtCreatePassword, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblUserType)
-						.addComponent(rdbtnAdmin)
-						.addComponent(rdbtnManager)
-						.addComponent(rdbtnWorker))
-					.addGap(38)
-					.addComponent(btnCreateUser)
-					.addGap(176))
-		);
-		pnlCreateUser.setLayout(gl_pnlCreateUser);
-		
-		
-		
-		listAssignedQuals = new JList(assignedQualList);
-		scrlPaneAssignedQuals.setViewportView(listAssignedQuals);
-		
-		listAvailableQuals = new JList(availableQualList);
-		scrlPaneAvailableQuals.setViewportView(listAvailableQuals);
-		pnlUserEditInfo.setLayout(gl_pnlUserEditInfo);
-		
-		
+		//creates the list of all the users on the left side of the window
 		createUserList();
 		listUsers = new JList(userList);
 		
@@ -492,7 +181,251 @@ public class AdminManageUsers extends JFrame {
 		listUsers.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		listUsers.setLayoutOrientation(JList.VERTICAL);
 		listUsers.setVisibleRowCount(1);
-		contentPane.setLayout(gl_contentPane);
+		contentPane.setLayout(null);
+		contentPane.add(pnlUsers);
+		contentPane.add(scrollPane);
+		contentPane.add(btn_create_new_user);
+		contentPane.add(btn_preferences);
+		contentPane.add(btn_settings);
+		
+		layeredPane = new JLayeredPane();
+		layeredPane.setBounds(168, 18, 756, 758);
+		contentPane.add(layeredPane);
+		layeredPane.setLayout(null);
+		
+		pnlCreateUser = new JPanel();
+		layeredPane.setLayer(pnlCreateUser, 2);
+		pnlCreateUser.setBounds(44, 41, 664, 571);
+		layeredPane.add(pnlCreateUser);
+		pnlCreateUser.setBackground(UIManager.getColor("Button.background"));
+		pnlCreateUser.setBorder(new SoftBevelBorder(BevelBorder.RAISED, new Color(220, 20, 60), null, null, null));
+		//hides the create user window until the user click "Create new user" button
+		pnlCreateUser.setVisible(false);
+		
+		lblEnterUserInfo = new JLabel("Enter User Info");
+		lblEnterUserInfo.setBounds(314, 21, 155, 25);
+		lblEnterUserInfo.setFont(new Font("Tahoma", Font.BOLD, 20));
+		
+		lblFirstName_1 = new JLabel("First Name:");
+		lblFirstName_1.setBounds(116, 64, 79, 17);
+		lblFirstName_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		
+		btnCreateUser = new JButton("Create User");
+		btnCreateUser.setBounds(144, 496, 200, 29);
+		
+				btnCreateUser.setFont(new Font("Tahoma", Font.BOLD, 16));
+				
+				lblUserType = new JLabel("User Type:");
+				lblUserType.setBounds(121, 438, 74, 17);
+				lblUserType.setFont(new Font("Tahoma", Font.BOLD, 14));
+				
+				rdbtnAdmin = new JRadioButton("Admin");
+				rdbtnAdmin.setBounds(228, 437, 61, 23);
+				buttonGroup.add(rdbtnAdmin);
+				rdbtnAdmin.setFont(new Font("Tahoma", Font.BOLD, 11));
+				
+				rdbtnManager = new JRadioButton("Manager");
+				rdbtnManager.setBounds(314, 437, 75, 23);
+				buttonGroup.add(rdbtnManager);
+				rdbtnManager.setFont(new Font("Tahoma", Font.BOLD, 11));
+				
+				rdbtnWorker = new JRadioButton("Worker");
+				rdbtnWorker.setBounds(420, 437, 67, 23);
+				buttonGroup.add(rdbtnWorker);
+				rdbtnWorker.setFont(new Font("Tahoma", Font.BOLD, 11));
+				
+				JLabel lblLastName_1 = new JLabel("Last Name:");
+				lblLastName_1.setBounds(117, 129, 78, 17);
+				lblLastName_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+				
+				JLabel lblUsername_1 = new JLabel("Username:");
+				lblUsername_1.setBounds(121, 182, 74, 17);
+				lblUsername_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+				
+				JLabel lblEmailAddress_1 = new JLabel("Email Address:");
+				lblEmailAddress_1.setBounds(94, 238, 101, 17);
+				lblEmailAddress_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+				
+				JLabel lblPhoneNumber_1 = new JLabel("Phone Number");
+				lblPhoneNumber_1.setBounds(91, 295, 104, 17);
+				lblPhoneNumber_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+				
+				JLabel lblPassword = new JLabel("Password:");
+				lblPassword.setBounds(123, 349, 72, 17);
+				lblPassword.setFont(new Font("Tahoma", Font.BOLD, 14));
+				
+				txtCreateFirstName = new JTextField();
+				txtCreateFirstName.setBounds(257, 64, 291, 20);
+				txtCreateFirstName.setColumns(10);
+				
+				txtCreateLastName = new JTextField();
+				txtCreateLastName.setBounds(257, 126, 291, 20);
+				txtCreateLastName.setColumns(10);
+				
+				txtCreateUsername = new JTextField();
+				txtCreateUsername.setBounds(257, 179, 291, 20);
+				txtCreateUsername.setColumns(10);
+				
+				txtCreateEmailAddress = new JTextField();
+				txtCreateEmailAddress.setBounds(257, 235, 291, 20);
+				txtCreateEmailAddress.setColumns(10);
+				
+				txtCreatePhoneNumber = new JTextField();
+				txtCreatePhoneNumber.setBounds(257, 292, 291, 20);
+				txtCreatePhoneNumber.setColumns(10);
+				
+				txtCreatePassword = new JPasswordField();
+				txtCreatePassword.setBounds(257, 348, 292, 22);
+				pnlCreateUser.setLayout(null);
+				pnlCreateUser.add(lblPassword);
+				pnlCreateUser.add(lblPhoneNumber_1);
+				pnlCreateUser.add(lblEmailAddress_1);
+				pnlCreateUser.add(lblUsername_1);
+				pnlCreateUser.add(lblLastName_1);
+				pnlCreateUser.add(lblUserType);
+				pnlCreateUser.add(lblFirstName_1);
+				pnlCreateUser.add(rdbtnAdmin);
+				pnlCreateUser.add(rdbtnManager);
+				pnlCreateUser.add(rdbtnWorker);
+				pnlCreateUser.add(btnCreateUser);
+				pnlCreateUser.add(lblEnterUserInfo);
+				pnlCreateUser.add(txtCreateLastName);
+				pnlCreateUser.add(txtCreateFirstName);
+				pnlCreateUser.add(txtCreateUsername);
+				pnlCreateUser.add(txtCreateEmailAddress);
+				pnlCreateUser.add(txtCreatePhoneNumber);
+				pnlCreateUser.add(txtCreatePassword);
+				
+				btnCancel = new JButton("Cancel");
+
+				btnCancel.setFont(new Font("Tahoma", Font.BOLD, 16));
+				btnCancel.setBounds(401, 493, 133, 35);
+				pnlCreateUser.add(btnCancel);
+				
+				pnlUserEditInfo = new JPanel();
+				layeredPane.setLayer(pnlUserEditInfo, 3);
+				pnlUserEditInfo.setBounds(0, 11, 743, 733);
+				layeredPane.add(pnlUserEditInfo);
+				pnlUserEditInfo.setBorder(new TitledBorder(null, "User Edit/Info", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+				JLabel lblFullName = new JLabel("Full Name");
+				lblFullName.setBounds(264, 16, 127, 45);
+				lblFullName.setFont(new Font("Tahoma", Font.BOLD, 20));
+				
+				JLabel lblFirstName = new JLabel("First Name:");
+				lblFirstName.setBounds(85, 89, 79, 17);
+				lblFirstName.setFont(new Font("Tahoma", Font.BOLD, 14));
+				
+				JLabel lblLastName = new JLabel("Last Name:");
+				lblLastName.setBounds(86, 132, 78, 17);
+				lblLastName.setFont(new Font("Tahoma", Font.BOLD, 14));
+				
+				JLabel lblUsername = new JLabel("Username:");
+				lblUsername.setBounds(90, 180, 74, 17);
+				lblUsername.setFont(new Font("Tahoma", Font.BOLD, 14));
+				
+				JLabel lblEmailAddress = new JLabel("Email Address:");
+				lblEmailAddress.setBounds(63, 230, 101, 17);
+				lblEmailAddress.setFont(new Font("Tahoma", Font.BOLD, 14));
+				
+				JLabel lblPhoneNumber = new JLabel("Phone Number:");
+				lblPhoneNumber.setBounds(55, 284, 109, 17);
+				lblPhoneNumber.setFont(new Font("Tahoma", Font.BOLD, 14));
+				
+				textFirstName = new JTextField();
+				textFirstName.setBounds(214, 89, 330, 20);
+				textFirstName.setColumns(10);
+				textLastName = new JTextField();
+				textLastName.setBounds(214, 132, 330, 20);
+				textLastName.setColumns(10);
+				textUsername = new JTextField();
+				textUsername.setBounds(214, 177, 330, 20);
+				textUsername.setColumns(10);
+				textEmail = new JTextField();
+				textEmail.setBounds(214, 227, 330, 20);
+				textEmail.setColumns(10);
+				textPhone = new JTextField();
+				textPhone.setBounds(214, 281, 330, 20);
+				textPhone.setColumns(10);
+				
+				btnSaveChanges = new JButton("Save Changes");
+				btnSaveChanges.setBounds(164, 329, 127, 34);
+				
+				btnSaveChanges.setToolTipText("Save Changes to Database");
+				
+				JSeparator separator = new JSeparator();
+				separator.setBounds(22, 374, 699, 2);
+				separator.setBackground(Color.BLACK);
+				separator.setForeground(Color.BLACK);
+				
+				JScrollPane scrlPaneAvailableQuals = new JScrollPane();
+				scrlPaneAvailableQuals.setBounds(22, 436, 174, 271);
+				JScrollPane scrlPaneAssignedQuals = new JScrollPane();
+				scrlPaneAssignedQuals.setBounds(275, 436, 174, 271);
+				
+				JLabel lblAvailable = new JLabel("Available");
+				lblAvailable.setBounds(67, 408, 60, 17);
+				lblAvailable.setFont(new Font("Tahoma", Font.BOLD, 14));
+				JLabel lblAssigned = new JLabel("Assigned");
+				lblAssigned.setBounds(318, 408, 86, 17);
+				lblAssigned.setFont(new Font("Tahoma", Font.BOLD, 14));
+				
+				unassignQual = new JButton("<-");
+				unassignQual.setBounds(206, 579, 64, 29);
+				
+						unassignQual.setToolTipText("Click to remove assigned Qualifications");
+						unassignQual.setFont(new Font("Tahoma", Font.BOLD, 16));
+						
+						assignQual = new JButton("->");
+						assignQual.setBounds(206, 521, 64, 29);
+						
+								assignQual.setToolTipText("Click to move selected Qualifications to Assigned");
+								assignQual.setFont(new Font("Tahoma", Font.BOLD, 16));
+								
+								
+								
+								listAssignedQuals = new JList(assignedQualList);
+								scrlPaneAssignedQuals.setViewportView(listAssignedQuals);
+								
+								listAvailableQuals = new JList(availableQualList);
+								scrlPaneAvailableQuals.setViewportView(listAvailableQuals);
+								pnlUserEditInfo.setLayout(null);
+								pnlUserEditInfo.add(btnSaveChanges);
+								pnlUserEditInfo.add(scrlPaneAvailableQuals);
+								pnlUserEditInfo.add(unassignQual);
+								pnlUserEditInfo.add(assignQual);
+								pnlUserEditInfo.add(scrlPaneAssignedQuals);
+								pnlUserEditInfo.add(separator);
+								pnlUserEditInfo.add(lblPhoneNumber);
+								pnlUserEditInfo.add(lblEmailAddress);
+								pnlUserEditInfo.add(lblUsername);
+								pnlUserEditInfo.add(lblLastName);
+								pnlUserEditInfo.add(lblFirstName);
+								pnlUserEditInfo.add(textFirstName);
+								pnlUserEditInfo.add(textPhone);
+								pnlUserEditInfo.add(textLastName);
+								pnlUserEditInfo.add(textUsername);
+								pnlUserEditInfo.add(textEmail);
+								pnlUserEditInfo.add(lblAvailable);
+								pnlUserEditInfo.add(lblAssigned);
+								pnlUserEditInfo.add(lblFullName);
+								
+								btnChangePassword = new JButton("Change Password");
+								
+										btnChangePassword.setBounds(328, 329, 142, 34);
+										pnlUserEditInfo.add(btnChangePassword);
+										
+										pnlDeleteUser = new JPanel();
+										pnlDeleteUser.setBorder(new TitledBorder(null, "WARNING AREA", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+										pnlDeleteUser.setBackground(new Color(245, 222, 179));
+										pnlDeleteUser.setBounds(531, 618, 166, 89);
+										pnlUserEditInfo.add(pnlDeleteUser);
+										pnlDeleteUser.setLayout(null);
+										
+										btnDeleteUser = new JButton("DELETE \r\nUSER");
+
+										btnDeleteUser.setFont(new Font("Tahoma", Font.BOLD, 10));
+										btnDeleteUser.setBounds(24, 27, 120, 39);
+										pnlDeleteUser.add(btnDeleteUser);
 		setForeground(Color.BLACK);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(AdminManageUsers.class.getResource("/resources/Logo.PNG")));
 		
@@ -500,15 +433,23 @@ public class AdminManageUsers extends JFrame {
 	
 	//This method contains all of the code for creating events
 	private void createEvents() {
+
+		//called when the 'X' button of the GUI in the top right is clicked
+		//Closes the SQL connection conn1
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				jdbc.closeSQLConnection();
 			}
 		});
+
+		//moves the create user panel to the front to allow the user to enter the new user info
 		btn_create_new_user.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateUser.setVisible(true);
+				layeredPane.setLayer(pnlUserEditInfo, 2);
+				layeredPane.setLayer(pnlCreateUser, 3);
+				
 			}
 		});
 		
@@ -521,6 +462,12 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
+		
+		btnChangePassword.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
 		//Display user information that was clicked on the left.
 		listUsers.addListSelectionListener(new ListSelectionListener() {
 
@@ -528,8 +475,10 @@ public class AdminManageUsers extends JFrame {
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
                   displayUserInfo(listUsers.getSelectedValue().toString());
+                  //saves the index of the array that was clicked on
                   lastClickedIndex = listUsers.getSelectedIndex();
                   int id = jdbc.getIdOfUser(textUsername.getText());
+                  //saved the userID of the user that is displayed
                   lastClickeduserID = id;
                 }
             }
@@ -547,21 +496,26 @@ public class AdminManageUsers extends JFrame {
 				updateUserList();
 			}
 		});
-		
+		//Called when the -> button is clicked to add some qualifications to a user
+		//all edits are done with the jdbc function assignQuals()
+		//parameters are the userId, the ArrayList of available qualifications and the selected indices of the qualification list
 		assignQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				//parameters are the userId, the ArrayList of available qualifications and the selected indices of the qualification list
 				jdbc.assignQuals(lastClickeduserID, availQuals, listAvailableQuals.getSelectedIndices());
 				createQualLists(lastClickeduserID);
 			}
 		});
-		
+		//Called when the <- button is clicked to remove some qualifications from a user
+		//all edits are done with the jdbc function UnassignQuals()
 		unassignQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//parameters are the userId, the ArrayList of assigned qualifications and the selected indices of the qualification list
 				jdbc.UnassignQuals(lastClickeduserID, assignedQuals, listAssignedQuals.getSelectedIndices());
 				createQualLists(lastClickeduserID);
 			}
 		});
-		
+		//Send the information to the SQL server after the information in entered
 		btnCreateUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int usertype = 0;
@@ -578,13 +532,28 @@ public class AdminManageUsers extends JFrame {
 					e1.printStackTrace();
 				}
 				JOptionPane.showMessageDialog(null, "User Created!");
+				//hides the create user panel
 				pnlCreateUser.setVisible(false);
+				//Refreshes the list of user on the left side panel
 				createUserList();
 			}
 		});
+		
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlCreateUser.setVisible(false);
+			}
+		});
+		
+		btnDeleteUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jdbc.deleteUser(lastClickeduserID);
+			}
+		});
 	}
-	
-	//creates a list of users
+
+	//Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
+	//This string is then added to the userList that is displayed on the left panel
 	private void createUserList() {
 		userList.clear();
 		ArrayList<User> users = jdbc.get_users();
@@ -593,7 +562,11 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 	
-	//
+
+	//This function takes the string from the userList and uses a regular expression to get the username between the []
+	//then it gets the user from the database, and displays that information in the view user panel
+	//it also calls the createQualList method that gets both assigned and available qualifications 
+
 	private void displayUserInfo(String name) {
 		String username = null;
 		Pattern p = Pattern.compile("\\[(.*?)\\]");
@@ -614,14 +587,21 @@ public class AdminManageUsers extends JFrame {
 		createQualLists(u.get_userID());
 	}
 	
-	//
+
+	//This function is used when a user is updated because their firstname, lastname, or username could have changed
+	//meaning they need to be displayed correctly on the left side panel
+	//it gets the new information from the server and then users the lastClickedIndex to update the string at that spot
+
 	private void updateUserList() {
 		User u = jdbc.get_user(lastClickedUser);
 		String s = String.format("%s, %s [%s]", u.get_lastname(), u.get_firstname(), u.get_username());
 		userList.setElementAt(s, lastClickedIndex);
 	}
 	
-	//creates a list of qualities a userID's user has or can have
+
+	//Populates both the assigned and available qualification lists for a user after clicked on one
+	//Is also called each time a qualification is assigned or unassigned to update the lists.
+
 	private void createQualLists(int userID) {
 		assignedQualList.clear();
 		availableQualList.clear();

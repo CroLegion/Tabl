@@ -21,6 +21,8 @@ CREATE TABLE users
     PRIMARY KEY (userID)
 );
 
+SELECT * FROM users;
+
 /*Creates a table to store a list of jobs*/
 /*NOTE: 'jobtype' field is intended to represent project = 1, or job = 2 numerrically*/
 /*NOTE: 'parentID' creates a circular reference back to the 'jobs' table, facilitating an arbitrary-depth task heirarchy*/
@@ -86,7 +88,7 @@ CREATE TABLE placements
 );
 
 /*Creates a table to store chat messages to groups*/
-CREATE TABLE group_messages
+CREATE TABLE messages
 (
 	msgID int auto_increment not null,
     msgsubject varchar(32),
@@ -109,7 +111,7 @@ CREATE TABLE conversations
 CREATE TABLE conversation_assignments
 (
 	conversationID int not null,
-	memberID itn not null,
+	memberID int not null,
 	FOREIGN KEY (conversationID) REFERENCES conversations(conversationID),
 	FOREIGN KEY (memberID) REFERENCES users(userID)
 );

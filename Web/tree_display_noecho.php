@@ -2,30 +2,30 @@
 	//Import required PHP files
 	require 'database.php';
 	require 'util.php';
-
+	
 	function process_children($self)
 	{	
-	
+		$tree="";
 		//$children=get_children($self["jobID"]);	
 		$num_children=$self->num_rows;
 		while($num_children>0)
 		{
 			$curChild=$self->fetch_assoc();
-			echo "<li><a href=\"link\">".$curChild["jobname"]."</a>";
+			$tree=$tree. "<li><a href=\"link\">".$curChild["jobname"]."</a>";
 			$grandChildren=get_children($curChild["jobID"]);
 			if($grandChildren->num_rows>0)
 			{
-				echo"<ul>";
-				process_children($grandChildren);
-				echo"</ul>";
+				$tree=$tree."<ul>";
+				$tree=$tree.process_children($grandChildren);
+				$tree=$tree."</ul>";
 			}	
 			$num_children=$num_children-1;
-			echo"</li>";		
+			$tree=$tree."</li>";		
 		}
-	
+		return $tree;
 
 	}
-	$html="";
+	
 	//Define database parameters
 	$servername = "mysql.cs.iastate.edu";
 	$username = "dbu309amc2";
@@ -35,14 +35,16 @@
 	
 	$result = data_usersList();
 
-	$rootQ = get_root_of_tree("Build School");
+	$roots=get_roots();
+	$tree="";
+	$rootQ = get_root_of_tree($roots->fetch_assoc()["jobname"]);
 	$root=$rootQ->fetch_assoc();
-	echo "<ul> <li> <a href=\"link\">".$root["jobname"]."</a>";
+	$tree=$tree. "<ul> <li> <a href=\"link\">".$root["jobname"]."</a>";
 	$rootChildren=get_children($root["jobID"]);
-	echo "<ul>";
-	process_children($rootChildren);
-	echo "</ul>";
-	echo "</li></ul>";
+	$tree=$tree. "<ul>";
+	$tree=$tree.process_children($rootChildren);
+	$tree=$tree. "</ul>";
+	$tree=$tree. "</li></ul>";
 
 
 	//Build navbar pane in HTML
@@ -64,8 +66,12 @@ HTML;
 		<div class="tree">
 		$tree
 		</div>
-	HTML;
+HTML;
 	require 'frame.php';
 
 	echo $frame;
+
 ?>
+
+
+

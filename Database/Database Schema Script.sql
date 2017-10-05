@@ -21,8 +21,6 @@ CREATE TABLE users
     PRIMARY KEY (userID)
 );
 
-SELECT * FROM users;
-
 /*Creates a table to store a list of jobs*/
 /*NOTE: 'jobtype' field is intended to represent project = 1, or job = 2 numerrically*/
 /*NOTE: 'parentID' creates a circular reference back to the 'jobs' table, facilitating an arbitrary-depth task heirarchy*/

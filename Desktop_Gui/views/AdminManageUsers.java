@@ -110,6 +110,9 @@ public class AdminManageUsers extends JFrame {
 	private JPanel pnlUserEditInfo;
 	private JLayeredPane layeredPane;
 	private JButton btnCancel;
+	private JLabel lblNewLabel;
+	private JLabel lblNewLabel_1;
+	private JTextField textField;
 	
 
 	/**
@@ -189,7 +192,7 @@ public class AdminManageUsers extends JFrame {
 		contentPane.add(btn_settings);
 		
 		layeredPane = new JLayeredPane();
-		layeredPane.setBounds(168, 18, 756, 758);
+		layeredPane.setBounds(168, 23, 756, 740);
 		contentPane.add(layeredPane);
 		layeredPane.setLayout(null);
 		
@@ -302,9 +305,132 @@ public class AdminManageUsers extends JFrame {
 				btnCancel.setBounds(401, 493, 133, 35);
 				pnlCreateUser.add(btnCancel);
 				
+				JPanel pnlCreateProject = new JPanel();
+				layeredPane.setLayer(pnlCreateProject, 2);
+				pnlCreateProject.setBounds(0, 11, 743, 720);
+				layeredPane.add(pnlCreateProject);
+				
+				lblNewLabel = new JLabel("Project name:");
+				
+				lblNewLabel_1 = new JLabel("Description:");
+				
+				JScrollPane scrollPane_1 = new JScrollPane();
+				
+				JScrollPane scrollPane_2 = new JScrollPane();
+				
+				JScrollPane scrollPane_3 = new JScrollPane();
+				
+				JScrollPane scrollPane_4 = new JScrollPane();
+				
+				JScrollPane scrollPane_5 = new JScrollPane();
+				
+				JLabel lblNewLabel_2 = new JLabel("Qualifications:");
+				
+				JLabel lblNewLabel_3 = new JLabel("Users to add:");
+				
+				JLabel lblNewLabel_4 = new JLabel("Users added:");
+				
+				JButton btnNewButton = new JButton("->");
+				
+				JButton btnRemove = new JButton("<-");
+				btnRemove.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+					}
+				});
+				
+				JLabel lblCreateANew = new JLabel("Create a new Project");
+				lblCreateANew.setFont(new Font("Tahoma", Font.PLAIN, 18));
+				GroupLayout gl_pnlCreateProject = new GroupLayout(pnlCreateProject);
+				gl_pnlCreateProject.setHorizontalGroup(
+					gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_pnlCreateProject.createSequentialGroup()
+							.addGap(147)
+							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.TRAILING)
+								.addComponent(lblNewLabel)
+								.addComponent(lblNewLabel_1))
+							.addPreferredGap(ComponentPlacement.RELATED, 182, Short.MAX_VALUE)
+							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 208, GroupLayout.PREFERRED_SIZE)
+								.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 205, GroupLayout.PREFERRED_SIZE))
+							.addContainerGap(139, Short.MAX_VALUE))
+						.addGroup(gl_pnlCreateProject.createSequentialGroup()
+							.addGap(89)
+							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
+								.addComponent(scrollPane_3, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblNewLabel_2))
+							.addGap(18)
+							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_pnlCreateProject.createSequentialGroup()
+									.addComponent(scrollPane_4, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)
+									.addGap(18)
+									.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.TRAILING)
+										.addComponent(btnRemove)
+										.addComponent(btnNewButton)))
+								.addComponent(lblNewLabel_3))
+							.addGap(32)
+							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblNewLabel_4)
+								.addComponent(scrollPane_5, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE))
+							.addGap(60))
+						.addGroup(Alignment.TRAILING, gl_pnlCreateProject.createSequentialGroup()
+							.addContainerGap(296, Short.MAX_VALUE)
+							.addComponent(lblCreateANew)
+							.addGap(284))
+				);
+				gl_pnlCreateProject.setVerticalGroup(
+					gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_pnlCreateProject.createSequentialGroup()
+							.addGap(29)
+							.addComponent(lblCreateANew)
+							.addGap(59)
+							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.TRAILING)
+								.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblNewLabel))
+							.addGap(47)
+							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.BASELINE)
+								.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblNewLabel_1))
+							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_pnlCreateProject.createSequentialGroup()
+									.addGap(55)
+									.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.BASELINE)
+										.addComponent(lblNewLabel_2)
+										.addComponent(lblNewLabel_4)
+										.addComponent(lblNewLabel_3))
+									.addGap(18)
+									.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
+										.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.BASELINE)
+											.addComponent(scrollPane_3, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)
+											.addComponent(scrollPane_4, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE))
+										.addComponent(scrollPane_5, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)))
+								.addGroup(gl_pnlCreateProject.createSequentialGroup()
+									.addGap(122)
+									.addComponent(btnNewButton)
+									.addGap(32)
+									.addComponent(btnRemove)))
+							.addContainerGap(200, Short.MAX_VALUE))
+				);
+				
+				JList list_3 = new JList();
+				scrollPane_5.setViewportView(list_3);
+				
+				JList list_2 = new JList();
+				scrollPane_4.setViewportView(list_2);
+				
+				JList list_1 = new JList();
+				scrollPane_3.setViewportView(list_1);
+				
+				JList list = new JList();
+				scrollPane_2.setViewportView(list);
+				
+				textField = new JTextField();
+				scrollPane_1.setViewportView(textField);
+				textField.setColumns(10);
+				pnlCreateProject.setLayout(gl_pnlCreateProject);
+				
 				pnlUserEditInfo = new JPanel();
 				layeredPane.setLayer(pnlUserEditInfo, 3);
-				pnlUserEditInfo.setBounds(0, 11, 743, 733);
+				pnlUserEditInfo.setBounds(0, 11, 743, 720);
 				layeredPane.add(pnlUserEditInfo);
 				pnlUserEditInfo.setBorder(new TitledBorder(null, "User Edit/Info", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 				JLabel lblFullName = new JLabel("Full Name");

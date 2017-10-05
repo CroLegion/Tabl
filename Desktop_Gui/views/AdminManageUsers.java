@@ -56,6 +56,8 @@ import javax.swing.JLayeredPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.BevelBorder;
+import javax.swing.SpringLayout;
+import javax.swing.JTextArea;
 
 public class AdminManageUsers extends JFrame {
 
@@ -112,7 +114,9 @@ public class AdminManageUsers extends JFrame {
 	private JButton btnCancel;
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
-	private JTextField textField;
+	private JTextField txtJobName;
+	private JTextField textTaskName;
+	private JTextField txtProjectName;
 	
 
 	/**
@@ -306,7 +310,7 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateUser.add(btnCancel);
 				
 				JPanel pnlCreateProject = new JPanel();
-				layeredPane.setLayer(pnlCreateProject, 2);
+				layeredPane.setLayer(pnlCreateProject, 5);
 				pnlCreateProject.setBounds(0, 11, 743, 720);
 				layeredPane.add(pnlCreateProject);
 				
@@ -314,15 +318,13 @@ public class AdminManageUsers extends JFrame {
 				
 				lblNewLabel_1 = new JLabel("Description:");
 				
-				JScrollPane scrollPane_1 = new JScrollPane();
+				JScrollPane scrlPaneProjectDescription = new JScrollPane();
 				
-				JScrollPane scrollPane_2 = new JScrollPane();
+				JScrollPane scrlPaneQualifications = new JScrollPane();
 				
-				JScrollPane scrollPane_3 = new JScrollPane();
+				JScrollPane scrlPaneUsersAvailable = new JScrollPane();
 				
-				JScrollPane scrollPane_4 = new JScrollPane();
-				
-				JScrollPane scrollPane_5 = new JScrollPane();
+				JScrollPane scrlPaneUsersAdded = new JScrollPane();
 				
 				JLabel lblNewLabel_2 = new JLabel("Qualifications:");
 				
@@ -330,7 +332,7 @@ public class AdminManageUsers extends JFrame {
 				
 				JLabel lblNewLabel_4 = new JLabel("Users added:");
 				
-				JButton btnNewButton = new JButton("->");
+				JButton btnAssign = new JButton("->");
 				
 				JButton btnRemove = new JButton("<-");
 				btnRemove.addActionListener(new ActionListener() {
@@ -340,55 +342,64 @@ public class AdminManageUsers extends JFrame {
 				
 				JLabel lblCreateANew = new JLabel("Create a new Project");
 				lblCreateANew.setFont(new Font("Tahoma", Font.PLAIN, 18));
+				
+				JButton btnCreateNewProject = new JButton("Create new Project");
+				
+				txtProjectName = new JTextField();
+				txtProjectName.setColumns(10);
 				GroupLayout gl_pnlCreateProject = new GroupLayout(pnlCreateProject);
 				gl_pnlCreateProject.setHorizontalGroup(
-					gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
+					gl_pnlCreateProject.createParallelGroup(Alignment.TRAILING)
 						.addGroup(gl_pnlCreateProject.createSequentialGroup()
 							.addGap(147)
 							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.TRAILING)
 								.addComponent(lblNewLabel)
 								.addComponent(lblNewLabel_1))
 							.addPreferredGap(ComponentPlacement.RELATED, 182, Short.MAX_VALUE)
-							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING, false)
-								.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 208, GroupLayout.PREFERRED_SIZE)
-								.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 205, GroupLayout.PREFERRED_SIZE))
-							.addContainerGap(139, Short.MAX_VALUE))
+							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
+								.addComponent(scrlPaneProjectDescription, GroupLayout.PREFERRED_SIZE, 205, GroupLayout.PREFERRED_SIZE)
+								.addComponent(txtProjectName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addContainerGap(142, Short.MAX_VALUE))
 						.addGroup(gl_pnlCreateProject.createSequentialGroup()
 							.addGap(89)
 							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
-								.addComponent(scrollPane_3, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)
+								.addComponent(scrlPaneQualifications, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)
 								.addComponent(lblNewLabel_2))
 							.addGap(18)
 							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
 								.addGroup(gl_pnlCreateProject.createSequentialGroup()
-									.addComponent(scrollPane_4, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)
+									.addComponent(scrlPaneUsersAvailable, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)
 									.addGap(18)
 									.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.TRAILING)
 										.addComponent(btnRemove)
-										.addComponent(btnNewButton)))
+										.addComponent(btnAssign)))
 								.addComponent(lblNewLabel_3))
 							.addGap(32)
 							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
 								.addComponent(lblNewLabel_4)
-								.addComponent(scrollPane_5, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE))
+								.addComponent(scrlPaneUsersAdded, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE))
 							.addGap(60))
-						.addGroup(Alignment.TRAILING, gl_pnlCreateProject.createSequentialGroup()
+						.addGroup(gl_pnlCreateProject.createSequentialGroup()
 							.addContainerGap(296, Short.MAX_VALUE)
 							.addComponent(lblCreateANew)
 							.addGap(284))
+						.addGroup(gl_pnlCreateProject.createSequentialGroup()
+							.addContainerGap(505, Short.MAX_VALUE)
+							.addComponent(btnCreateNewProject)
+							.addGap(113))
 				);
 				gl_pnlCreateProject.setVerticalGroup(
 					gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_pnlCreateProject.createSequentialGroup()
 							.addGap(29)
 							.addComponent(lblCreateANew)
-							.addGap(59)
+							.addGap(68)
 							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.TRAILING)
-								.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblNewLabel))
+								.addComponent(lblNewLabel)
+								.addComponent(txtProjectName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 							.addGap(47)
 							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.BASELINE)
-								.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
+								.addComponent(scrlPaneProjectDescription, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
 								.addComponent(lblNewLabel_1))
 							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
 								.addGroup(gl_pnlCreateProject.createSequentialGroup()
@@ -400,33 +411,106 @@ public class AdminManageUsers extends JFrame {
 									.addGap(18)
 									.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
 										.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.BASELINE)
-											.addComponent(scrollPane_3, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)
-											.addComponent(scrollPane_4, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE))
-										.addComponent(scrollPane_5, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)))
+											.addComponent(scrlPaneQualifications, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)
+											.addComponent(scrlPaneUsersAvailable, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE))
+										.addComponent(scrlPaneUsersAdded, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)))
 								.addGroup(gl_pnlCreateProject.createSequentialGroup()
 									.addGap(122)
-									.addComponent(btnNewButton)
+									.addComponent(btnAssign)
 									.addGap(32)
 									.addComponent(btnRemove)))
-							.addContainerGap(200, Short.MAX_VALUE))
+							.addGap(53)
+							.addComponent(btnCreateNewProject)
+							.addContainerGap(126, Short.MAX_VALUE))
 				);
 				
-				JList list_3 = new JList();
-				scrollPane_5.setViewportView(list_3);
+				JTextArea textAreaProjectDescription = new JTextArea();
+				scrlPaneProjectDescription.setViewportView(textAreaProjectDescription);
 				
-				JList list_2 = new JList();
-				scrollPane_4.setViewportView(list_2);
+				JList listUsersAdded = new JList();
+				scrlPaneUsersAdded.setViewportView(listUsersAdded);
 				
-				JList list_1 = new JList();
-				scrollPane_3.setViewportView(list_1);
+				JList listUsersAvailable = new JList();
+				scrlPaneUsersAvailable.setViewportView(listUsersAvailable);
 				
-				JList list = new JList();
-				scrollPane_2.setViewportView(list);
-				
-				textField = new JTextField();
-				scrollPane_1.setViewportView(textField);
-				textField.setColumns(10);
+				JList listQualifications = new JList();
+				scrlPaneQualifications.setViewportView(listQualifications);
 				pnlCreateProject.setLayout(gl_pnlCreateProject);
+				
+				JPanel pnlCreateTask = new JPanel();
+				layeredPane.setLayer(pnlCreateTask, 2);
+				pnlCreateTask.setBounds(0, 11, 743, 720);
+				layeredPane.add(pnlCreateTask);
+				
+				JLabel lblCreateTask = new JLabel("Create a new Task");
+				lblCreateTask.setFont(new Font("Tahoma", Font.PLAIN, 18));
+				
+				JLabel lblTaskName = new JLabel("Name of the Task:");
+				
+				JLabel lblTaskDescription = new JLabel("Description of the Task:");
+				
+				JLabel lblTaskReason = new JLabel("Reason why it should be added:");
+				
+				JScrollPane scrlPaneDescription = new JScrollPane();
+				
+				JScrollPane scrlPaneReason = new JScrollPane();
+				
+				JButton btnCreateNewTask = new JButton("Create new Task");
+				
+				textTaskName = new JTextField();
+				textTaskName.setColumns(10);
+				GroupLayout gl_pnlCreateTask = new GroupLayout(pnlCreateTask);
+				gl_pnlCreateTask.setHorizontalGroup(
+					gl_pnlCreateTask.createParallelGroup(Alignment.TRAILING)
+						.addGroup(gl_pnlCreateTask.createSequentialGroup()
+							.addGap(97)
+							.addGroup(gl_pnlCreateTask.createParallelGroup(Alignment.TRAILING)
+								.addComponent(lblTaskName)
+								.addComponent(lblTaskDescription)
+								.addComponent(lblTaskReason))
+							.addPreferredGap(ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
+							.addGroup(gl_pnlCreateTask.createParallelGroup(Alignment.LEADING)
+								.addComponent(scrlPaneReason, GroupLayout.PREFERRED_SIZE, 215, GroupLayout.PREFERRED_SIZE)
+								.addComponent(scrlPaneDescription, GroupLayout.PREFERRED_SIZE, 216, GroupLayout.PREFERRED_SIZE)
+								.addComponent(textTaskName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addContainerGap(163, Short.MAX_VALUE))
+						.addGroup(gl_pnlCreateTask.createSequentialGroup()
+							.addContainerGap(505, Short.MAX_VALUE)
+							.addComponent(btnCreateNewTask)
+							.addGap(125))
+						.addGroup(gl_pnlCreateTask.createSequentialGroup()
+							.addContainerGap(298, Short.MAX_VALUE)
+							.addComponent(lblCreateTask)
+							.addGap(299))
+				);
+				gl_pnlCreateTask.setVerticalGroup(
+					gl_pnlCreateTask.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_pnlCreateTask.createSequentialGroup()
+							.addGap(47)
+							.addComponent(lblCreateTask)
+							.addGap(52)
+							.addGroup(gl_pnlCreateTask.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblTaskName)
+								.addComponent(textTaskName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addGap(130)
+							.addGroup(gl_pnlCreateTask.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblTaskDescription)
+								.addComponent(scrlPaneDescription, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE))
+							.addGap(73)
+							.addGroup(gl_pnlCreateTask.createParallelGroup(Alignment.LEADING)
+								.addComponent(scrlPaneReason, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblTaskReason))
+							.addGap(77)
+							.addComponent(btnCreateNewTask)
+							.addContainerGap(99, Short.MAX_VALUE))
+				);
+				
+				JTextArea txtAreaReason = new JTextArea();
+				scrlPaneReason.setViewportView(txtAreaReason);
+				
+				JTextArea txtAreaDescription = new JTextArea();
+				scrlPaneDescription.setViewportView(txtAreaDescription);
+				pnlCreateTask.setLayout(gl_pnlCreateTask);
 				
 				pnlUserEditInfo = new JPanel();
 				layeredPane.setLayer(pnlUserEditInfo, 3);
@@ -552,6 +636,123 @@ public class AdminManageUsers extends JFrame {
 										btnDeleteUser.setFont(new Font("Tahoma", Font.BOLD, 10));
 										btnDeleteUser.setBounds(24, 27, 120, 39);
 										pnlDeleteUser.add(btnDeleteUser);
+										
+										JPanel pnlCreateJob = new JPanel();
+										layeredPane.setLayer(pnlCreateJob, 2);
+										pnlCreateJob.setBounds(0, 11, 743, 720);
+										layeredPane.add(pnlCreateJob);
+										
+										JLabel lblCreateNewJob = new JLabel("Create new Job");
+										lblCreateNewJob.setFont(new Font("Tahoma", Font.PLAIN, 18));
+										
+										JLabel lblNewLabel_9 = new JLabel("Description:");
+										
+										JLabel lblNewLabel_10 = new JLabel("Assigned Manager:");
+										
+										JScrollPane scrlPaneJobDescription = new JScrollPane();
+										
+										JScrollPane scrlPaneAssignableManagers = new JScrollPane();
+										
+										JScrollPane scrlPaneRequiredQuals = new JScrollPane();
+										
+										JScrollPane scrlPaneAvailableUsers = new JScrollPane();
+										
+										JScrollPane scrlPaneAssignedUsers = new JScrollPane();
+										SpringLayout sl_pnlCreateJob = new SpringLayout();
+										sl_pnlCreateJob.putConstraint(SpringLayout.NORTH, scrlPaneAssignedUsers, 0, SpringLayout.NORTH, scrlPaneAvailableUsers);
+										sl_pnlCreateJob.putConstraint(SpringLayout.EAST, scrlPaneAssignedUsers, -46, SpringLayout.EAST, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.SOUTH, scrlPaneAvailableUsers, -55, SpringLayout.SOUTH, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.EAST, scrlPaneAvailableUsers, -251, SpringLayout.EAST, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.EAST, scrlPaneRequiredQuals, -200, SpringLayout.EAST, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.SOUTH, scrlPaneAssignableManagers, -370, SpringLayout.SOUTH, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.SOUTH, scrlPaneRequiredQuals, -226, SpringLayout.SOUTH, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.NORTH, scrlPaneRequiredQuals, 6, SpringLayout.SOUTH, scrlPaneAssignableManagers);
+										sl_pnlCreateJob.putConstraint(SpringLayout.NORTH, scrlPaneAssignableManagers, 241, SpringLayout.NORTH, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.NORTH, scrlPaneJobDescription, 166, SpringLayout.NORTH, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.SOUTH, scrlPaneJobDescription, -6, SpringLayout.NORTH, scrlPaneAssignableManagers);
+										sl_pnlCreateJob.putConstraint(SpringLayout.NORTH, lblNewLabel_10, 0, SpringLayout.NORTH, scrlPaneAssignableManagers);
+										sl_pnlCreateJob.putConstraint(SpringLayout.EAST, lblNewLabel_10, 0, SpringLayout.EAST, lblNewLabel_9);
+										sl_pnlCreateJob.putConstraint(SpringLayout.WEST, scrlPaneAssignableManagers, 0, SpringLayout.WEST, scrlPaneRequiredQuals);
+										sl_pnlCreateJob.putConstraint(SpringLayout.EAST, scrlPaneAssignableManagers, -200, SpringLayout.EAST, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.WEST, scrlPaneJobDescription, 395, SpringLayout.WEST, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.EAST, scrlPaneJobDescription, -124, SpringLayout.EAST, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.NORTH, lblNewLabel_9, 166, SpringLayout.NORTH, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.WEST, lblNewLabel_9, 176, SpringLayout.WEST, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.NORTH, lblCreateNewJob, 22, SpringLayout.NORTH, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.WEST, lblCreateNewJob, 302, SpringLayout.WEST, pnlCreateJob);
+										pnlCreateJob.setLayout(sl_pnlCreateJob);
+										pnlCreateJob.add(lblCreateNewJob);
+										pnlCreateJob.add(lblNewLabel_10);
+										pnlCreateJob.add(lblNewLabel_9);
+										pnlCreateJob.add(scrlPaneAvailableUsers);
+										pnlCreateJob.add(scrlPaneRequiredQuals);
+										pnlCreateJob.add(scrlPaneAssignedUsers);
+										
+										JList listAssignedUsers = new JList();
+										scrlPaneAssignedUsers.setViewportView(listAssignedUsers);
+										pnlCreateJob.add(scrlPaneJobDescription);
+										
+										JTextArea txtAreaJobDescription = new JTextArea();
+										scrlPaneJobDescription.setViewportView(txtAreaJobDescription);
+										pnlCreateJob.add(scrlPaneAssignableManagers);
+										
+										JList listAssignableManagers = new JList();
+										scrlPaneAssignableManagers.setViewportView(listAssignableManagers);
+										
+										JLabel lblJobName = new JLabel("Name of the Job:");
+										sl_pnlCreateJob.putConstraint(SpringLayout.NORTH, lblJobName, 107, SpringLayout.NORTH, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.EAST, lblJobName, 0, SpringLayout.EAST, lblNewLabel_10);
+										pnlCreateJob.add(lblJobName);
+										
+										JLabel lblRequiredQualifications = new JLabel("Required Qualifications:");
+										sl_pnlCreateJob.putConstraint(SpringLayout.WEST, scrlPaneRequiredQuals, 162, SpringLayout.EAST, lblRequiredQualifications);
+										sl_pnlCreateJob.putConstraint(SpringLayout.NORTH, lblRequiredQualifications, 0, SpringLayout.NORTH, scrlPaneRequiredQuals);
+										
+										JList listRequiredQuals = new JList();
+										scrlPaneRequiredQuals.setViewportView(listRequiredQuals);
+										sl_pnlCreateJob.putConstraint(SpringLayout.EAST, lblRequiredQualifications, 0, SpringLayout.EAST, lblNewLabel_10);
+										pnlCreateJob.add(lblRequiredQualifications);
+										
+										JLabel lblUsersList = new JLabel("User List:");
+										sl_pnlCreateJob.putConstraint(SpringLayout.NORTH, lblUsersList, 2, SpringLayout.NORTH, scrlPaneAvailableUsers);
+										sl_pnlCreateJob.putConstraint(SpringLayout.EAST, lblUsersList, 0, SpringLayout.EAST, lblNewLabel_10);
+										
+										JList listAvailableUsers = new JList();
+										scrlPaneAvailableUsers.setViewportView(listAvailableUsers);
+										pnlCreateJob.add(lblUsersList);
+										
+										JButton buttonAssignUsers = new JButton("->");
+										sl_pnlCreateJob.putConstraint(SpringLayout.WEST, scrlPaneAssignedUsers, 6, SpringLayout.EAST, buttonAssignUsers);
+										sl_pnlCreateJob.putConstraint(SpringLayout.WEST, buttonAssignUsers, 6, SpringLayout.EAST, scrlPaneAvailableUsers);
+										buttonAssignUsers.addActionListener(new ActionListener() {
+											public void actionPerformed(ActionEvent arg0) {
+											}
+										});
+										pnlCreateJob.add(buttonAssignUsers);
+										
+										JButton buttonRemoveUsers = new JButton("<-");
+										sl_pnlCreateJob.putConstraint(SpringLayout.SOUTH, buttonAssignUsers, -26, SpringLayout.NORTH, buttonRemoveUsers);
+										sl_pnlCreateJob.putConstraint(SpringLayout.NORTH, buttonRemoveUsers, 603, SpringLayout.NORTH, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.WEST, buttonRemoveUsers, 6, SpringLayout.EAST, scrlPaneAvailableUsers);
+										pnlCreateJob.add(buttonRemoveUsers);
+										
+										txtJobName = new JTextField();
+										sl_pnlCreateJob.putConstraint(SpringLayout.NORTH, txtJobName, 0, SpringLayout.NORTH, lblJobName);
+										sl_pnlCreateJob.putConstraint(SpringLayout.WEST, txtJobName, 0, SpringLayout.WEST, scrlPaneRequiredQuals);
+										pnlCreateJob.add(txtJobName);
+										txtJobName.setColumns(10);
+										
+										JLabel lblAvailableUsers_1 = new JLabel("Available Users");
+										sl_pnlCreateJob.putConstraint(SpringLayout.WEST, lblAvailableUsers_1, 344, SpringLayout.WEST, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.NORTH, scrlPaneAvailableUsers, 6, SpringLayout.SOUTH, lblAvailableUsers_1);
+										sl_pnlCreateJob.putConstraint(SpringLayout.WEST, scrlPaneAvailableUsers, 0, SpringLayout.WEST, lblAvailableUsers_1);
+										pnlCreateJob.add(lblAvailableUsers_1);
+										
+										JLabel lblAssignedUsers = new JLabel("Assigned Users");
+										sl_pnlCreateJob.putConstraint(SpringLayout.SOUTH, lblAssignedUsers, -199, SpringLayout.SOUTH, pnlCreateJob);
+										sl_pnlCreateJob.putConstraint(SpringLayout.WEST, lblAssignedUsers, 133, SpringLayout.EAST, lblAvailableUsers_1);
+										sl_pnlCreateJob.putConstraint(SpringLayout.NORTH, lblAvailableUsers_1, 0, SpringLayout.NORTH, lblAssignedUsers);
+										pnlCreateJob.add(lblAssignedUsers);
 		setForeground(Color.BLACK);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(AdminManageUsers.class.getResource("/resources/Logo.PNG")));
 		

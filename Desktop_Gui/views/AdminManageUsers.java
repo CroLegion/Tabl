@@ -551,6 +551,7 @@ public class AdminManageUsers extends JFrame {
 			}
 		});
 	}
+
 	//Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
 	//This string is then added to the userList that is displayed on the left panel
 	private void createUserList() {
@@ -565,6 +566,7 @@ public class AdminManageUsers extends JFrame {
 	//This function takes the string from the userList and uses a regular expression to get the username between the []
 	//then it gets the user from the database, and displays that information in the view user panel
 	//it also calls the createQualList method that gets both assigned and available qualifications 
+
 	private void displayUserInfo(String name) {
 		String username = null;
 		Pattern p = Pattern.compile("\\[(.*?)\\]");
@@ -585,17 +587,21 @@ public class AdminManageUsers extends JFrame {
 		createQualLists(u.get_userID());
 	}
 	
+
 	//This function is used when a user is updated because their firstname, lastname, or username could have changed
 	//meaning they need to be displayed correctly on the left side panel
 	//it gets the new information from the server and then users the lastClickedIndex to update the string at that spot
+
 	private void updateUserList() {
 		User u = jdbc.get_user(lastClickedUser);
 		String s = String.format("%s, %s [%s]", u.get_lastname(), u.get_firstname(), u.get_username());
 		userList.setElementAt(s, lastClickedIndex);
 	}
 	
+
 	//Populates both the assigned and available qualification lists for a user after clicked on one
 	//Is also called each time a qualification is assigned or unassigned to update the lists.
+
 	private void createQualLists(int userID) {
 		assignedQualList.clear();
 		availableQualList.clear();

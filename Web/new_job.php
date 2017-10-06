@@ -11,7 +11,7 @@
 	$database = "db309amc2";
 	data_set($servername, $username, $password, $database);
 
-
+	$testInput=readline("Test Field: ");
 
 
 	//Build navbar pane in HTML
@@ -28,6 +28,8 @@ HTML;
 
 	//Build content pane in HTML
 	$content = <<< HTML
+		<h2>New job</h2><br/>
+			$testInput
 HTML;
 
 	//Insert page elements into frame

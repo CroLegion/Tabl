@@ -13,10 +13,10 @@
 	// $database = "db309amc2";
 
 	//Define local database parameters
-	$servername = "localhost";
-	$username = "root";
-	$password = "";
-	$database = "project";
+	$servername = "mysql.cs.iastate.edu";
+	$username = "dbu309amc2";
+	$password = "x1cbBr23";
+	$database = "db309amc2";
 
 	data_set($servername, $username, $password, $database);
 

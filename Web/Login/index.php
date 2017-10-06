@@ -20,8 +20,12 @@
 
 	data_set($servername, $username, $password, $database);
 
+	//Check if the client is already authorized.
 	if(isset($_SESSION['auth']) && $_SESSION['auth'] == TRUE)
 	{
+		//Decide what page to display (or what other action top take) based on the value of the 'action' element in the POST array.
+		//This is how you make stuff happen when you click a button. this switch will be executed, and you can plave your routines inside the switch case.
+		//In all cases listed here, the action that is being taken is being handled by the other scripts (the ones that are required). This is probably how most, if not all, of the actions should be performed.
 		if(isset($_POST['action']))
 		{
 			switch($_POST['action'])

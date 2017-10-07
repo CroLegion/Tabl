@@ -40,7 +40,8 @@
 					require 'createProject.php';
 				break;
 				case 'createproject':
-					echo $_POST["proj_desc"];
+					insert_project($_POST['proj_name'],$_POST['proj_desc']);
+					require 'default.php';
 				break;
 				default:
 					require 'login.php';

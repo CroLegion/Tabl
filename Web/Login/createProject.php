@@ -19,8 +19,7 @@
 						<br><br>
 						<label>Project Description:</label>
 						<br>
-						<textarea rows="4" cols="50" name="proj_desc" form="createproject">Description
-						</textarea>
+						<textarea rows="4" cols="50" name="proj_desc" form="createproject">Description</textarea>
 						<br><br>
 						<input type="hidden" name='action' value='createproject'>
 						<input type='submit' value='Create'>

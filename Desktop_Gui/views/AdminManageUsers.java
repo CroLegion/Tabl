@@ -134,9 +134,16 @@ public class AdminManageUsers extends JFrame {
 	private JButton btnCreateNewTask;
 	private JButton buttonAssignUsers; 	
 	private JButton buttonRemoveUsers;
-	
-	
-	
+	private JButton btn_create_project;
+	private JButton btn_create_task;
+	private JButton btn_create_job;
+	private JPanel pnlCreateProject;
+	private JPanel pnlCreateTask;
+	private JPanel pnlCreateJob;
+	private JButton btnCancelProject;
+	private JButton btnCancelTask;
+	private JButton btnCreateJob;
+	private JButton btnCancelJob;
 	/**
 	 * Launch the application.
 	 */
@@ -219,13 +226,12 @@ public class AdminManageUsers extends JFrame {
 		UserManagerPages.setLayout(null);
 		
 		pnlCreateUser = new JPanel();
-		UserManagerPages.setLayer(pnlCreateUser, 5);
+		pnlCreateUser.setVisible(false);
+		UserManagerPages.setLayer(pnlCreateUser, 2);
 		pnlCreateUser.setBounds(0, 0, 746, 720);
 		UserManagerPages.add(pnlCreateUser);
 		pnlCreateUser.setBackground(UIManager.getColor("Button.background"));
 		pnlCreateUser.setBorder(new SoftBevelBorder(BevelBorder.RAISED, new Color(220, 20, 60), null, null, null));
-		//hides the create user window until the user click "Create new user" button
-		pnlCreateUser.setVisible(false);
 		
 		lblEnterUserInfo = new JLabel("Enter User Info");
 		lblEnterUserInfo.setFont(new Font("Tahoma", Font.BOLD, 20));
@@ -398,7 +404,8 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateUser.setLayout(gl_pnlCreateUser);
 //create user end				
 //create project start		
-		JPanel pnlCreateProject = new JPanel();
+		pnlCreateProject = new JPanel();
+		pnlCreateProject.setVisible(false);
 		UserManagerPages.setLayer(pnlCreateProject, 2);
 		pnlCreateProject.setBounds(0, 0, 746, 720);
 		UserManagerPages.add(pnlCreateProject);
@@ -431,6 +438,8 @@ public class AdminManageUsers extends JFrame {
 		
 		txtProjectName = new JTextField();
 		txtProjectName.setColumns(10);
+		
+		btnCancelProject = new JButton("Cancel");
 		GroupLayout gl_pnlCreateProject = new GroupLayout(pnlCreateProject);
 		gl_pnlCreateProject.setHorizontalGroup(
 			gl_pnlCreateProject.createParallelGroup(Alignment.TRAILING)
@@ -439,11 +448,11 @@ public class AdminManageUsers extends JFrame {
 					.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.TRAILING)
 						.addComponent(lblNewLabel)
 						.addComponent(lblNewLabel_1))
-					.addPreferredGap(ComponentPlacement.RELATED, 182, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED, 183, Short.MAX_VALUE)
 					.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
 						.addComponent(scrlPaneProjectDescription, GroupLayout.PREFERRED_SIZE, 205, GroupLayout.PREFERRED_SIZE)
 						.addComponent(txtProjectName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(142, Short.MAX_VALUE))
+					.addContainerGap(144, Short.MAX_VALUE))
 				.addGroup(gl_pnlCreateProject.createSequentialGroup()
 					.addGap(89)
 					.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
@@ -464,11 +473,13 @@ public class AdminManageUsers extends JFrame {
 						.addComponent(scrlPaneUsersAdded, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE))
 					.addGap(60))
 				.addGroup(gl_pnlCreateProject.createSequentialGroup()
-					.addContainerGap(296, Short.MAX_VALUE)
+					.addContainerGap(299, Short.MAX_VALUE)
 					.addComponent(lblCreateANew)
 					.addGap(284))
 				.addGroup(gl_pnlCreateProject.createSequentialGroup()
-					.addContainerGap(505, Short.MAX_VALUE)
+					.addContainerGap(356, Short.MAX_VALUE)
+					.addComponent(btnCancelProject)
+					.addGap(63)
 					.addComponent(btnCreateNewProject)
 					.addGap(113))
 		);
@@ -504,7 +515,9 @@ public class AdminManageUsers extends JFrame {
 							.addGap(32)
 							.addComponent(btnRemove)))
 					.addGap(53)
-					.addComponent(btnCreateNewProject)
+					.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnCreateNewProject)
+						.addComponent(btnCancelProject))
 					.addContainerGap(126, Short.MAX_VALUE))
 		);
 		
@@ -522,7 +535,8 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateProject.setLayout(gl_pnlCreateProject);
 //create project end
 //Create task start			
-		JPanel pnlCreateTask = new JPanel();
+		pnlCreateTask = new JPanel();
+		pnlCreateTask.setVisible(false);
 		UserManagerPages.setLayer(pnlCreateTask, 2);
 		pnlCreateTask.setBounds(0, 0, 746, 720);
 		UserManagerPages.add(pnlCreateTask);
@@ -544,6 +558,8 @@ public class AdminManageUsers extends JFrame {
 		
 		textTaskName = new JTextField();
 		textTaskName.setColumns(10);
+		
+		btnCancelTask = new JButton("Cancel");
 		GroupLayout gl_pnlCreateTask = new GroupLayout(pnlCreateTask);
 		gl_pnlCreateTask.setHorizontalGroup(
 			gl_pnlCreateTask.createParallelGroup(Alignment.TRAILING)
@@ -553,18 +569,20 @@ public class AdminManageUsers extends JFrame {
 						.addComponent(lblTaskName)
 						.addComponent(lblTaskDescription)
 						.addComponent(lblTaskReason))
-					.addPreferredGap(ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED, 115, Short.MAX_VALUE)
 					.addGroup(gl_pnlCreateTask.createParallelGroup(Alignment.LEADING)
 						.addComponent(scrlPaneReason, GroupLayout.PREFERRED_SIZE, 215, GroupLayout.PREFERRED_SIZE)
 						.addComponent(scrlPaneDescription, GroupLayout.PREFERRED_SIZE, 216, GroupLayout.PREFERRED_SIZE)
 						.addComponent(textTaskName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(163, Short.MAX_VALUE))
+					.addContainerGap(164, Short.MAX_VALUE))
 				.addGroup(gl_pnlCreateTask.createSequentialGroup()
-					.addContainerGap(505, Short.MAX_VALUE)
+					.addContainerGap(374, Short.MAX_VALUE)
+					.addComponent(btnCancelTask)
+					.addGap(45)
 					.addComponent(btnCreateNewTask)
 					.addGap(125))
 				.addGroup(gl_pnlCreateTask.createSequentialGroup()
-					.addContainerGap(298, Short.MAX_VALUE)
+					.addContainerGap(301, Short.MAX_VALUE)
 					.addComponent(lblCreateTask)
 					.addGap(299))
 		);
@@ -586,8 +604,10 @@ public class AdminManageUsers extends JFrame {
 						.addComponent(scrlPaneReason, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblTaskReason))
 					.addGap(77)
-					.addComponent(btnCreateNewTask)
-					.addContainerGap(99, Short.MAX_VALUE))
+					.addGroup(gl_pnlCreateTask.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnCreateNewTask)
+						.addComponent(btnCancelTask))
+					.addContainerGap(93, Short.MAX_VALUE))
 		);
 		
 		JTextArea txtAreaReason = new JTextArea();
@@ -599,7 +619,7 @@ public class AdminManageUsers extends JFrame {
 //create task end	
 //edit user info start				
 		pnlUserEditInfo = new JPanel();
-		UserManagerPages.setLayer(pnlUserEditInfo, 2);
+		UserManagerPages.setLayer(pnlUserEditInfo, 3);
 		pnlUserEditInfo.setBounds(0, 0, 746, 720);
 		UserManagerPages.add(pnlUserEditInfo);
 		pnlUserEditInfo.setBorder(new TitledBorder(null, "User Edit/Info", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -790,7 +810,8 @@ public class AdminManageUsers extends JFrame {
 		pnlUserEditInfo.setLayout(gl_pnlUserEditInfo);
 //edit user info end
 //create job start				
-		JPanel pnlCreateJob = new JPanel();
+		pnlCreateJob = new JPanel();
+		pnlCreateJob.setVisible(false);
 		UserManagerPages.setLayer(pnlCreateJob, 2);
 		pnlCreateJob.setBounds(0, 0, 746, 720);
 		UserManagerPages.add(pnlCreateJob);
@@ -843,6 +864,10 @@ public class AdminManageUsers extends JFrame {
 		JLabel lblAvailableUsers_1 = new JLabel("Available Users");
 		
 		JLabel lblAssignedUsers = new JLabel("Assigned Users");
+		
+		btnCreateJob = new JButton("Create Job");
+		
+		btnCancelJob  = new JButton("Cancel");
 		GroupLayout gl_pnlCreateJob = new GroupLayout(pnlCreateJob);
 		gl_pnlCreateJob.setHorizontalGroup(
 			gl_pnlCreateJob.createParallelGroup(Alignment.LEADING)
@@ -885,6 +910,12 @@ public class AdminManageUsers extends JFrame {
 						.addComponent(buttonRemoveUsers))
 					.addGap(6)
 					.addComponent(scrlPaneAssignedUsers, GroupLayout.PREFERRED_SIZE, 148, GroupLayout.PREFERRED_SIZE))
+				.addGroup(Alignment.TRAILING, gl_pnlCreateJob.createSequentialGroup()
+					.addContainerGap(491, Short.MAX_VALUE)
+					.addComponent(btnCancelJob)
+					.addGap(18)
+					.addComponent(btnCreateJob)
+					.addGap(59))
 		);
 		gl_pnlCreateJob.setVerticalGroup(
 			gl_pnlCreateJob.createParallelGroup(Alignment.LEADING)
@@ -922,9 +953,26 @@ public class AdminManageUsers extends JFrame {
 							.addComponent(buttonAssignUsers)
 							.addGap(26)
 							.addComponent(buttonRemoveUsers))
-						.addComponent(scrlPaneAssignedUsers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+						.addComponent(scrlPaneAssignedUsers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(18)
+					.addGroup(gl_pnlCreateJob.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnCreateJob)
+						.addComponent(btnCancelJob))
+					.addContainerGap(22, Short.MAX_VALUE))
 		);
 		pnlCreateJob.setLayout(gl_pnlCreateJob);
+		
+		btn_create_project = new JButton("Create Project");
+		btn_create_project.setBounds(304, 5, 115, 28);
+		contentPane.add(btn_create_project);
+		
+		btn_create_task = new JButton("Create Task");
+		btn_create_task.setBounds(417, 5, 115, 28);
+		contentPane.add(btn_create_task);
+		
+		btn_create_job = new JButton("Create Job");
+		btn_create_job.setBounds(535, 5, 97, 28);
+		contentPane.add(btn_create_job);
 //create job end			
 		setForeground(Color.BLACK);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(AdminManageUsers.class.getResource("/resources/Logo.PNG")));
@@ -957,13 +1005,15 @@ public class AdminManageUsers extends JFrame {
 		//creates a new project with the given inputs
 		btnCreateNewProject.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub				
+				// TODO Auto-generated method stub	
+				pnlCreateProject.setVisible(false);
 			}
 		});
 		//creates a new Task with given inputs
 		btnCreateNewTask.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub				
+				// TODO Auto-generated method stub		
+				pnlCreateTask.setVisible(false);
 			}
 		});	
 		//assign users to task
@@ -976,6 +1026,54 @@ public class AdminManageUsers extends JFrame {
 		buttonRemoveUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub				
+			}
+		});
+		//Open create new project tab
+		btn_create_project.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlCreateProject.setVisible(true);
+				UserManagerPages.setLayer(pnlUserEditInfo, 2);
+				UserManagerPages.setLayer(pnlCreateProject, 3);				
+			}
+		});
+		//closes create new project tab
+		btnCancelProject.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlCreateProject.setVisible(false);
+			}
+		});
+		//open create new task tab
+		btn_create_task.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlCreateTask.setVisible(true);
+				UserManagerPages.setLayer(pnlUserEditInfo, 2);
+				UserManagerPages.setLayer(pnlCreateTask, 3);				
+			}
+		});
+		//closes create new task tab
+		btnCancelTask.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlCreateTask.setVisible(false);
+			}
+		});
+		//open create new job
+		btn_create_job.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlCreateJob.setVisible(true);
+				UserManagerPages.setLayer(pnlUserEditInfo, 2);
+				UserManagerPages.setLayer(pnlCreateJob, 3);				
+			}
+		});
+		//closes create job tab
+		btnCancelJob.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlCreateJob.setVisible(false);
+			}
+		});
+		//creates a new job w/ info
+		btnCreateJob.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlCreateJob.setVisible(false);
 			}
 		});
 		//moves the create user panel to the front to allow the user to enter the new user info

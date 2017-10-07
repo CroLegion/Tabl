@@ -32,13 +32,21 @@
 	$password = "x1cbBr23";
 	$database = "db309amc2";
 	data_set($servername, $username, $password, $database);
-	
-	$result = data_usersList();
-
-	$roots=get_roots();
 	$tree="";
-	$rootQ = get_root_of_tree($roots->fetch_assoc()["jobname"]);
-	$root=$rootQ->fetch_assoc();
+	$result = data_usersList();
+	if(isset($_POST['projName']))
+	{
+		$root=get_root_of_tree("Fix Church");
+		$root=$root->fetch_assoc();
+	}
+	else{	
+		$roots=get_roots();
+	
+		$rootQ = get_root_of_tree($roots->fetch_assoc()["jobname"]);
+		$root=$rootQ->fetch_assoc();
+	}
+	$title=$root['jobname'];
+
 	$tree=$tree. "<ul> <li> <a href=\"link\">".$root["jobname"]."</a>";
 	$rootChildren=get_children($root["jobID"]);
 	$tree=$tree. "<ul>";

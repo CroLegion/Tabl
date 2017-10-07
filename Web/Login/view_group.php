@@ -23,9 +23,14 @@
 	$projectlist = "";
 	while($curProj = $projects->fetch_assoc()["jobname"])
 	{
-		$projectlist = $projectlist . $curProj;
-		$numProj = $numProj - 1;
-		($numProj > 0) ? $projectlist = $projectlist . ", " : $projectlist = $projectlist . "<br/>";
+		//$projectlist = $projectlist . $curProj;
+		//$numProj = $numProj - 1;
+		//($numProj > 0) ? $projectlist = $projectlist . ", " : $projectlist = $projectlist . "<br/>";
+		$projectlist=$projectlist."<form action='tree_display.php' method='post'>
+				<input type='hidden' name='projName' value=\"".$curProj."\">
+				<input type='submit' value=\"".$curProj."\">
+			</form>";
+
 	}
 	$projectlist = $projectlist . "<br/>";
 

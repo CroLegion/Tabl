@@ -52,7 +52,7 @@ SQL;
 		//Performs a query on the users table and returns all users first and last names.
 	function data_usersList()
 	{
-		$sql = "SELECT firstname, lastname FROM users";
+		$sql = "SELECT firstname, lastname, userID FROM users";
 		$conn = data_open();
 		$result = $conn->query($sql);
 		$conn->close();
@@ -65,6 +65,16 @@ SQL;
 		{
 			return -1;
 		}
+	}
+
+	//Selects a user by their id number
+	function data_specificUser($userID)
+	{
+		$sql = "SELECT * FROM users WHERE userID={$userID};";
+		$conn = data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+		return $result;
 	}
 
 	//Performs a query on the qualifications table and returns all the qualifications.
@@ -91,7 +101,7 @@ SQL;
 	{
 		$pass = hash_login($username, $password, "");
 		$userID = get_and_create_new_user_id();
-		$sql = "INSERT INTO users VALUES({$userID},{$username},{usertype},{$firstname},{$lastname},{$email},{$phone},{$pass})";
+		$sql = "INSERT INTO users VALUES({$userID},{$username},{$usertype},{$firstname},{$lastname},{$email},{$phone},{$pass})";
 		$conn = data_open();
 		$result = $conn->query($sql);
 		$conn->close();

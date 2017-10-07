@@ -7,11 +7,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.FlowLayout;
+
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,9 +23,12 @@ import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
 import java.awt.Panel;
 import java.awt.TextArea;
+
 import javax.swing.JTextPane;
+
 import java.awt.Font;
 import java.awt.Button;
+
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.border.MatteBorder;
@@ -37,8 +43,11 @@ import common.jdbc;
 import common.User;
 import common.Job;
 import common.Qualification;
+
 import javax.swing.JLabel;
+
 import com.jgoodies.forms.factories.DefaultComponentFactory;
+
 import javax.swing.UIManager;
 import javax.swing.JInternalFrame;
 import javax.swing.border.TitledBorder;
@@ -46,8 +55,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.JTextField;
 import javax.swing.JSeparator;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JPasswordField;
@@ -117,8 +128,15 @@ public class AdminManageUsers extends JFrame {
 	private JTextField txtJobName;
 	private JTextField textTaskName;
 	private JTextField txtProjectName;
+	private JButton btnAssign;
+	private JButton btnRemove;
+	private JButton btnCreateNewProject;
+	private JButton btnCreateNewTask;
+	private JButton buttonAssignUsers; 	
+	private JButton buttonRemoveUsers;
 	
-
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -403,18 +421,13 @@ public class AdminManageUsers extends JFrame {
 		
 		JLabel lblNewLabel_4 = new JLabel("Users added:");
 		
-		JButton btnAssign = new JButton("->");
-		
-		JButton btnRemove = new JButton("<-");
-		btnRemove.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
+		btnAssign = new JButton("->");
+		btnRemove = new JButton("<-");
 		
 		JLabel lblCreateANew = new JLabel("Create a new Project");
 		lblCreateANew.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		
-		JButton btnCreateNewProject = new JButton("Create new Project");
+		btnCreateNewProject = new JButton("Create new Project");
 		
 		txtProjectName = new JTextField();
 		txtProjectName.setColumns(10);
@@ -527,7 +540,7 @@ public class AdminManageUsers extends JFrame {
 		
 		JScrollPane scrlPaneReason = new JScrollPane();
 		
-		JButton btnCreateNewTask = new JButton("Create new Task");
+		btnCreateNewTask = new JButton("Create new Task");
 		
 		textTaskName = new JTextField();
 		textTaskName.setColumns(10);
@@ -820,13 +833,9 @@ public class AdminManageUsers extends JFrame {
 		JList listAvailableUsers = new JList();
 		scrlPaneAvailableUsers.setViewportView(listAvailableUsers);
 		
-		JButton buttonAssignUsers = new JButton("->");
-		buttonAssignUsers.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-		}
-		});
+		buttonAssignUsers = new JButton("->");
 		
-		JButton buttonRemoveUsers = new JButton("<-");
+		buttonRemoveUsers = new JButton("<-");
 		
 		txtJobName = new JTextField();
 		txtJobName.setColumns(10);
@@ -933,7 +942,42 @@ public class AdminManageUsers extends JFrame {
 				jdbc.closeSQLConnection();
 			}
 		});
-
+		//assigns users to a project
+		btnAssign.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub				
+			}
+		});
+		//removes users from a project
+		btnRemove.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub				
+			}
+		});
+		//creates a new project with the given inputs
+		btnCreateNewProject.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub				
+			}
+		});
+		//creates a new Task with given inputs
+		btnCreateNewTask.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub				
+			}
+		});	
+		//assign users to task
+		buttonAssignUsers.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub			
+			}
+		});
+		//removes users from task
+		buttonRemoveUsers.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub				
+			}
+		});
 		//moves the create user panel to the front to allow the user to enter the new user info
 		btn_create_new_user.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -943,7 +987,7 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
-		
+
 		btn_preferences.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -955,13 +999,11 @@ public class AdminManageUsers extends JFrame {
 		});
 		
 		btnChangePassword.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
+			public void actionPerformed(ActionEvent arg0) {				
 			}
 		});
 		//Display user information that was clicked on the left.
 		listUsers.addListSelectionListener(new ListSelectionListener() {
-
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
@@ -1072,9 +1114,7 @@ public class AdminManageUsers extends JFrame {
 		textLastName.setText(u.get_lastname());
 		textUsername.setText(u.get_username());
 		if (u.get_email() != null) {textEmail.setText(u.get_email());} else {textEmail.setText("No Email Address in Database.");}
-		if (u.get_phone() != null) {textPhone.setText(u.get_phone());} else {textPhone.setText("No Phone Number in Database.");}
-		
-		
+		if (u.get_phone() != null) {textPhone.setText(u.get_phone());} else {textPhone.setText("No Phone Number in Database.");}				
 		createQualLists(u.get_userID());
 	}
 	
@@ -1096,14 +1136,12 @@ public class AdminManageUsers extends JFrame {
 	private void createQualLists(int userID) {
 		assignedQualList.clear();
 		availableQualList.clear();
-		
-		
+				
 		assignedQuals = jdbc.getUserAssignedQuals(userID);
 		for (Qualification q : assignedQuals) { 
 			assignedQualList.addElement(q.getQualName());
 		}
-		
-		
+				
 		availQuals = jdbc.getUserAvailQuals(userID);
 		for (Qualification q : availQuals) { 
 			availableQualList.addElement(q.getQualName());

@@ -42,6 +42,9 @@
 				case 'new_job':
 					require 'createJob.php';
 				break;
+				case 'view_group':
+					require 'view_group.php';
+				break;
 				case 'createproject':
 					insert_project($_POST['proj_name'],$_POST['proj_desc']);
 					require 'default.php';

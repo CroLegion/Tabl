@@ -29,6 +29,10 @@
 			<input type='hidden' name='action' value='new_job'>
 			<input type='submit' value='New Job'>
 		</form>
+		<form action='index.php' method='post'>
+			<input type='hidden' name='action' value='view_group'>
+			<input type='submit' value='View Group'>
+		</form>
 HTML;
 
 	//Generate Messages section

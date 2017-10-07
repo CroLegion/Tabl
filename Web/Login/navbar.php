@@ -14,8 +14,8 @@
 	{
 		$tree_list=$tree_list."
 			<form action='tree_display.php' method='post'>
-				<input type='hidden' name='projName' value=".$root.">
-				<input type='submit' value=".$root.">
+				<input type='hidden' name='projName' value=\"".$root."\">
+				<input type='submit' value=\"".$root."\">
 			</form>";
 	}
 	$projects = <<< HTML

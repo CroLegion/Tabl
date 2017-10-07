@@ -36,7 +36,7 @@
 	$result = data_usersList();
 	if(isset($_POST['projName']))
 	{
-		$root=get_root_of_tree("Fix Church");
+		$root=get_root_of_tree();
 		$root=$root->fetch_assoc();
 	}
 	else{	

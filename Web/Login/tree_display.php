@@ -46,20 +46,7 @@
 	$tree=$tree. "</ul>";
 	$tree=$tree. "</li></ul>";
 
-
-	//Build navbar pane in HTML
-	$navbar = <<< HTML
-		
-			<div class='navbar'>
-				<input class='navbutton' type='button' value='Projects' onclick='clickProjects();'>
-				<div class='navlist' id='projectsButtons'></div>
-				<input class='navbutton' type='button' value='Messaging' onclick='clickMessages();'>
-				<div class='navlist' id='messagesButtons'></div>
-			</div>
-		
-HTML;
-
-
+	require 'navbar.php';
 	$content = <<< HTML
 		<head><link rel="stylesheet" href="styles.css"></head>
 

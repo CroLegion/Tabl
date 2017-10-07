@@ -10,17 +10,19 @@
 				<link rel='stylesheet' type='text/css' href='styles.css'>
 			</head>
 			<body>
-				<form action='index.php' method='post'>
+				<form action='index.php' method='post' id="createproject">
 					<fieldset>
-						<legend>Please Authenticate</legend>
-						<label>Action:</label>
+						<legend>Create Project</legend>
+						<label>Name:</label>
 						<br>
-						<input type='text' name='action'>
+						<input type='text' name='proj_name'>
 						<br><br>
-						<label>Password:</label>
+						<label>Project Description:</label>
 						<br>
-						<input type='password' name='login_pass'>
+						<textarea rows="4" cols="50" name="proj_desc" form="createproject">Description
+						</textarea>
 						<br><br>
+						<input type="hidden" name='action' value='createproject'>
 						<input type='submit' value='Create'>
 					</fieldset>
 				</form>

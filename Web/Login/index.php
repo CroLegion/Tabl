@@ -39,6 +39,9 @@
 				case 'new_project':
 					require 'createProject.php';
 				break;
+				case 'createproject':
+					echo $_POST["proj_desc"];
+				break;
 				default:
 					require 'login.php';
 				break;

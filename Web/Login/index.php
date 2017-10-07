@@ -39,8 +39,15 @@
 				case 'new_project':
 					require 'createProject.php';
 				break;
+				case 'new_job':
+					require 'createJob.php';
+				break;
 				case 'createproject':
 					insert_project($_POST['proj_name'],$_POST['proj_desc']);
+					require 'default.php';
+				break;
+				case 'createjob':
+					insert_job($_POST['job_name'],$_POST['job_desc'],get_root_of_tree($_POST['Parent'])->fetch_assoc()['jobID']);
 					require 'default.php';
 				break;
 				default:

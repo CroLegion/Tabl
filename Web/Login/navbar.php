@@ -25,6 +25,10 @@
 			<input type='hidden' name='action' value='new_project'>
 			<input type='submit' value='New Project'>
 		</form>
+		<form action='index.php' method='post'>
+			<input type='hidden' name='action' value='new_job'>
+			<input type='submit' value='New Job'>
+		</form>
 HTML;
 
 	//Generate Messages section

@@ -218,11 +218,32 @@ SQL;
 		$conn = data_open();
 		$lowest_avail=$conn->query($minQ);
 		$lowest_avail=$lowest_avail->fetch_assoc()["max(jobID)"]+1;
-
-		echo $lowest_avail;
 		$sql="INSERT INTO jobs VALUES(".$lowest_avail.",\"".$name."\",1,\"".$desc."\",NULL);";
-		echo $sql;
 		$conn->query($sql);
 		$conn->close();
+	}
+	
+	//Insert new job ino database
+	function insert_job($name,$desc,$parent)
+	{
+		$minQ="SELECT max(jobID) from db309amc2.jobs;";
+		$conn = data_open();
+		$lowest_avail=$conn->query($minQ);
+		$lowest_avail=$lowest_avail->fetch_assoc()["max(jobID)"]+1;
+		$sql="INSERT INTO jobs VALUES(".$lowest_avail.",\"".$name."\",2,\"".$desc."\",\"".$parent."\");";
+		$conn->query($sql);
+		$conn->close();
+	}
+	
+	//Temporary function for create project
+	function all_jobs()
+	{
+
+		$sql="Select jobname from jobs;";
+		
+		$conn = data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+		return $result;
 	}
 ?>

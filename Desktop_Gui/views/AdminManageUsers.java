@@ -792,7 +792,7 @@ public class AdminManageUsers extends JFrame {
 				lblTablLogin.setFont(new Font("Tahoma", Font.BOLD, 30));
 		
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 1);
+		layeredPane.setLayer(layeredPaneManagerWorker, 20);
 		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneManagerWorker);
 		
@@ -1360,7 +1360,8 @@ public class AdminManageUsers extends JFrame {
 				job.setJobdesc(textAreaProjectDescription.getText());
 				ArrayList<Job> j = new ArrayList<Job>();
 				j.add(job);
-					
+				jdbc.add_project(j);
+				layeredPaneManagerWorker.setVisible(true);	
 				
 			}
 		});

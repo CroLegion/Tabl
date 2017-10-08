@@ -101,21 +101,7 @@ public static void add_user(int usertype, String username, String firstname, Str
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
 }
-public static int getMaxJobID(){
-	int ID=0;
-	try {
-		Statement statement = conn1.createStatement();
-		String sql = "SELECT MAX(jobID) FROM db309amc2.jobs";
-		statement.executeUpdate(sql);
-		// Close all statements and connections
-		statement.close();
-	} catch (SQLException e) {
-		System.out.println("SQLException: " + e.getMessage());
-		System.out.println("SQLState: " + e.getSQLState());
-		System.out.println("VendorError: " + e.getErrorCode());
-	}
-	return ID;
-}
+
 
 public static void deleteUser(int userID) {
 	try {
@@ -134,12 +120,12 @@ public static void deleteUser(int userID) {
 }
 
 
-public static void add_project(ArrayList<Job> jobs) throws SQLException {
+public static void add_project(ArrayList<Job> jobs){
 	int jobID;
 	String jobname;
 	int jobtype;
 	String jobdesc;
-	int parentID;
+	String parentID;
 	try {
 		Statement statement = conn1.createStatement();
 		
@@ -148,10 +134,10 @@ public static void add_project(ArrayList<Job> jobs) throws SQLException {
 			jobname = jobs.get(i).jobname;
 			jobtype = jobs.get(i).jobtype;
 			jobdesc = jobs.get(i).jobdesc;
-			parentID = jobs.get(i).parentID;
-
-			String sql = "INSERT INTO db309amc2.users " +
-               "VALUES ("+jobID+","+jobname+","+jobtype+","+jobdesc+","+parentID+")";
+			
+			System.out.printf("%d %s %d %s \n", jobID,jobname, jobtype,  jobdesc);
+			String sql = "INSERT INTO db309amc2.jobs " +
+               "VALUES ("+jobID+","+jobname+","+jobtype+","+jobdesc+","+null+")";
   			statement.executeUpdate(sql);
 		}
 
@@ -198,6 +184,27 @@ public static ArrayList<User> get_users() {
 	return users;
 }
 
+//TODO
+public static int getMaxJobID(){
+	int ID=0;
+	try {
+		String query = String.format("%s", "SELECT MAX(jobID) FROM db309amc2.jobs");
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {ID = rs.getInt("jobID");}
+		
+
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return ID;
+	
+}
 //gets a single user given its username.
 
 public static User get_user(String username) {

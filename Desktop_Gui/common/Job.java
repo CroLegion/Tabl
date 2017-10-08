@@ -4,7 +4,7 @@ public class Job {
    String jobname;
    int jobtype;
    String jobdesc;
-   int parentID;
+   String parentID=null;
 
    public Job(int jobID, String jobname, int jobtype) {
    		this.jobID = jobID;
@@ -18,7 +18,7 @@ public class Job {
 
 
 
-   public void setparentID(int p) {
-		parentID = p;
+   public void setparentID(String s) {
+		parentID = s;
    }
 }

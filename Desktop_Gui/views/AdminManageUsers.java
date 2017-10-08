@@ -70,6 +70,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.SpringLayout;
 import javax.swing.JTextArea;
 import java.awt.SystemColor;
+import java.awt.Component;
 
 public class AdminManageUsers extends JFrame {
 
@@ -197,6 +198,7 @@ public class AdminManageUsers extends JFrame {
 	private JLabel lblCompletedTickets;
 	private JScrollPane scrlOpenTickets;
 	private JScrollPane scrlCompletedTickets;
+	private JTextArea textAreaProjectDescription;
 	/**
 	 * Launch the application.
 	 */
@@ -841,7 +843,7 @@ public class AdminManageUsers extends JFrame {
 				lblTablLogin.setFont(new Font("Tahoma", Font.BOLD, 30));
 		
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 0);
+		layeredPane.setLayer(layeredPaneManagerWorker, 20);
 		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneManagerWorker);
 		
@@ -852,7 +854,7 @@ public class AdminManageUsers extends JFrame {
 		pnlManagerWorker.setLayout(null);
 		
 		btn_create_project = new JButton("Create Project");
-		btn_create_project.setBounds(337, 0, 115, 28);
+		btn_create_project.setBounds(316, 0, 136, 28);
 		pnlManagerWorker.add(btn_create_project);
 		
 		btn_create_task = new JButton("Create Task");
@@ -866,57 +868,58 @@ public class AdminManageUsers extends JFrame {
 		layeredPaneManagerWorkerComponents = new JLayeredPane();
 		layeredPaneManagerWorkerComponents.setBounds(181, 41, 746, 719);
 		pnlManagerWorker.add(layeredPaneManagerWorkerComponents);
-						//create project end
-						//Create task start			
-								pnlCreateTask = new JPanel();
-								pnlCreateTask.setBounds(0, 0, 746, 720);
-								layeredPaneManagerWorkerComponents.add(pnlCreateTask);
-								pnlCreateTask.setVisible(false);
-								
-								JLabel lblCreateTask = new JLabel("Create a new Task");
-								lblCreateTask.setBounds(301, 47, 146, 22);
-								lblCreateTask.setFont(new Font("Tahoma", Font.PLAIN, 18));
-								
-								JLabel lblTaskName = new JLabel("Name of the Task:");
-								lblTaskName.setBounds(163, 124, 88, 14);
-								
-								JLabel lblTaskDescription = new JLabel("Description of the Task:");
-								lblTaskDescription.setBounds(137, 277, 114, 14);
-								
-								JLabel lblTaskReason = new JLabel("Reason why it should be added:");
-								lblTaskReason.setBounds(97, 422, 154, 14);
-								
-								JScrollPane scrlPaneDescription = new JScrollPane();
-								scrlPaneDescription.setBounds(366, 271, 216, 78);
-								
-								JScrollPane scrlPaneReason = new JScrollPane();
-								scrlPaneReason.setBounds(366, 422, 215, 105);
-								
-								btnCreateNewTask = new JButton("Create new Task");
-								btnCreateNewTask.setBounds(508, 604, 113, 23);
-								
-								textTaskName = new JTextField();
-								textTaskName.setBounds(366, 121, 86, 20);
-								textTaskName.setColumns(10);
-								
-								btnCancelTask = new JButton("Cancel");
-								btnCancelTask.setBounds(398, 604, 65, 23);
-								
-								JTextArea txtAreaReason = new JTextArea();
-								scrlPaneReason.setViewportView(txtAreaReason);
-								
-								JTextArea txtAreaDescription = new JTextArea();
-								scrlPaneDescription.setViewportView(txtAreaDescription);
-								pnlCreateTask.setLayout(null);
-								pnlCreateTask.add(lblTaskName);
-								pnlCreateTask.add(lblTaskDescription);
-								pnlCreateTask.add(lblTaskReason);
-								pnlCreateTask.add(scrlPaneReason);
-								pnlCreateTask.add(scrlPaneDescription);
-								pnlCreateTask.add(textTaskName);
-								pnlCreateTask.add(btnCancelTask);
-								pnlCreateTask.add(btnCreateNewTask);
-								pnlCreateTask.add(lblCreateTask);
+												//create project end
+												//Create task start			
+														pnlCreateTask = new JPanel();
+														layeredPaneManagerWorkerComponents.setLayer(pnlCreateTask, 0);
+														pnlCreateTask.setBounds(0, 0, 746, 720);
+														layeredPaneManagerWorkerComponents.add(pnlCreateTask);
+														pnlCreateTask.setVisible(false);
+														
+														JLabel lblCreateTask = new JLabel("Create a new Task");
+														lblCreateTask.setBounds(301, 47, 146, 22);
+														lblCreateTask.setFont(new Font("Tahoma", Font.PLAIN, 18));
+														
+														JLabel lblTaskName = new JLabel("Name of the Task:");
+														lblTaskName.setBounds(163, 124, 114, 14);
+														
+														JLabel lblTaskDescription = new JLabel("Description of the Task:");
+														lblTaskDescription.setBounds(137, 277, 140, 14);
+														
+														JLabel lblTaskReason = new JLabel("Reason why it should be added:");
+														lblTaskReason.setBounds(97, 422, 180, 14);
+														
+														JScrollPane scrlPaneDescription = new JScrollPane();
+														scrlPaneDescription.setBounds(366, 271, 216, 78);
+														
+														JScrollPane scrlPaneReason = new JScrollPane();
+														scrlPaneReason.setBounds(366, 422, 215, 105);
+														
+														btnCreateNewTask = new JButton("Create new Task");
+														btnCreateNewTask.setBounds(508, 604, 140, 23);
+														
+														textTaskName = new JTextField();
+														textTaskName.setBounds(366, 121, 86, 20);
+														textTaskName.setColumns(10);
+														
+														btnCancelTask = new JButton("Cancel");
+														btnCancelTask.setBounds(398, 604, 86, 23);
+														
+														JTextArea txtAreaReason = new JTextArea();
+														scrlPaneReason.setViewportView(txtAreaReason);
+														
+														JTextArea txtAreaDescription = new JTextArea();
+														scrlPaneDescription.setViewportView(txtAreaDescription);
+														pnlCreateTask.setLayout(null);
+														pnlCreateTask.add(lblTaskName);
+														pnlCreateTask.add(lblTaskDescription);
+														pnlCreateTask.add(lblTaskReason);
+														pnlCreateTask.add(scrlPaneReason);
+														pnlCreateTask.add(scrlPaneDescription);
+														pnlCreateTask.add(textTaskName);
+														pnlCreateTask.add(btnCancelTask);
+														pnlCreateTask.add(btnCreateNewTask);
+														pnlCreateTask.add(lblCreateTask);
 										//create user end				
 										//create project start		
 												pnlCreateProject = new JPanel();
@@ -926,10 +929,10 @@ public class AdminManageUsers extends JFrame {
 												pnlCreateProject.setVisible(false);
 												
 												lblNewLabel = new JLabel("Project name:");
-												lblNewLabel.setBounds(147, 125, 67, 14);
+												lblNewLabel.setBounds(149, 125, 86, 14);
 												
 												lblNewLabel_1 = new JLabel("Description:");
-												lblNewLabel_1.setBounds(157, 192, 57, 14);
+												lblNewLabel_1.setBounds(157, 192, 78, 14);
 												
 												JScrollPane scrlPaneProjectDescription = new JScrollPane();
 												scrlPaneProjectDescription.setBounds(397, 186, 205, 81);
@@ -944,13 +947,13 @@ public class AdminManageUsers extends JFrame {
 												scrlPaneUsersAdded.setBounds(532, 354, 154, 164);
 												
 												JLabel lblNewLabel_2 = new JLabel("Qualifications:");
-												lblNewLabel_2.setBounds(111, 322, 68, 14);
+												lblNewLabel_2.setBounds(111, 322, 96, 14);
 												
 												JLabel lblNewLabel_3 = new JLabel("Users to add:");
-												lblNewLabel_3.setBounds(283, 322, 65, 14);
+												lblNewLabel_3.setBounds(283, 322, 76, 14);
 												
 												JLabel lblNewLabel_4 = new JLabel("Users added:");
-												lblNewLabel_4.setBounds(532, 322, 64, 14);
+												lblNewLabel_4.setBounds(532, 322, 86, 14);
 												
 												btnAssign = new JButton("->");
 												btnAssign.setBounds(455, 389, 45, 23);
@@ -962,16 +965,16 @@ public class AdminManageUsers extends JFrame {
 												lblCreateANew.setFont(new Font("Tahoma", Font.PLAIN, 18));
 												
 												btnCreateNewProject = new JButton("Create new Project");
-												btnCreateNewProject.setBounds(508, 571, 125, 23);
+												btnCreateNewProject.setBounds(508, 571, 154, 23);
 												
 												txtProjectName = new JTextField();
 												txtProjectName.setBounds(397, 119, 86, 20);
 												txtProjectName.setColumns(10);
 												
 												btnCancelProject = new JButton("Cancel");
-												btnCancelProject.setBounds(380, 571, 65, 23);
+												btnCancelProject.setBounds(380, 571, 82, 23);
 												
-												JTextArea textAreaProjectDescription = new JTextArea();
+												textAreaProjectDescription = new JTextArea();
 												scrlPaneProjectDescription.setViewportView(textAreaProjectDescription);
 												
 												listUsersAdded = new JList();
@@ -1002,7 +1005,7 @@ public class AdminManageUsers extends JFrame {
 												//edit user info end
 												//create job start				
 														pnlCreateJob = new JPanel();
-														layeredPaneManagerWorkerComponents.setLayer(pnlCreateJob, 10);
+														layeredPaneManagerWorkerComponents.setLayer(pnlCreateJob, 1);
 														pnlCreateJob.setBounds(0, 0, 746, 720);
 														layeredPaneManagerWorkerComponents.add(pnlCreateJob);
 														pnlCreateJob.setVisible(false);
@@ -1012,10 +1015,10 @@ public class AdminManageUsers extends JFrame {
 														lblCreateNewJob.setFont(new Font("Tahoma", Font.PLAIN, 18));
 														
 														JLabel lblNewLabel_9 = new JLabel("Description:");
-														lblNewLabel_9.setBounds(176, 166, 57, 14);
+														lblNewLabel_9.setBounds(176, 166, 88, 14);
 														
 														JLabel lblNewLabel_10 = new JLabel("Assigned Manager:");
-														lblNewLabel_10.setBounds(141, 241, 92, 14);
+														lblNewLabel_10.setBounds(141, 241, 123, 14);
 														
 														JScrollPane scrlPaneJobDescription = new JScrollPane();
 														scrlPaneJobDescription.setBounds(395, 166, 224, 69);
@@ -1042,16 +1045,16 @@ public class AdminManageUsers extends JFrame {
 														scrlPaneAssignableManagers.setViewportView(listAssignableManagers);
 														
 														JLabel lblJobName = new JLabel("Name of the Job:");
-														lblJobName.setBounds(150, 107, 83, 14);
+														lblJobName.setBounds(150, 107, 114, 14);
 														
 														JLabel lblRequiredQualifications = new JLabel("Required Qualifications:");
-														lblRequiredQualifications.setBounds(119, 356, 114, 14);
+														lblRequiredQualifications.setBounds(119, 356, 145, 14);
 														
 														JList listRequiredQuals = new JList();
 														scrlPaneRequiredQuals.setViewportView(listRequiredQuals);
 														
 														JLabel lblUsersList = new JLabel("User List:");
-														lblUsersList.setBounds(188, 529, 45, 14);
+														lblUsersList.setBounds(188, 529, 76, 14);
 														
 														listAvailableUsers = new JList(userList);
 														scrlPaneAvailableUsers.setViewportView(listAvailableUsers);
@@ -1067,16 +1070,16 @@ public class AdminManageUsers extends JFrame {
 														txtJobName.setColumns(10);
 														
 														JLabel lblAvailableUsers_1 = new JLabel("Available Users");
-														lblAvailableUsers_1.setBounds(344, 507, 73, 14);
+														lblAvailableUsers_1.setBounds(344, 507, 100, 14);
 														
 														JLabel lblAssignedUsers = new JLabel("Assigned Users");
-														lblAssignedUsers.setBounds(550, 507, 73, 14);
+														lblAssignedUsers.setBounds(550, 507, 94, 14);
 														
 														btnCreateJob = new JButton("Create Job");
-														btnCreateJob.setBounds(602, 683, 85, 23);
+														btnCreateJob.setBounds(594, 683, 103, 23);
 														
 														btnCancelJob  = new JButton("Cancel");
-														btnCancelJob.setBounds(519, 683, 65, 23);
+														btnCancelJob.setBounds(498, 683, 86, 23);
 														pnlCreateJob.setLayout(null);
 														pnlCreateJob.add(lblCreateNewJob);
 														pnlCreateJob.add(lblJobName);
@@ -1308,7 +1311,7 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
-
+		
 		btn_add_qualifications.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
@@ -1409,7 +1412,20 @@ public class AdminManageUsers extends JFrame {
 				createUserList();
 			}
 		});
-		
+		//creates a new project TODO
+		btnCreateNewProject.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				int Id= jdbc.getMaxJobID()+1;
+				Job job =new Job(Id, txtProjectName.getText(), 0);
+				job.setJobdesc(textAreaProjectDescription.getText());
+				ArrayList<Job> j = new ArrayList<Job>();
+				j.add(job);
+				jdbc.add_project(j);
+				layeredPaneManagerWorker.setVisible(true);	
+				
+			}
+		});
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateUser.setVisible(false);

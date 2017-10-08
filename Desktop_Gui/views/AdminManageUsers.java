@@ -105,6 +105,19 @@ public class AdminManageUsers extends JFrame {
 	private JButton btnCreateUser;
 	private JLabel lblUserType;
 
+	//lists and models to display the qualifications on the gui to the user
+	private JButton btnAssign;
+	private JButton btnRemove;
+	private JList listUsersAdded;	
+	private JList listUsersAvailable;	
+	private JList listQualifications;
+	DefaultListModel availableUsersList = new DefaultListModel();
+	DefaultListModel assignedUsersList = new DefaultListModel();
+	DefaultListModel listedQualList = new DefaultListModel();
+	ArrayList<User> assignedUsers = new ArrayList<User>();
+	ArrayList<User> availUsers = new ArrayList<User>();
+	ArrayList<Qualification> listedQuals = new ArrayList<Qualification>();
+	
 	//Group for allowing only one radio button to be clicked at one time
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JRadioButton rdbtnAdmin;
@@ -128,8 +141,6 @@ public class AdminManageUsers extends JFrame {
 	private JTextField txtJobName;
 	private JTextField textTaskName;
 	private JTextField txtProjectName;
-	private JButton btnAssign;
-	private JButton btnRemove;
 	private JButton btnCreateNewProject;
 	private JButton btnCreateNewTask;
 	private JButton buttonAssignUsers; 	
@@ -137,13 +148,14 @@ public class AdminManageUsers extends JFrame {
 	private JButton btn_create_project;
 	private JButton btn_create_task;
 	private JButton btn_create_job;
-	private JPanel pnlCreateProject;
-	private JPanel pnlCreateTask;
-	private JPanel pnlCreateJob;
 	private JButton btnCancelProject;
 	private JButton btnCancelTask;
 	private JButton btnCreateJob;
-	private JButton btnCancelJob;
+	private JButton btnCancelJob;	
+	private JPanel pnlCreateProject;
+	private JPanel pnlCreateTask;
+	private JPanel pnlCreateJob;
+
 	/**
 	 * Launch the application.
 	 */
@@ -524,13 +536,13 @@ public class AdminManageUsers extends JFrame {
 		JTextArea textAreaProjectDescription = new JTextArea();
 		scrlPaneProjectDescription.setViewportView(textAreaProjectDescription);
 		
-		JList listUsersAdded = new JList();
+		listUsersAdded = new JList(availableUsersList);
 		scrlPaneUsersAdded.setViewportView(listUsersAdded);
 		
-		JList listUsersAvailable = new JList();
+		listUsersAvailable = new JList(assignedUsersList);
 		scrlPaneUsersAvailable.setViewportView(listUsersAvailable);
 		
-		JList listQualifications = new JList();
+		listQualifications = new JList(listedQualList);
 		scrlPaneQualifications.setViewportView(listQualifications);
 		pnlCreateProject.setLayout(gl_pnlCreateProject);
 //create project end
@@ -1033,7 +1045,8 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateProject.setVisible(true);
 				UserManagerPages.setLayer(pnlUserEditInfo, 2);
-				UserManagerPages.setLayer(pnlCreateProject, 3);				
+				UserManagerPages.setLayer(pnlCreateProject, 3);	
+				createQualificationsList();
 			}
 		});
 		//closes create new project tab
@@ -1227,6 +1240,14 @@ public class AdminManageUsers extends JFrame {
 		userList.setElementAt(s, lastClickedIndex);
 	}
 	
+	//TODO
+	private void createQualificationsList(){
+		listedQualList.clear();
+		listedQuals=jdbc.get_qualifications();
+		for(Qualification q: listedQuals){
+			listedQualList.addElement(q.getQualName());
+		}
+	}
 
 	//Populates both the assigned and available qualification lists for a user after clicked on one
 	//Is also called each time a qualification is assigned or unassigned to update the lists.

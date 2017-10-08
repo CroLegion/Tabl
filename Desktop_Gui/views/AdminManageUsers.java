@@ -74,7 +74,7 @@ public class AdminManageUsers extends JFrame {
 
 	private JPanel contentPane;
 	private JButton btn_create_new_user;
-	private JButton btn_preferences;
+	private JButton btn_add_qualifications;
 	private JButton btn_settings;
 	private JTextField textFirstName;
 	private JTextField textLastName;
@@ -87,6 +87,9 @@ public class AdminManageUsers extends JFrame {
 	String lastClickedUser;
 	private JList listUsers;
 	DefaultListModel userList = new DefaultListModel();
+	DefaultListModel userListAssignQual = new DefaultListModel();
+	DefaultListModel userListAvailQual = new DefaultListModel();
+	
 
 	//lists and models to display the qualifications on the gui to the user
 	private JList listAvailableQuals;
@@ -137,7 +140,6 @@ public class AdminManageUsers extends JFrame {
 	private JPanel pnlDeleteUser;
 	private JButton btnDeleteUser;
 	private JPanel pnlUserEditInfo;
-	private JLayeredPane UserManagerPages;
 	private JButton btnCancel;
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
@@ -156,6 +158,36 @@ public class AdminManageUsers extends JFrame {
 	private JPanel pnlCreateProject;
 	private JPanel pnlCreateTask;
 	private JPanel pnlCreateJob;
+	private JLabel lblTitle;
+	private JTextField txtNewQualificationName;
+	private JButton btnCreateQual;
+	private JTextArea txtNewQualificationDesc;
+	private JList listCreateQualAvailUsers;
+	private JList listCreateQualAssignedUsers;
+	private JButton btnAssignUserQual;
+	private JButton btnUnassignUserQual;
+	private JPanel pnlCreateQualification;
+	private JLayeredPane layeredPaneAdmin;
+	private JLayeredPane layeredPaneLogin;
+	private JLayeredPane layeredPaneManagerWorker;
+	private JPanel pnlAdmin;
+	private JLayeredPane layeredPaneAdminComponents;
+	private JPanel pnlLogin;
+	private JLayeredPane layeredPaneLoginComponents;
+	private JLabel lblTablLogin;
+	private JPanel pnlManagerWorker;
+	private JLayeredPane layeredPaneManagerWorkerComponents;
+	private JLayeredPane layeredPane;
+	private JLabel lblUsername_2;
+	private JLabel lblPassword_1;
+	private JButton btnLogin;
+	private JTextField txtLoginUser;
+	private JPasswordField passwordLogin;
+	private JPanel panel;
+	private JButton btnCancelAddQualifcation;
+	private JButton btnLogout;
+	private JLayeredPane layeredPane_1;
+	private JLabel lblPortal;
 	/**
 	 * Launch the application.
 	 */
@@ -189,27 +221,54 @@ public class AdminManageUsers extends JFrame {
 		setBackground(Color.RED);
 		setTitle("TABL");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 951, 815);
+		setBounds(100, 100, 974, 842);
 		contentPane = new JPanel();
-		contentPane.setBackground(Color.WHITE);
+		contentPane.setBackground(new Color(100, 149, 237));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
 		contentPane.setVisible(true);
 		
-		btn_settings = new JButton("Settings");
-		btn_settings.setBounds(756, 5, 89, 28);
-		btn_preferences = new JButton("Preferences");
-		btn_preferences.setBounds(631, 5, 115, 28);
-		
-		btn_create_new_user = new JButton("Create New User");
-		btn_create_new_user.setBounds(172, 5, 130, 28);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(5, 43, 157, 720);
-		
 //creates the list of all the users on the left side of the window
 		createUserList();
+		contentPane.setLayout(null);
+		createUserListQual();
+		
+		layeredPane = new JLayeredPane();
+		layeredPane.setBounds(10, 40, 941, 757);
+		contentPane.add(layeredPane);
+		
+		layeredPaneAdmin = new JLayeredPane();
+		layeredPaneAdmin.setBackground(new Color(100, 149, 237));
+		layeredPane.setLayer(layeredPaneAdmin, 0);
+		layeredPaneAdmin.setBounds(0, 0, 941, 760);
+		layeredPane.add(layeredPaneAdmin);
+		
+		pnlAdmin = new JPanel();
+		layeredPaneAdmin.setLayer(pnlAdmin, 0);
+		pnlAdmin.setBounds(0, 0, 947, 760);
+		layeredPaneAdmin.add(pnlAdmin);
+		pnlAdmin.setLayout(null);
+		
+		layeredPaneAdminComponents = new JLayeredPane();
+		layeredPaneAdminComponents.setBounds(0, 0, 937, 760);
+		pnlAdmin.add(layeredPaneAdminComponents);
+		
+		Panel pnlUsers = new Panel();
+		pnlUsers.setEnabled(false);
+		pnlUsers.setBounds(0, 0, 157, 28);
+		layeredPaneAdminComponents.add(pnlUsers);
+		pnlUsers.setBackground(Color.LIGHT_GRAY);
+		pnlUsers.setLayout(null);
+		
+		JLabel lblUsers = DefaultComponentFactory.getInstance().createLabel("USERS");
+		lblUsers.setBounds(58, 5, 40, 16);
+		pnlUsers.add(lblUsers);
+		lblUsers.setFont(new Font("Tahoma", Font.BOLD, 13));
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(0, 38, 157, 720);
+		layeredPaneAdminComponents.add(scrollPane);
 		listUsers = new JList(userList);
 		
 		scrollPane.setViewportView(listUsers);
@@ -217,775 +276,798 @@ public class AdminManageUsers extends JFrame {
 		listUsers.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		listUsers.setLayoutOrientation(JList.VERTICAL);
 		listUsers.setVisibleRowCount(1);
-		contentPane.setLayout(null);
 		
-		Panel pnlUsers = new Panel();
-		pnlUsers.setBounds(5, 5, 157, 28);
-		pnlUsers.setBackground(Color.LIGHT_GRAY);
+		btn_create_new_user = new JButton("Create New User");
+		btn_create_new_user.setBounds(177, 0, 130, 28);
+		layeredPaneAdminComponents.add(btn_create_new_user);
+		btn_add_qualifications = new JButton("Add Qualifications");
+		btn_add_qualifications.setBounds(678, 0, 150, 28);
+		layeredPaneAdminComponents.add(btn_add_qualifications);
 		
-		JLabel lblUsers = DefaultComponentFactory.getInstance().createLabel("USERS");
-		pnlUsers.add(lblUsers);
-		lblUsers.setFont(new Font("Tahoma", Font.BOLD, 13));
-		contentPane.add(pnlUsers);
-		contentPane.add(scrollPane);
-		contentPane.add(btn_create_new_user);
-		contentPane.add(btn_preferences);
-		contentPane.add(btn_settings);
+		pnlCreateQualification = new JPanel();
+		pnlCreateQualification.setBounds(180, 38, 746, 720);
+		layeredPaneAdminComponents.add(pnlCreateQualification);
+		pnlCreateQualification.setVisible(false);
+		pnlCreateQualification.setLayout(null);
 		
-		UserManagerPages = new JLayeredPane();
-		UserManagerPages.setBounds(170, 43, 746, 720);
-		contentPane.add(UserManagerPages);
-		UserManagerPages.setLayout(null);
+		JLabel lblCreateQualification = new JLabel("Create New Qualification");
+		lblCreateQualification.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblCreateQualification.setBounds(246, 11, 262, 51);
+		pnlCreateQualification.add(lblCreateQualification);
 		
-		pnlCreateUser = new JPanel();
-		pnlCreateUser.setVisible(false);
-		UserManagerPages.setLayer(pnlCreateUser, 2);
-		pnlCreateUser.setBounds(0, 0, 746, 720);
-		UserManagerPages.add(pnlCreateUser);
-		pnlCreateUser.setBackground(UIManager.getColor("Button.background"));
-		pnlCreateUser.setBorder(new SoftBevelBorder(BevelBorder.RAISED, new Color(220, 20, 60), null, null, null));
+		lblTitle = new JLabel("Title:");
+		lblTitle.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblTitle.setBounds(111, 131, 56, 20);
+		pnlCreateQualification.add(lblTitle);
 		
-		lblEnterUserInfo = new JLabel("Enter User Info");
-		lblEnterUserInfo.setFont(new Font("Tahoma", Font.BOLD, 20));
+		txtNewQualificationName = new JTextField();
+		txtNewQualificationName.setBounds(240, 133, 154, 20);
+		pnlCreateQualification.add(txtNewQualificationName);
+		txtNewQualificationName.setColumns(10);
 		
-		lblFirstName_1 = new JLabel("First Name:");
-		lblFirstName_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		JLabel lblDescription = new JLabel("Description:");
+		lblDescription.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblDescription.setBounds(61, 193, 120, 14);
+		pnlCreateQualification.add(lblDescription);
 		
-		btnCreateUser = new JButton("Create User");
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(240, 194, 387, 79);
+		pnlCreateQualification.add(scrollPane_1);
 		
-		btnCreateUser.setFont(new Font("Tahoma", Font.BOLD, 16));
+		txtNewQualificationDesc = new JTextArea();
+		scrollPane_1.setViewportView(txtNewQualificationDesc);
 		
-		lblUserType = new JLabel("User Type:");
-		lblUserType.setFont(new Font("Tahoma", Font.BOLD, 14));
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBounds(80, 339, 154, 287);
+		pnlCreateQualification.add(scrollPane_2);
+		listCreateQualAvailUsers = new JList(userListAvailQual);
+		scrollPane_2.setViewportView(listCreateQualAvailUsers);
 		
-		rdbtnAdmin = new JRadioButton("Admin");
-		buttonGroup.add(rdbtnAdmin);
-		rdbtnAdmin.setFont(new Font("Tahoma", Font.BOLD, 11));
+		JScrollPane scrollPane_3 = new JScrollPane();
+		scrollPane_3.setBounds(406, 339, 154, 287);
+		pnlCreateQualification.add(scrollPane_3);
 		
-		rdbtnManager = new JRadioButton("Manager");
-		buttonGroup.add(rdbtnManager);
-		rdbtnManager.setFont(new Font("Tahoma", Font.BOLD, 11));
+		listCreateQualAssignedUsers = new JList(userListAssignQual);
+		scrollPane_3.setViewportView(listCreateQualAssignedUsers);
 		
-		rdbtnWorker = new JRadioButton("Worker");
-		buttonGroup.add(rdbtnWorker);
-		rdbtnWorker.setFont(new Font("Tahoma", Font.BOLD, 11));
+		JLabel lblAssignToUsers = new JLabel("Assign to Users");
+		lblAssignToUsers.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblAssignToUsers.setBounds(247, 298, 147, 14);
+		pnlCreateQualification.add(lblAssignToUsers);
 		
-		JLabel lblLastName_1 = new JLabel("Last Name:");
-		lblLastName_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnAssignUserQual = new JButton("->");
 		
-		JLabel lblUsername_1 = new JLabel("Username:");
-		lblUsername_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		JLabel lblEmailAddress_1 = new JLabel("Email Address:");
-		lblEmailAddress_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		JLabel lblPhoneNumber_1 = new JLabel("Phone Number");
-		lblPhoneNumber_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		JLabel lblPassword = new JLabel("Password:");
-		lblPassword.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		txtCreateFirstName = new JTextField();
-		txtCreateFirstName.setColumns(10);
-		
-		txtCreateLastName = new JTextField();
-		txtCreateLastName.setColumns(10);
-		
-		txtCreateUsername = new JTextField();
-		txtCreateUsername.setColumns(10);
-		
-		txtCreateEmailAddress = new JTextField();
-		txtCreateEmailAddress.setColumns(10);
-		
-		txtCreatePhoneNumber = new JTextField();
-		txtCreatePhoneNumber.setColumns(10);
-		
-		txtCreatePassword = new JPasswordField();
-		
-		btnCancel = new JButton("Cancel");
+				btnAssignUserQual.setFont(new Font("Tahoma", Font.BOLD, 16));
+				btnAssignUserQual.setBounds(271, 445, 89, 23);
+				pnlCreateQualification.add(btnAssignUserQual);
+				
+				btnUnassignUserQual = new JButton("<-");
+				
+						btnUnassignUserQual.setFont(new Font("Tahoma", Font.BOLD, 16));
+						btnUnassignUserQual.setBounds(271, 519, 89, 23);
+						pnlCreateQualification.add(btnUnassignUserQual);
+						
+						JLabel lblAvailable_1 = new JLabel("Available");
+						lblAvailable_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+						lblAvailable_1.setBounds(121, 314, 60, 14);
+						pnlCreateQualification.add(lblAvailable_1);
+						
+						JLabel lblAssigned_1 = new JLabel("Assigned");
+						lblAssigned_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+						lblAssigned_1.setBounds(462, 314, 67, 14);
+						pnlCreateQualification.add(lblAssigned_1);
+						
+						btnCreateQual = new JButton("CREATE");
+						
+								btnCreateQual.setFont(new Font("Tahoma", Font.BOLD, 16));
+								btnCreateQual.setBounds(271, 668, 123, 41);
+								pnlCreateQualification.add(btnCreateQual);
+								
+								btnCancelAddQualifcation = new JButton("Cancel");
 
-		btnCancel.setFont(new Font("Tahoma", Font.BOLD, 16));
-		GroupLayout gl_pnlCreateUser = new GroupLayout(pnlCreateUser);
-		gl_pnlCreateUser.setHorizontalGroup(
-			gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnlCreateUser.createSequentialGroup()
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(311)
-							.addComponent(lblEnterUserInfo))
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(113)
-							.addComponent(lblFirstName_1)
-							.addGap(62)
-							.addComponent(txtCreateFirstName, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(114)
-							.addComponent(lblLastName_1)
-							.addGap(62)
-							.addComponent(txtCreateLastName, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(118)
-							.addComponent(lblUsername_1)
-							.addGap(62)
-							.addComponent(txtCreateUsername, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(91)
-							.addComponent(lblEmailAddress_1)
-							.addGap(62)
-							.addComponent(txtCreateEmailAddress, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(88)
-							.addComponent(lblPhoneNumber_1)
-							.addGap(62)
-							.addComponent(txtCreatePhoneNumber, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(120)
-							.addComponent(lblPassword)
-							.addGap(62)
-							.addComponent(txtCreatePassword, GroupLayout.PREFERRED_SIZE, 292, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(118)
-							.addComponent(lblUserType)
-							.addGap(33)
-							.addComponent(rdbtnAdmin)
-							.addGap(25)
-							.addComponent(rdbtnManager)
-							.addGap(31)
-							.addComponent(rdbtnWorker))
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(141)
-							.addComponent(btnCreateUser, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
-							.addGap(57)
-							.addComponent(btnCancel, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(191, Short.MAX_VALUE))
-		);
-		gl_pnlCreateUser.setVerticalGroup(
-			gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnlCreateUser.createSequentialGroup()
-					.addGap(18)
-					.addComponent(lblEnterUserInfo)
-					.addGap(18)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblFirstName_1)
-						.addComponent(txtCreateFirstName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(42)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(3)
-							.addComponent(lblLastName_1))
-						.addComponent(txtCreateLastName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(33)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(3)
-							.addComponent(lblUsername_1))
-						.addComponent(txtCreateUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(36)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(3)
-							.addComponent(lblEmailAddress_1))
-						.addComponent(txtCreateEmailAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(37)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(3)
-							.addComponent(lblPhoneNumber_1))
-						.addComponent(txtCreatePhoneNumber, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(36)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(1)
-							.addComponent(lblPassword))
-						.addComponent(txtCreatePassword, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
-					.addGap(67)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(1)
-							.addComponent(lblUserType))
-						.addComponent(rdbtnAdmin)
-						.addComponent(rdbtnManager)
-						.addComponent(rdbtnWorker))
-					.addGap(33)
-					.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlCreateUser.createSequentialGroup()
-							.addGap(3)
-							.addComponent(btnCreateUser))
-						.addComponent(btnCancel, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)))
-		);
-		pnlCreateUser.setLayout(gl_pnlCreateUser);
-//create user end				
-//create project start		
-		pnlCreateProject = new JPanel();
-		pnlCreateProject.setVisible(false);
-		UserManagerPages.setLayer(pnlCreateProject, 2);
-		pnlCreateProject.setBounds(0, 0, 746, 720);
-		UserManagerPages.add(pnlCreateProject);
-		
-		lblNewLabel = new JLabel("Project name:");
-		
-		lblNewLabel_1 = new JLabel("Description:");
-		
-		JScrollPane scrlPaneProjectDescription = new JScrollPane();
-		
-		JScrollPane scrlPaneQualifications = new JScrollPane();
-		
-		JScrollPane scrlPaneUsersAvailable = new JScrollPane();
-		
-		JScrollPane scrlPaneUsersAdded = new JScrollPane();
-		
-		JLabel lblNewLabel_2 = new JLabel("Qualifications:");
-		
-		JLabel lblNewLabel_3 = new JLabel("Users to add:");
-		
-		JLabel lblNewLabel_4 = new JLabel("Users added:");
-		
-		btnAssign = new JButton("->");
-		btnRemove = new JButton("<-");
-		
-		JLabel lblCreateANew = new JLabel("Create a new Project");
-		lblCreateANew.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		
-		btnCreateNewProject = new JButton("Create new Project");
-		
-		txtProjectName = new JTextField();
-		txtProjectName.setColumns(10);
-		
-		btnCancelProject = new JButton("Cancel");
-		GroupLayout gl_pnlCreateProject = new GroupLayout(pnlCreateProject);
-		gl_pnlCreateProject.setHorizontalGroup(
-			gl_pnlCreateProject.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_pnlCreateProject.createSequentialGroup()
-					.addGap(147)
-					.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lblNewLabel)
-						.addComponent(lblNewLabel_1))
-					.addPreferredGap(ComponentPlacement.RELATED, 183, Short.MAX_VALUE)
-					.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrlPaneProjectDescription, GroupLayout.PREFERRED_SIZE, 205, GroupLayout.PREFERRED_SIZE)
-						.addComponent(txtProjectName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(144, Short.MAX_VALUE))
-				.addGroup(gl_pnlCreateProject.createSequentialGroup()
-					.addGap(89)
-					.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrlPaneQualifications, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblNewLabel_2))
-					.addGap(18)
-					.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlCreateProject.createSequentialGroup()
-							.addComponent(scrlPaneUsersAvailable, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.TRAILING)
-								.addComponent(btnRemove)
-								.addComponent(btnAssign)))
-						.addComponent(lblNewLabel_3))
-					.addGap(32)
-					.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNewLabel_4)
-						.addComponent(scrlPaneUsersAdded, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE))
-					.addGap(60))
-				.addGroup(gl_pnlCreateProject.createSequentialGroup()
-					.addContainerGap(299, Short.MAX_VALUE)
-					.addComponent(lblCreateANew)
-					.addGap(284))
-				.addGroup(gl_pnlCreateProject.createSequentialGroup()
-					.addContainerGap(356, Short.MAX_VALUE)
-					.addComponent(btnCancelProject)
-					.addGap(63)
-					.addComponent(btnCreateNewProject)
-					.addGap(113))
-		);
-		gl_pnlCreateProject.setVerticalGroup(
-			gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnlCreateProject.createSequentialGroup()
-					.addGap(29)
-					.addComponent(lblCreateANew)
-					.addGap(68)
-					.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lblNewLabel)
-						.addComponent(txtProjectName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(47)
-					.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.BASELINE)
-						.addComponent(scrlPaneProjectDescription, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblNewLabel_1))
-					.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlCreateProject.createSequentialGroup()
-							.addGap(55)
-							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lblNewLabel_2)
-								.addComponent(lblNewLabel_4)
-								.addComponent(lblNewLabel_3))
-							.addGap(18)
-							.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.BASELINE)
-									.addComponent(scrlPaneQualifications, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)
-									.addComponent(scrlPaneUsersAvailable, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE))
-								.addComponent(scrlPaneUsersAdded, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)))
-						.addGroup(gl_pnlCreateProject.createSequentialGroup()
-							.addGap(122)
-							.addComponent(btnAssign)
-							.addGap(32)
-							.addComponent(btnRemove)))
-					.addGap(53)
-					.addGroup(gl_pnlCreateProject.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnCreateNewProject)
-						.addComponent(btnCancelProject))
-					.addContainerGap(126, Short.MAX_VALUE))
-		);
-		
-		JTextArea textAreaProjectDescription = new JTextArea();
-		scrlPaneProjectDescription.setViewportView(textAreaProjectDescription);
-		
-		listUsersAdded = new JList();
-		scrlPaneUsersAdded.setViewportView(listUsersAdded);
-		
-		listUsersAvailable = new JList();
-		scrlPaneUsersAvailable.setViewportView(listUsersAvailable);
-		
-		listQualifications = new JList(listedQualList);
-		listQualifications.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		scrlPaneQualifications.setViewportView(listQualifications);
-		pnlCreateProject.setLayout(gl_pnlCreateProject);
-//create project end
-//Create task start			
-		pnlCreateTask = new JPanel();
-		pnlCreateTask.setVisible(false);
-		UserManagerPages.setLayer(pnlCreateTask, 2);
-		pnlCreateTask.setBounds(0, 0, 746, 720);
-		UserManagerPages.add(pnlCreateTask);
-		
-		JLabel lblCreateTask = new JLabel("Create a new Task");
-		lblCreateTask.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		
-		JLabel lblTaskName = new JLabel("Name of the Task:");
-		
-		JLabel lblTaskDescription = new JLabel("Description of the Task:");
-		
-		JLabel lblTaskReason = new JLabel("Reason why it should be added:");
-		
-		JScrollPane scrlPaneDescription = new JScrollPane();
-		
-		JScrollPane scrlPaneReason = new JScrollPane();
-		
-		btnCreateNewTask = new JButton("Create new Task");
-		
-		textTaskName = new JTextField();
-		textTaskName.setColumns(10);
-		
-		btnCancelTask = new JButton("Cancel");
-		GroupLayout gl_pnlCreateTask = new GroupLayout(pnlCreateTask);
-		gl_pnlCreateTask.setHorizontalGroup(
-			gl_pnlCreateTask.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_pnlCreateTask.createSequentialGroup()
-					.addGap(97)
-					.addGroup(gl_pnlCreateTask.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lblTaskName)
-						.addComponent(lblTaskDescription)
-						.addComponent(lblTaskReason))
-					.addPreferredGap(ComponentPlacement.RELATED, 115, Short.MAX_VALUE)
-					.addGroup(gl_pnlCreateTask.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrlPaneReason, GroupLayout.PREFERRED_SIZE, 215, GroupLayout.PREFERRED_SIZE)
-						.addComponent(scrlPaneDescription, GroupLayout.PREFERRED_SIZE, 216, GroupLayout.PREFERRED_SIZE)
-						.addComponent(textTaskName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(164, Short.MAX_VALUE))
-				.addGroup(gl_pnlCreateTask.createSequentialGroup()
-					.addContainerGap(374, Short.MAX_VALUE)
-					.addComponent(btnCancelTask)
-					.addGap(45)
-					.addComponent(btnCreateNewTask)
-					.addGap(125))
-				.addGroup(gl_pnlCreateTask.createSequentialGroup()
-					.addContainerGap(301, Short.MAX_VALUE)
-					.addComponent(lblCreateTask)
-					.addGap(299))
-		);
-		gl_pnlCreateTask.setVerticalGroup(
-			gl_pnlCreateTask.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnlCreateTask.createSequentialGroup()
-					.addGap(47)
-					.addComponent(lblCreateTask)
-					.addGap(52)
-					.addGroup(gl_pnlCreateTask.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblTaskName)
-						.addComponent(textTaskName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(130)
-					.addGroup(gl_pnlCreateTask.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblTaskDescription)
-						.addComponent(scrlPaneDescription, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE))
-					.addGap(73)
-					.addGroup(gl_pnlCreateTask.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrlPaneReason, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblTaskReason))
-					.addGap(77)
-					.addGroup(gl_pnlCreateTask.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnCreateNewTask)
-						.addComponent(btnCancelTask))
-					.addContainerGap(93, Short.MAX_VALUE))
-		);
-		
-		JTextArea txtAreaReason = new JTextArea();
-		scrlPaneReason.setViewportView(txtAreaReason);
-		
-		JTextArea txtAreaDescription = new JTextArea();
-		scrlPaneDescription.setViewportView(txtAreaDescription);
-		pnlCreateTask.setLayout(gl_pnlCreateTask);
-//create task end	
-//edit user info start				
-		pnlUserEditInfo = new JPanel();
-		UserManagerPages.setLayer(pnlUserEditInfo, 3);
-		pnlUserEditInfo.setBounds(0, 0, 746, 720);
-		UserManagerPages.add(pnlUserEditInfo);
-		pnlUserEditInfo.setBorder(new TitledBorder(null, "User Edit/Info", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		JLabel lblFullName = new JLabel("Full Name");
-		lblFullName.setFont(new Font("Tahoma", Font.BOLD, 20));
-		
-		JLabel lblFirstName = new JLabel("First Name:");
-		lblFirstName.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		JLabel lblLastName = new JLabel("Last Name:");
-		lblLastName.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		JLabel lblUsername = new JLabel("Username:");
-		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		JLabel lblEmailAddress = new JLabel("Email Address:");
-		lblEmailAddress.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		JLabel lblPhoneNumber = new JLabel("Phone Number:");
-		lblPhoneNumber.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		textFirstName = new JTextField();
-		textFirstName.setColumns(10);
-		textLastName = new JTextField();
-		textLastName.setColumns(10);
-		textUsername = new JTextField();
-		textUsername.setColumns(10);
-		textEmail = new JTextField();
-		textEmail.setColumns(10);
-		textPhone = new JTextField();
-		textPhone.setColumns(10);
-		
-		btnSaveChanges = new JButton("Save Changes");
-		
-		btnSaveChanges.setToolTipText("Save Changes to Database");
-		
-		JSeparator separator = new JSeparator();
-		separator.setBackground(Color.BLACK);
-		separator.setForeground(Color.BLACK);
-		
-		JScrollPane scrlPaneAvailableQuals = new JScrollPane();
-		JScrollPane scrlPaneAssignedQuals = new JScrollPane();
-		
-		JLabel lblAvailable = new JLabel("Available");
-		lblAvailable.setFont(new Font("Tahoma", Font.BOLD, 14));
-		JLabel lblAssigned = new JLabel("Assigned");
-		lblAssigned.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		unassignQual = new JButton("<-");
-		
-		unassignQual.setToolTipText("Click to remove assigned Qualifications");
-		unassignQual.setFont(new Font("Tahoma", Font.BOLD, 16));
-		
-		assignQual = new JButton("->");
-		
-		assignQual.setToolTipText("Click to move selected Qualifications to Assigned");
-		assignQual.setFont(new Font("Tahoma", Font.BOLD, 16));
-		
-		
-		
-		listAssignedQuals = new JList(assignedQualList);
-		scrlPaneAssignedQuals.setViewportView(listAssignedQuals);
-		
-		listAvailableQuals = new JList(availableQualList);
-		scrlPaneAvailableQuals.setViewportView(listAvailableQuals);
-		
-		btnChangePassword = new JButton("Change Password");
-		
-		pnlDeleteUser = new JPanel();
-		pnlDeleteUser.setBorder(new TitledBorder(null, "WARNING AREA", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnlDeleteUser.setBackground(new Color(245, 222, 179));
-		pnlDeleteUser.setLayout(null);
-		
-		btnDeleteUser = new JButton("DELETE \r\nUSER");
-
-		btnDeleteUser.setFont(new Font("Tahoma", Font.BOLD, 10));
-		btnDeleteUser.setBounds(24, 27, 120, 39);
-		pnlDeleteUser.add(btnDeleteUser);
-		GroupLayout gl_pnlUserEditInfo = new GroupLayout(pnlUserEditInfo);
-		gl_pnlUserEditInfo.setHorizontalGroup(
-			gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-					.addGap(258)
-					.addComponent(lblFullName, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-					.addGap(79)
-					.addComponent(lblFirstName)
-					.addGap(50)
-					.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-					.addGap(80)
-					.addComponent(lblLastName)
-					.addGap(50)
-					.addComponent(textLastName, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-					.addGap(84)
-					.addComponent(lblUsername)
-					.addGap(50)
-					.addComponent(textUsername, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-					.addGap(57)
-					.addComponent(lblEmailAddress)
-					.addGap(50)
-					.addComponent(textEmail, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-					.addGap(49)
-					.addComponent(lblPhoneNumber)
-					.addGap(50)
-					.addComponent(textPhone, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-					.addGap(158)
-					.addComponent(btnSaveChanges, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)
-					.addGap(37)
-					.addComponent(btnChangePassword, GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-					.addGap(16)
-					.addComponent(separator, GroupLayout.PREFERRED_SIZE, 699, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-					.addGap(61)
-					.addComponent(lblAvailable)
-					.addGap(191)
-					.addComponent(lblAssigned, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-					.addGap(16)
-					.addComponent(scrlPaneAvailableQuals, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
-					.addGap(10)
-					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-						.addComponent(assignQual, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
-						.addComponent(unassignQual, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE))
-					.addGap(5)
-					.addComponent(scrlPaneAssignedQuals, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
-					.addGap(82)
-					.addComponent(pnlDeleteUser, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE))
-		);
-		gl_pnlUserEditInfo.setVerticalGroup(
-			gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-					.addComponent(lblFullName, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-					.addGap(28)
-					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblFirstName)
-						.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(23)
-					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblLastName)
-						.addComponent(textLastName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(25)
-					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addGap(3)
-							.addComponent(lblUsername))
-						.addComponent(textUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(30)
-					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addGap(3)
-							.addComponent(lblEmailAddress))
-						.addComponent(textEmail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(34)
-					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addGap(3)
-							.addComponent(lblPhoneNumber))
-						.addComponent(textPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(28)
-					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnSaveChanges, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnChangePassword, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE))
-					.addGap(11)
-					.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(32)
-					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblAvailable)
-						.addComponent(lblAssigned))
-					.addGap(11)
-					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrlPaneAvailableQuals, GroupLayout.PREFERRED_SIZE, 271, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addGap(85)
-							.addComponent(assignQual)
-							.addGap(29)
-							.addComponent(unassignQual))
-						.addComponent(scrlPaneAssignedQuals, GroupLayout.PREFERRED_SIZE, 271, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-							.addGap(182)
-							.addComponent(pnlDeleteUser, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE))))
-		);
-		pnlUserEditInfo.setLayout(gl_pnlUserEditInfo);
-//edit user info end
-//create job start				
-		pnlCreateJob = new JPanel();
-		pnlCreateJob.setVisible(false);
-		UserManagerPages.setLayer(pnlCreateJob, 5);
-		pnlCreateJob.setBounds(0, 0, 746, 720);
-		UserManagerPages.add(pnlCreateJob);
-		
-		JLabel lblCreateNewJob = new JLabel("Create new Job");
-		lblCreateNewJob.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		
-		JLabel lblNewLabel_9 = new JLabel("Description:");
-		
-		JLabel lblNewLabel_10 = new JLabel("Assigned Manager:");
-		
-		JScrollPane scrlPaneJobDescription = new JScrollPane();
-		
-		JScrollPane scrlPaneAssignableManagers = new JScrollPane();
-		
-		JScrollPane scrlPaneRequiredQuals = new JScrollPane();
-		
-		JScrollPane scrlPaneAvailableUsers = new JScrollPane();
-		
-		JScrollPane scrlPaneAssignedUsers = new JScrollPane();
-		
-		listAssignedUsers = new JList();
-		scrlPaneAssignedUsers.setViewportView(listAssignedUsers);
-		
-		JTextArea txtAreaJobDescription = new JTextArea();
-		scrlPaneJobDescription.setViewportView(txtAreaJobDescription);
-		
-		JList listAssignableManagers = new JList();
-		scrlPaneAssignableManagers.setViewportView(listAssignableManagers);
-		
-		JLabel lblJobName = new JLabel("Name of the Job:");
-		
-		JLabel lblRequiredQualifications = new JLabel("Required Qualifications:");
-		
-		JList listRequiredQuals = new JList();
-		scrlPaneRequiredQuals.setViewportView(listRequiredQuals);
-		
-		JLabel lblUsersList = new JLabel("User List:");
-		
-		listAvailableUsers = new JList(userList);
-		scrlPaneAvailableUsers.setViewportView(listAvailableUsers);
-		
-		buttonAssignUsers = new JButton("->");
-		
-		buttonRemoveUsers = new JButton("<-");
-		
-		txtJobName = new JTextField();
-		txtJobName.setColumns(10);
-		
-		JLabel lblAvailableUsers_1 = new JLabel("Available Users");
-		
-		JLabel lblAssignedUsers = new JLabel("Assigned Users");
-		
-		btnCreateJob = new JButton("Create Job");
-		
-		btnCancelJob  = new JButton("Cancel");
-		GroupLayout gl_pnlCreateJob = new GroupLayout(pnlCreateJob);
-		gl_pnlCreateJob.setHorizontalGroup(
-			gl_pnlCreateJob.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnlCreateJob.createSequentialGroup()
-					.addGap(302)
-					.addComponent(lblCreateNewJob))
-				.addGroup(gl_pnlCreateJob.createSequentialGroup()
-					.addGap(150)
-					.addComponent(lblJobName)
-					.addGap(162)
-					.addComponent(txtJobName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_pnlCreateJob.createSequentialGroup()
-					.addGap(176)
-					.addComponent(lblNewLabel_9)
-					.addGap(162)
-					.addComponent(scrlPaneJobDescription, GroupLayout.PREFERRED_SIZE, 224, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_pnlCreateJob.createSequentialGroup()
-					.addGap(141)
-					.addComponent(lblNewLabel_10)
-					.addGap(162)
-					.addComponent(scrlPaneAssignableManagers, GroupLayout.PREFERRED_SIZE, 148, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_pnlCreateJob.createSequentialGroup()
-					.addGap(119)
-					.addComponent(lblRequiredQualifications)
-					.addGap(162)
-					.addComponent(scrlPaneRequiredQuals, GroupLayout.PREFERRED_SIZE, 148, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_pnlCreateJob.createSequentialGroup()
-					.addGap(344)
-					.addComponent(lblAvailableUsers_1)
-					.addGap(133)
-					.addComponent(lblAssignedUsers))
-				.addGroup(gl_pnlCreateJob.createSequentialGroup()
-					.addGap(188)
-					.addComponent(lblUsersList)
-					.addGap(111)
-					.addComponent(scrlPaneAvailableUsers, GroupLayout.PREFERRED_SIZE, 148, GroupLayout.PREFERRED_SIZE)
-					.addGap(6)
-					.addGroup(gl_pnlCreateJob.createParallelGroup(Alignment.LEADING)
-						.addComponent(buttonAssignUsers)
-						.addComponent(buttonRemoveUsers))
-					.addGap(6)
-					.addComponent(scrlPaneAssignedUsers, GroupLayout.PREFERRED_SIZE, 148, GroupLayout.PREFERRED_SIZE))
-				.addGroup(Alignment.TRAILING, gl_pnlCreateJob.createSequentialGroup()
-					.addContainerGap(491, Short.MAX_VALUE)
-					.addComponent(btnCancelJob)
-					.addGap(18)
-					.addComponent(btnCreateJob)
-					.addGap(59))
-		);
-		gl_pnlCreateJob.setVerticalGroup(
-			gl_pnlCreateJob.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnlCreateJob.createSequentialGroup()
-					.addGap(22)
-					.addComponent(lblCreateNewJob)
-					.addGap(63)
-					.addGroup(gl_pnlCreateJob.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblJobName)
-						.addComponent(txtJobName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(39)
-					.addGroup(gl_pnlCreateJob.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNewLabel_9)
-						.addComponent(scrlPaneJobDescription, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE))
-					.addGap(6)
-					.addGroup(gl_pnlCreateJob.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNewLabel_10)
-						.addComponent(scrlPaneAssignableManagers, GroupLayout.PREFERRED_SIZE, 109, GroupLayout.PREFERRED_SIZE))
-					.addGap(6)
-					.addGroup(gl_pnlCreateJob.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblRequiredQualifications)
-						.addComponent(scrlPaneRequiredQuals, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE))
-					.addGap(13)
-					.addGroup(gl_pnlCreateJob.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblAvailableUsers_1)
-						.addComponent(lblAssignedUsers))
-					.addGap(6)
-					.addGroup(gl_pnlCreateJob.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlCreateJob.createSequentialGroup()
-							.addGap(2)
-							.addComponent(lblUsersList))
-						.addComponent(scrlPaneAvailableUsers, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_pnlCreateJob.createSequentialGroup()
-							.addGap(27)
-							.addComponent(buttonAssignUsers)
-							.addGap(26)
-							.addComponent(buttonRemoveUsers))
-						.addComponent(scrlPaneAssignedUsers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(18)
-					.addGroup(gl_pnlCreateJob.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnCreateJob)
-						.addComponent(btnCancelJob))
-					.addContainerGap(22, Short.MAX_VALUE))
-		);
-		pnlCreateJob.setLayout(gl_pnlCreateJob);
+								btnCancelAddQualifcation.setFont(new Font("Tahoma", Font.BOLD, 16));
+								btnCancelAddQualifcation.setBounds(400, 668, 100, 30);
+								pnlCreateQualification.add(btnCancelAddQualifcation);
+								
+								pnlCreateUser = new JPanel();
+								layeredPaneAdminComponents.setLayer(pnlCreateUser, 5);
+								pnlCreateUser.setBounds(180, 38, 746, 720);
+								layeredPaneAdminComponents.add(pnlCreateUser);
+								pnlCreateUser.setVisible(false);
+								pnlCreateUser.setBackground(UIManager.getColor("Button.background"));
+								pnlCreateUser.setBorder(new SoftBevelBorder(BevelBorder.RAISED, new Color(220, 20, 60), null, null, null));
+								
+								lblEnterUserInfo = new JLabel("Enter User Info");
+								lblEnterUserInfo.setFont(new Font("Tahoma", Font.BOLD, 20));
+								
+								lblFirstName_1 = new JLabel("First Name:");
+								lblFirstName_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+								
+								btnCreateUser = new JButton("Create User");
+								
+								btnCreateUser.setFont(new Font("Tahoma", Font.BOLD, 16));
+								
+								lblUserType = new JLabel("User Type:");
+								lblUserType.setFont(new Font("Tahoma", Font.BOLD, 14));
+								
+								rdbtnAdmin = new JRadioButton("Admin");
+								buttonGroup.add(rdbtnAdmin);
+								rdbtnAdmin.setFont(new Font("Tahoma", Font.BOLD, 11));
+								
+								rdbtnManager = new JRadioButton("Manager");
+								buttonGroup.add(rdbtnManager);
+								rdbtnManager.setFont(new Font("Tahoma", Font.BOLD, 11));
+								
+								rdbtnWorker = new JRadioButton("Worker");
+								buttonGroup.add(rdbtnWorker);
+								rdbtnWorker.setFont(new Font("Tahoma", Font.BOLD, 11));
+								
+								JLabel lblLastName_1 = new JLabel("Last Name:");
+								lblLastName_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+								
+								JLabel lblUsername_1 = new JLabel("Username:");
+								lblUsername_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+								
+								JLabel lblEmailAddress_1 = new JLabel("Email Address:");
+								lblEmailAddress_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+								
+								JLabel lblPhoneNumber_1 = new JLabel("Phone Number");
+								lblPhoneNumber_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+								
+								JLabel lblPassword = new JLabel("Password:");
+								lblPassword.setFont(new Font("Tahoma", Font.BOLD, 14));
+								
+								txtCreateFirstName = new JTextField();
+								txtCreateFirstName.setColumns(10);
+								
+								txtCreateLastName = new JTextField();
+								txtCreateLastName.setColumns(10);
+								
+								txtCreateUsername = new JTextField();
+								txtCreateUsername.setColumns(10);
+								
+								txtCreateEmailAddress = new JTextField();
+								txtCreateEmailAddress.setColumns(10);
+								
+								txtCreatePhoneNumber = new JTextField();
+								txtCreatePhoneNumber.setColumns(10);
+								
+								txtCreatePassword = new JPasswordField();
+								
+								btnCancel = new JButton("Cancel");
+								
+										btnCancel.setFont(new Font("Tahoma", Font.BOLD, 16));
+										GroupLayout gl_pnlCreateUser = new GroupLayout(pnlCreateUser);
+										gl_pnlCreateUser.setHorizontalGroup(
+											gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+												.addGroup(gl_pnlCreateUser.createSequentialGroup()
+													.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(311)
+															.addComponent(lblEnterUserInfo))
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(113)
+															.addComponent(lblFirstName_1)
+															.addGap(62)
+															.addComponent(txtCreateFirstName, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE))
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(114)
+															.addComponent(lblLastName_1)
+															.addGap(62)
+															.addComponent(txtCreateLastName, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE))
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(118)
+															.addComponent(lblUsername_1)
+															.addGap(62)
+															.addComponent(txtCreateUsername, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE))
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(91)
+															.addComponent(lblEmailAddress_1)
+															.addGap(62)
+															.addComponent(txtCreateEmailAddress, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE))
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(88)
+															.addComponent(lblPhoneNumber_1)
+															.addGap(62)
+															.addComponent(txtCreatePhoneNumber, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE))
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(120)
+															.addComponent(lblPassword)
+															.addGap(62)
+															.addComponent(txtCreatePassword, GroupLayout.PREFERRED_SIZE, 292, GroupLayout.PREFERRED_SIZE))
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(118)
+															.addComponent(lblUserType)
+															.addGap(33)
+															.addComponent(rdbtnAdmin)
+															.addGap(25)
+															.addComponent(rdbtnManager)
+															.addGap(31)
+															.addComponent(rdbtnWorker))
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(141)
+															.addComponent(btnCreateUser, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
+															.addGap(57)
+															.addComponent(btnCancel, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)))
+													.addContainerGap(191, Short.MAX_VALUE))
+										);
+										gl_pnlCreateUser.setVerticalGroup(
+											gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+												.addGroup(gl_pnlCreateUser.createSequentialGroup()
+													.addGap(18)
+													.addComponent(lblEnterUserInfo)
+													.addGap(18)
+													.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+														.addComponent(lblFirstName_1)
+														.addComponent(txtCreateFirstName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+													.addGap(42)
+													.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(3)
+															.addComponent(lblLastName_1))
+														.addComponent(txtCreateLastName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+													.addGap(33)
+													.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(3)
+															.addComponent(lblUsername_1))
+														.addComponent(txtCreateUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+													.addGap(36)
+													.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(3)
+															.addComponent(lblEmailAddress_1))
+														.addComponent(txtCreateEmailAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+													.addGap(37)
+													.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(3)
+															.addComponent(lblPhoneNumber_1))
+														.addComponent(txtCreatePhoneNumber, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+													.addGap(36)
+													.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(1)
+															.addComponent(lblPassword))
+														.addComponent(txtCreatePassword, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+													.addGap(67)
+													.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(1)
+															.addComponent(lblUserType))
+														.addComponent(rdbtnAdmin)
+														.addComponent(rdbtnManager)
+														.addComponent(rdbtnWorker))
+													.addGap(33)
+													.addGroup(gl_pnlCreateUser.createParallelGroup(Alignment.LEADING)
+														.addGroup(gl_pnlCreateUser.createSequentialGroup()
+															.addGap(3)
+															.addComponent(btnCreateUser))
+														.addComponent(btnCancel, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)))
+										);
+										pnlCreateUser.setLayout(gl_pnlCreateUser);
+										//create task end	
+										//edit user info start				
+												pnlUserEditInfo = new JPanel();
+												pnlUserEditInfo.setBounds(180, 38, 746, 720);
+												layeredPaneAdminComponents.add(pnlUserEditInfo);
+												pnlUserEditInfo.setBorder(new TitledBorder(null, "User Edit/Info", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+												JLabel lblFullName = new JLabel("Full Name");
+												lblFullName.setFont(new Font("Tahoma", Font.BOLD, 20));
+												
+												JLabel lblFirstName = new JLabel("First Name:");
+												lblFirstName.setFont(new Font("Tahoma", Font.BOLD, 14));
+												
+												JLabel lblLastName = new JLabel("Last Name:");
+												lblLastName.setFont(new Font("Tahoma", Font.BOLD, 14));
+												
+												JLabel lblUsername = new JLabel("Username:");
+												lblUsername.setFont(new Font("Tahoma", Font.BOLD, 14));
+												
+												JLabel lblEmailAddress = new JLabel("Email Address:");
+												lblEmailAddress.setFont(new Font("Tahoma", Font.BOLD, 14));
+												
+												JLabel lblPhoneNumber = new JLabel("Phone Number:");
+												lblPhoneNumber.setFont(new Font("Tahoma", Font.BOLD, 14));
+												
+												textFirstName = new JTextField();
+												textFirstName.setColumns(10);
+												textLastName = new JTextField();
+												textLastName.setColumns(10);
+												textUsername = new JTextField();
+												textUsername.setColumns(10);
+												textEmail = new JTextField();
+												textEmail.setColumns(10);
+												textPhone = new JTextField();
+												textPhone.setColumns(10);
+												
+												btnSaveChanges = new JButton("Save Changes");
+												
+												btnSaveChanges.setToolTipText("Save Changes to Database");
+												
+												JSeparator separator = new JSeparator();
+												separator.setBackground(Color.BLACK);
+												separator.setForeground(Color.BLACK);
+												
+												JScrollPane scrlPaneAvailableQuals = new JScrollPane();
+												JScrollPane scrlPaneAssignedQuals = new JScrollPane();
+												
+												JLabel lblAvailable = new JLabel("Available");
+												lblAvailable.setFont(new Font("Tahoma", Font.BOLD, 14));
+												JLabel lblAssigned = new JLabel("Assigned");
+												lblAssigned.setFont(new Font("Tahoma", Font.BOLD, 14));
+												
+												unassignQual = new JButton("<-");
+												
+												unassignQual.setToolTipText("Click to remove assigned Qualifications");
+												unassignQual.setFont(new Font("Tahoma", Font.BOLD, 16));
+												
+												assignQual = new JButton("->");
+												
+												assignQual.setToolTipText("Click to move selected Qualifications to Assigned");
+												assignQual.setFont(new Font("Tahoma", Font.BOLD, 16));
+												
+												
+												
+												listAssignedQuals = new JList(assignedQualList);
+												scrlPaneAssignedQuals.setViewportView(listAssignedQuals);
+												
+												listAvailableQuals = new JList(availableQualList);
+												scrlPaneAvailableQuals.setViewportView(listAvailableQuals);
+												
+												btnChangePassword = new JButton("Change Password");
+												
+												pnlDeleteUser = new JPanel();
+												pnlDeleteUser.setBorder(new TitledBorder(null, "WARNING AREA", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+												pnlDeleteUser.setBackground(new Color(245, 222, 179));
+												pnlDeleteUser.setLayout(null);
+												
+												btnDeleteUser = new JButton("DELETE USER");
+												
+														btnDeleteUser.setFont(new Font("Tahoma", Font.BOLD, 10));
+														btnDeleteUser.setBounds(24, 27, 120, 39);
+														pnlDeleteUser.add(btnDeleteUser);
+														GroupLayout gl_pnlUserEditInfo = new GroupLayout(pnlUserEditInfo);
+														gl_pnlUserEditInfo.setHorizontalGroup(
+															gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																	.addGap(258)
+																	.addComponent(lblFullName, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE))
+																.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																	.addGap(79)
+																	.addComponent(lblFirstName)
+																	.addGap(50)
+																	.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
+																.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																	.addGap(80)
+																	.addComponent(lblLastName)
+																	.addGap(50)
+																	.addComponent(textLastName, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
+																.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																	.addGap(84)
+																	.addComponent(lblUsername)
+																	.addGap(50)
+																	.addComponent(textUsername, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
+																.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																	.addGap(57)
+																	.addComponent(lblEmailAddress)
+																	.addGap(50)
+																	.addComponent(textEmail, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
+																.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																	.addGap(49)
+																	.addComponent(lblPhoneNumber)
+																	.addGap(50)
+																	.addComponent(textPhone, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
+																.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																	.addGap(158)
+																	.addComponent(btnSaveChanges, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)
+																	.addGap(37)
+																	.addComponent(btnChangePassword, GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE))
+																.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																	.addGap(16)
+																	.addComponent(separator, GroupLayout.PREFERRED_SIZE, 699, GroupLayout.PREFERRED_SIZE))
+																.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																	.addGap(61)
+																	.addComponent(lblAvailable)
+																	.addGap(191)
+																	.addComponent(lblAssigned, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE))
+																.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																	.addGap(16)
+																	.addComponent(scrlPaneAvailableQuals, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
+																	.addGap(10)
+																	.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																		.addComponent(assignQual, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
+																		.addComponent(unassignQual, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE))
+																	.addGap(5)
+																	.addComponent(scrlPaneAssignedQuals, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
+																	.addGap(82)
+																	.addComponent(pnlDeleteUser, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE))
+														);
+														gl_pnlUserEditInfo.setVerticalGroup(
+															gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																	.addComponent(lblFullName, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+																	.addGap(28)
+																	.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																		.addComponent(lblFirstName)
+																		.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+																	.addGap(23)
+																	.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																		.addComponent(lblLastName)
+																		.addComponent(textLastName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+																	.addGap(25)
+																	.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																		.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																			.addGap(3)
+																			.addComponent(lblUsername))
+																		.addComponent(textUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+																	.addGap(30)
+																	.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																		.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																			.addGap(3)
+																			.addComponent(lblEmailAddress))
+																		.addComponent(textEmail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+																	.addGap(34)
+																	.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																		.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																			.addGap(3)
+																			.addComponent(lblPhoneNumber))
+																		.addComponent(textPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+																	.addGap(28)
+																	.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																		.addComponent(btnSaveChanges, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
+																		.addComponent(btnChangePassword, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE))
+																	.addGap(11)
+																	.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+																	.addGap(32)
+																	.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																		.addComponent(lblAvailable)
+																		.addComponent(lblAssigned))
+																	.addGap(11)
+																	.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																		.addComponent(scrlPaneAvailableQuals, GroupLayout.PREFERRED_SIZE, 271, GroupLayout.PREFERRED_SIZE)
+																		.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																			.addGap(85)
+																			.addComponent(assignQual)
+																			.addGap(29)
+																			.addComponent(unassignQual))
+																		.addComponent(scrlPaneAssignedQuals, GroupLayout.PREFERRED_SIZE, 271, GroupLayout.PREFERRED_SIZE)
+																		.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																			.addGap(182)
+																			.addComponent(pnlDeleteUser, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE))))
+														);
+														pnlUserEditInfo.setLayout(gl_pnlUserEditInfo);
+		
+		layeredPaneLogin = new JLayeredPane();
+		layeredPane.setLayer(layeredPaneLogin, 10);
+		layeredPaneLogin.setBounds(0, 0, 941, 760);
+		layeredPane.add(layeredPaneLogin);
+		
+		pnlLogin = new JPanel();
+		layeredPaneLogin.setLayer(pnlLogin, 10);
+		pnlLogin.setBounds(0, 0, 941, 760);
+		layeredPaneLogin.add(pnlLogin);
+		pnlLogin.setLayout(null);
+		
+		layeredPaneLoginComponents = new JLayeredPane();
+		layeredPaneLoginComponents.setBounds(0, 0, 941, 760);
+		pnlLogin.add(layeredPaneLoginComponents);
+		
+		panel = new JPanel();
+		panel.setBorder(new TitledBorder(null, "Login", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.setBounds(134, 109, 639, 354);
+		layeredPaneLoginComponents.add(panel);
+		panel.setLayout(null);
+		
+		btnLogin = new JButton("Login");
+		btnLogin.setBounds(308, 320, 89, 23);
+		panel.add(btnLogin);
+		
+				btnLogin.setFont(new Font("Tahoma", Font.BOLD, 11));
+				
+				passwordLogin = new JPasswordField();
+				passwordLogin.setBounds(306, 237, 192, 19);
+				panel.add(passwordLogin);
+				
+				lblPassword_1 = new JLabel("Password:");
+				lblPassword_1.setBounds(136, 237, 105, 14);
+				panel.add(lblPassword_1);
+				lblPassword_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+				
+				lblUsername_2 = new JLabel("Username:");
+				lblUsername_2.setBounds(136, 153, 105, 14);
+				panel.add(lblUsername_2);
+				lblUsername_2.setFont(new Font("Tahoma", Font.BOLD, 16));
+				
+				txtLoginUser = new JTextField();
+				txtLoginUser.setBounds(306, 152, 192, 20);
+				panel.add(txtLoginUser);
+				txtLoginUser.setColumns(10);
+				
+				lblTablLogin = new JLabel("TABL LOGIN");
+				lblTablLogin.setBounds(196, 32, 274, 60);
+				panel.add(lblTablLogin);
+				lblTablLogin.setFont(new Font("Tahoma", Font.BOLD, 30));
+		
+		layeredPaneManagerWorker = new JLayeredPane();
+		layeredPane.setLayer(layeredPaneManagerWorker, 0);
+		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
+		layeredPane.add(layeredPaneManagerWorker);
+		
+		pnlManagerWorker = new JPanel();
+		layeredPaneManagerWorker.setLayer(pnlManagerWorker, 10);
+		pnlManagerWorker.setBounds(0, 0, 941, 760);
+		layeredPaneManagerWorker.add(pnlManagerWorker);
+		pnlManagerWorker.setLayout(null);
 		
 		btn_create_project = new JButton("Create Project");
-		btn_create_project.setBounds(304, 5, 115, 28);
-		contentPane.add(btn_create_project);
+		btn_create_project.setBounds(337, 0, 115, 28);
+		pnlManagerWorker.add(btn_create_project);
 		
 		btn_create_task = new JButton("Create Task");
-		btn_create_task.setBounds(417, 5, 115, 28);
-		contentPane.add(btn_create_task);
+		btn_create_task.setBounds(450, 0, 115, 28);
+		pnlManagerWorker.add(btn_create_task);
 		
 		btn_create_job = new JButton("Create Job");
-		btn_create_job.setBounds(535, 5, 97, 28);
-		contentPane.add(btn_create_job);
+		btn_create_job.setBounds(568, 0, 97, 28);
+		pnlManagerWorker.add(btn_create_job);
+		
+		layeredPaneManagerWorkerComponents = new JLayeredPane();
+		layeredPaneManagerWorkerComponents.setBounds(181, 41, 746, 719);
+		pnlManagerWorker.add(layeredPaneManagerWorkerComponents);
+						//create project end
+						//Create task start			
+								pnlCreateTask = new JPanel();
+								pnlCreateTask.setBounds(0, 0, 746, 720);
+								layeredPaneManagerWorkerComponents.add(pnlCreateTask);
+								pnlCreateTask.setVisible(false);
+								
+								JLabel lblCreateTask = new JLabel("Create a new Task");
+								lblCreateTask.setBounds(301, 47, 146, 22);
+								lblCreateTask.setFont(new Font("Tahoma", Font.PLAIN, 18));
+								
+								JLabel lblTaskName = new JLabel("Name of the Task:");
+								lblTaskName.setBounds(163, 124, 88, 14);
+								
+								JLabel lblTaskDescription = new JLabel("Description of the Task:");
+								lblTaskDescription.setBounds(137, 277, 114, 14);
+								
+								JLabel lblTaskReason = new JLabel("Reason why it should be added:");
+								lblTaskReason.setBounds(97, 422, 154, 14);
+								
+								JScrollPane scrlPaneDescription = new JScrollPane();
+								scrlPaneDescription.setBounds(366, 271, 216, 78);
+								
+								JScrollPane scrlPaneReason = new JScrollPane();
+								scrlPaneReason.setBounds(366, 422, 215, 105);
+								
+								btnCreateNewTask = new JButton("Create new Task");
+								btnCreateNewTask.setBounds(508, 604, 113, 23);
+								
+								textTaskName = new JTextField();
+								textTaskName.setBounds(366, 121, 86, 20);
+								textTaskName.setColumns(10);
+								
+								btnCancelTask = new JButton("Cancel");
+								btnCancelTask.setBounds(398, 604, 65, 23);
+								
+								JTextArea txtAreaReason = new JTextArea();
+								scrlPaneReason.setViewportView(txtAreaReason);
+								
+								JTextArea txtAreaDescription = new JTextArea();
+								scrlPaneDescription.setViewportView(txtAreaDescription);
+								pnlCreateTask.setLayout(null);
+								pnlCreateTask.add(lblTaskName);
+								pnlCreateTask.add(lblTaskDescription);
+								pnlCreateTask.add(lblTaskReason);
+								pnlCreateTask.add(scrlPaneReason);
+								pnlCreateTask.add(scrlPaneDescription);
+								pnlCreateTask.add(textTaskName);
+								pnlCreateTask.add(btnCancelTask);
+								pnlCreateTask.add(btnCreateNewTask);
+								pnlCreateTask.add(lblCreateTask);
+										//create user end				
+										//create project start		
+												pnlCreateProject = new JPanel();
+												layeredPaneManagerWorkerComponents.setLayer(pnlCreateProject, 20);
+												pnlCreateProject.setBounds(0, 0, 746, 720);
+												layeredPaneManagerWorkerComponents.add(pnlCreateProject);
+												pnlCreateProject.setVisible(false);
+												
+												lblNewLabel = new JLabel("Project name:");
+												lblNewLabel.setBounds(147, 125, 67, 14);
+												
+												lblNewLabel_1 = new JLabel("Description:");
+												lblNewLabel_1.setBounds(157, 192, 57, 14);
+												
+												JScrollPane scrlPaneProjectDescription = new JScrollPane();
+												scrlPaneProjectDescription.setBounds(397, 186, 205, 81);
+												
+												JScrollPane scrlPaneQualifications = new JScrollPane();
+												scrlPaneQualifications.setBounds(111, 354, 154, 164);
+												
+												JScrollPane scrlPaneUsersAvailable = new JScrollPane();
+												scrlPaneUsersAvailable.setBounds(283, 354, 154, 164);
+												
+												JScrollPane scrlPaneUsersAdded = new JScrollPane();
+												scrlPaneUsersAdded.setBounds(532, 354, 154, 164);
+												
+												JLabel lblNewLabel_2 = new JLabel("Qualifications:");
+												lblNewLabel_2.setBounds(111, 322, 68, 14);
+												
+												JLabel lblNewLabel_3 = new JLabel("Users to add:");
+												lblNewLabel_3.setBounds(283, 322, 65, 14);
+												
+												JLabel lblNewLabel_4 = new JLabel("Users added:");
+												lblNewLabel_4.setBounds(532, 322, 64, 14);
+												
+												btnAssign = new JButton("->");
+												btnAssign.setBounds(455, 389, 45, 23);
+												btnRemove = new JButton("<-");
+												btnRemove.setBounds(455, 444, 45, 23);
+												
+												JLabel lblCreateANew = new JLabel("Create a new Project");
+												lblCreateANew.setBounds(299, 29, 163, 22);
+												lblCreateANew.setFont(new Font("Tahoma", Font.PLAIN, 18));
+												
+												btnCreateNewProject = new JButton("Create new Project");
+												btnCreateNewProject.setBounds(508, 571, 125, 23);
+												
+												txtProjectName = new JTextField();
+												txtProjectName.setBounds(397, 119, 86, 20);
+												txtProjectName.setColumns(10);
+												
+												btnCancelProject = new JButton("Cancel");
+												btnCancelProject.setBounds(380, 571, 65, 23);
+												
+												JTextArea textAreaProjectDescription = new JTextArea();
+												scrlPaneProjectDescription.setViewportView(textAreaProjectDescription);
+												
+												listUsersAdded = new JList();
+												scrlPaneUsersAdded.setViewportView(listUsersAdded);
+												
+												listUsersAvailable = new JList();
+												scrlPaneUsersAvailable.setViewportView(listUsersAvailable);
+												
+												listQualifications = new JList(listedQualList);
+												listQualifications.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+												scrlPaneQualifications.setViewportView(listQualifications);
+												pnlCreateProject.setLayout(null);
+												pnlCreateProject.add(lblNewLabel);
+												pnlCreateProject.add(lblNewLabel_1);
+												pnlCreateProject.add(scrlPaneProjectDescription);
+												pnlCreateProject.add(txtProjectName);
+												pnlCreateProject.add(scrlPaneQualifications);
+												pnlCreateProject.add(lblNewLabel_2);
+												pnlCreateProject.add(scrlPaneUsersAvailable);
+												pnlCreateProject.add(btnRemove);
+												pnlCreateProject.add(btnAssign);
+												pnlCreateProject.add(lblNewLabel_3);
+												pnlCreateProject.add(lblNewLabel_4);
+												pnlCreateProject.add(scrlPaneUsersAdded);
+												pnlCreateProject.add(lblCreateANew);
+												pnlCreateProject.add(btnCancelProject);
+												pnlCreateProject.add(btnCreateNewProject);
+												//edit user info end
+												//create job start				
+														pnlCreateJob = new JPanel();
+														layeredPaneManagerWorkerComponents.setLayer(pnlCreateJob, 10);
+														pnlCreateJob.setBounds(0, 0, 746, 720);
+														layeredPaneManagerWorkerComponents.add(pnlCreateJob);
+														pnlCreateJob.setVisible(false);
+														
+														JLabel lblCreateNewJob = new JLabel("Create new Job");
+														lblCreateNewJob.setBounds(302, 22, 122, 22);
+														lblCreateNewJob.setFont(new Font("Tahoma", Font.PLAIN, 18));
+														
+														JLabel lblNewLabel_9 = new JLabel("Description:");
+														lblNewLabel_9.setBounds(176, 166, 57, 14);
+														
+														JLabel lblNewLabel_10 = new JLabel("Assigned Manager:");
+														lblNewLabel_10.setBounds(141, 241, 92, 14);
+														
+														JScrollPane scrlPaneJobDescription = new JScrollPane();
+														scrlPaneJobDescription.setBounds(395, 166, 224, 69);
+														
+														JScrollPane scrlPaneAssignableManagers = new JScrollPane();
+														scrlPaneAssignableManagers.setBounds(395, 241, 148, 109);
+														
+														JScrollPane scrlPaneRequiredQuals = new JScrollPane();
+														scrlPaneRequiredQuals.setBounds(395, 356, 148, 138);
+														
+														JScrollPane scrlPaneAvailableUsers = new JScrollPane();
+														scrlPaneAvailableUsers.setBounds(344, 527, 148, 138);
+														
+														JScrollPane scrlPaneAssignedUsers = new JScrollPane();
+														scrlPaneAssignedUsers.setBounds(549, 527, 148, 130);
+														
+														listAssignedUsers = new JList();
+														scrlPaneAssignedUsers.setViewportView(listAssignedUsers);
+														
+														JTextArea txtAreaJobDescription = new JTextArea();
+														scrlPaneJobDescription.setViewportView(txtAreaJobDescription);
+														
+														JList listAssignableManagers = new JList();
+														scrlPaneAssignableManagers.setViewportView(listAssignableManagers);
+														
+														JLabel lblJobName = new JLabel("Name of the Job:");
+														lblJobName.setBounds(150, 107, 83, 14);
+														
+														JLabel lblRequiredQualifications = new JLabel("Required Qualifications:");
+														lblRequiredQualifications.setBounds(119, 356, 114, 14);
+														
+														JList listRequiredQuals = new JList();
+														scrlPaneRequiredQuals.setViewportView(listRequiredQuals);
+														
+														JLabel lblUsersList = new JLabel("User List:");
+														lblUsersList.setBounds(188, 529, 45, 14);
+														
+														listAvailableUsers = new JList(userList);
+														scrlPaneAvailableUsers.setViewportView(listAvailableUsers);
+														
+														buttonAssignUsers = new JButton("->");
+														buttonAssignUsers.setBounds(498, 554, 45, 23);
+														
+														buttonRemoveUsers = new JButton("<-");
+														buttonRemoveUsers.setBounds(498, 603, 45, 23);
+														
+														txtJobName = new JTextField();
+														txtJobName.setBounds(395, 107, 86, 20);
+														txtJobName.setColumns(10);
+														
+														JLabel lblAvailableUsers_1 = new JLabel("Available Users");
+														lblAvailableUsers_1.setBounds(344, 507, 73, 14);
+														
+														JLabel lblAssignedUsers = new JLabel("Assigned Users");
+														lblAssignedUsers.setBounds(550, 507, 73, 14);
+														
+														btnCreateJob = new JButton("Create Job");
+														btnCreateJob.setBounds(602, 683, 85, 23);
+														
+														btnCancelJob  = new JButton("Cancel");
+														btnCancelJob.setBounds(519, 683, 65, 23);
+														pnlCreateJob.setLayout(null);
+														pnlCreateJob.add(lblCreateNewJob);
+														pnlCreateJob.add(lblJobName);
+														pnlCreateJob.add(txtJobName);
+														pnlCreateJob.add(lblNewLabel_9);
+														pnlCreateJob.add(scrlPaneJobDescription);
+														pnlCreateJob.add(lblNewLabel_10);
+														pnlCreateJob.add(scrlPaneAssignableManagers);
+														pnlCreateJob.add(lblRequiredQualifications);
+														pnlCreateJob.add(scrlPaneRequiredQuals);
+														pnlCreateJob.add(lblAvailableUsers_1);
+														pnlCreateJob.add(lblAssignedUsers);
+														pnlCreateJob.add(lblUsersList);
+														pnlCreateJob.add(scrlPaneAvailableUsers);
+														pnlCreateJob.add(buttonAssignUsers);
+														pnlCreateJob.add(buttonRemoveUsers);
+														pnlCreateJob.add(scrlPaneAssignedUsers);
+														pnlCreateJob.add(btnCancelJob);
+														pnlCreateJob.add(btnCreateJob);
+														
+														btnLogout = new JButton("LOGOUT");
+
+														btnLogout.setFont(new Font("Tahoma", Font.BOLD, 11));
+														btnLogout.setBounds(859, 11, 89, 23);
+														contentPane.add(btnLogout);
+														btnLogout.setVisible(false);
+														
+														btn_settings = new JButton("Settings");
+														btn_settings.setFont(new Font("Tahoma", Font.BOLD, 11));
+														btn_settings.setBounds(754, 8, 89, 28);
+														contentPane.add(btn_settings);
+														btn_settings.setVisible(false);
+														
+														layeredPane_1 = new JLayeredPane();
+														layeredPane_1.setBounds(10, 8, 734, 25);
+														contentPane.add(layeredPane_1);
+														
+														lblPortal = new JLabel("Admin Portal");
+														lblPortal.setFont(new Font("Tahoma", Font.BOLD, 16));
+														lblPortal.setBounds(0, 0, 734, 25);
+														layeredPane_1.add(lblPortal);
+														lblPortal.setVisible(false);
 //create job end			
 		setForeground(Color.BLACK);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(AdminManageUsers.class.getResource("/resources/Logo.PNG")));
@@ -1002,6 +1084,57 @@ public class AdminManageUsers extends JFrame {
 				jdbc.closeSQLConnection();
 			}
 		});
+		
+		btnLogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String pass = new String(passwordLogin.getPassword());
+				User u = jdbc.login(txtLoginUser.getText(), pass);
+				if (u == null) {
+					JOptionPane.showMessageDialog(null, "Incorrect Login Credentials");
+				} else {
+					if (u.get_usertype() == 1) {
+						//They are an Admin
+						layeredPane.setLayer(layeredPaneAdmin, 10);
+						layeredPane.setLayer(layeredPaneLogin, 0);
+						layeredPaneAdmin.setLayer(pnlAdmin, 10);
+						System.out.println("logged in as Admin");
+						lblPortal.setText("Admin Portal - "+u.get_firstname()+ " " + u.get_lastname());						
+					} else if (u.get_usertype() == 2) {
+						//They are a Manager
+						layeredPane.setLayer(layeredPaneManagerWorker, 10);
+						layeredPane.setLayer(layeredPaneLogin, 0);
+						layeredPaneManagerWorker.setLayer(pnlManagerWorker, 10);
+						System.out.println("logged in as Manager");
+						lblPortal.setText("Manager Portal - "+u.get_firstname()+ " " + u.get_lastname());
+					} else {
+						//They are a Worker
+						layeredPane.setLayer(layeredPaneManagerWorker, 10);
+						System.out.println("logged in as Worker");
+						lblPortal.setText("Worker Portal - "+u.get_firstname()+ " " + u.get_lastname());
+						
+					}
+					btnLogout.setVisible(true);
+					lblPortal.setVisible(true);
+					btn_settings.setVisible(true);
+				}
+				
+			}
+		});
+		
+		btnLogout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				layeredPane.setLayer(layeredPaneLogin, 10);
+				layeredPane.setLayer(layeredPaneAdmin, 0);
+				layeredPane.setLayer(layeredPaneManagerWorker, 0);
+				btnLogout.setVisible(false);
+				lblPortal.setVisible(false);
+				btn_settings.setVisible(false);
+				txtLoginUser.setText("");
+				passwordLogin.setText("");
+			}
+		});
+
 		//assigns users to a project
 		btnAssign.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1046,9 +1179,9 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateJob.setVisible(false);
 				pnlCreateTask.setVisible(false);
 				pnlCreateUser.setVisible(false);
+				pnlCreateQualification.setVisible(false);
 				pnlCreateProject.setVisible(true);
-				UserManagerPages.setLayer(pnlUserEditInfo, 2);
-				UserManagerPages.setLayer(pnlCreateProject, 3);	
+				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);	
 				createQualificationsList();
 				
 			}
@@ -1064,10 +1197,10 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
 				pnlCreateProject.setVisible(false);
+				pnlCreateQualification.setVisible(false);
 				pnlCreateUser.setVisible(false);
 				pnlCreateTask.setVisible(true);
-				UserManagerPages.setLayer(pnlUserEditInfo, 2);
-				UserManagerPages.setLayer(pnlCreateTask, 3);
+				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);
 				
 			}
 		});
@@ -1083,9 +1216,9 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateProject.setVisible(false);
 				pnlCreateTask.setVisible(false);
 				pnlCreateUser.setVisible(false);
+				pnlCreateQualification.setVisible(false);
 				pnlCreateJob.setVisible(true);
-				UserManagerPages.setLayer(pnlUserEditInfo, 2);
-				UserManagerPages.setLayer(pnlCreateJob, 3);	
+				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);	
 				
 			}
 		});
@@ -1107,15 +1240,32 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateJob.setVisible(false);
 				pnlCreateTask.setVisible(false);
 				pnlCreateProject.setVisible(false);
+				pnlCreateQualification.setVisible(false);
 				pnlCreateUser.setVisible(true);
-				UserManagerPages.setLayer(pnlUserEditInfo, 2);
-				UserManagerPages.setLayer(pnlCreateUser, 3);
+				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);
+				layeredPaneAdminComponents.setLayer(pnlCreateUser, 3);
 				
 			}
 		});
 
-		btn_preferences.addActionListener(new ActionListener() {
+		btn_add_qualifications.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				pnlCreateJob.setVisible(false);
+				pnlCreateTask.setVisible(false);
+				pnlCreateProject.setVisible(false);
+				pnlCreateUser.setVisible(false);
+				pnlCreateQualification.setVisible(true);
+				
+				
+			}
+		});
+		
+		btnCancelAddQualifcation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlCreateJob.setVisible(false);
+				pnlCreateTask.setVisible(false);
+				pnlCreateProject.setVisible(false);
+				pnlCreateQualification.setVisible(false);
 			}
 		});
 		
@@ -1186,7 +1336,8 @@ public class AdminManageUsers extends JFrame {
 					usertype = 3;
 				}
 				try {
-					jdbc.add_user(usertype,txtCreateUsername.getText(),txtCreateFirstName.getText(), txtCreateLastName.getText(), txtCreateEmailAddress.getText(), txtCreatePhoneNumber.getText(), txtCreatePassword.getPassword().toString());
+					String pass = new String(txtCreatePassword.getPassword());
+					jdbc.add_user(usertype,txtCreateUsername.getText(),txtCreateFirstName.getText(), txtCreateLastName.getText(), txtCreateEmailAddress.getText(), txtCreatePhoneNumber.getText(), pass);
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -1203,10 +1354,37 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateUser.setVisible(false);
 			}
 		});
-		
+		//TODO make it so they turn into an 'archived' user instead of complete deletion.
 		btnDeleteUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				jdbc.deleteUser(lastClickeduserID);
+			}
+		});
+		
+		btnCreateQual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		
+		btnAssignUserQual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int[] selected = listCreateQualAvailUsers.getSelectedIndices();
+				for (int i = 0; i < selected.length; i++) {
+					userListAssignQual.addElement(userListAvailQual.getElementAt(selected[i]));
+					userListAvailQual.remove(selected[i]);
+				}
+				
+			}
+		});
+		
+		btnUnassignUserQual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int[] selected = listCreateQualAssignedUsers.getSelectedIndices();
+				for (int i = 0; i < selected.length; i++) {
+					userListAvailQual.addElement(userListAssignQual.getElementAt(selected[i]));
+					userListAssignQual.remove(selected[i]);
+				}
 			}
 		});
 	}
@@ -1218,6 +1396,14 @@ public class AdminManageUsers extends JFrame {
 		ArrayList<User> users = jdbc.get_users();
 		for (int i = 0; i < users.size(); i++) {
 			userList.addElement(String.format("%s, %s [%s]", users.get(i).get_lastname(), users.get(i).get_firstname(), users.get(i).get_username()));
+		}
+	}
+	
+	private void createUserListQual() {
+		userListAvailQual.clear();
+		ArrayList<User> users = jdbc.get_users();
+		for (int i = 0; i < users.size(); i++) {
+			userListAvailQual.addElement(String.format("%s, %s [%s]", users.get(i).get_lastname(), users.get(i).get_firstname(), users.get(i).get_username()));
 		}
 	}
 	

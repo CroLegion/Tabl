@@ -39,6 +39,28 @@ public static void closeSQLConnection() {
 	}
 }
 
+public static User login(String username, String password) {
+	User u = null;
+	try {
+	String query = String.format("SELECT * FROM db309amc2.users WHERE username='%s' AND passhash='%s'", username, password);
+	Statement stmt = null;
+	stmt = conn1.createStatement();
+	ResultSet rs = stmt.executeQuery(query);
+	while (rs.next()) {
+		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"));
+		u.setEmail(rs.getString("email"));
+		u.setPhone(rs.getString("phone"));
+	}
+	// Close all statements
+	stmt.close();
+
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return u;
+}
 /*Create a random integer to be used as a user's userID between 1 and the max integer value.  
  * Checks the data base to see if that Id is present, and then keeps trying until a new one is created.*/
 public static int get_user_id() throws SQLException {
@@ -399,7 +421,28 @@ public static void assignQuals(int lastClickeduserID, ArrayList<Qualification> a
 	
 }
 
-
+public static ArrayList<Qualification> getQualifications() {
+	ArrayList<Qualification> quals = new ArrayList<Qualification>();
+	try {		
+		String query = "SELECT distinct qualID, qualname, qualdescription FROM qualifications";
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			Qualification qual = new Qualification(rs.getInt("qualID"), rs.getString("qualname"), rs.getString("qualdescription"));
+			quals.add(qual);
+			
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return quals;
+}
 
 
 }

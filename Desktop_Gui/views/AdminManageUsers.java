@@ -111,12 +111,15 @@ public class AdminManageUsers extends JFrame {
 	private JList listUsersAdded;	
 	private JList listUsersAvailable;	
 	private JList listQualifications;
-	DefaultListModel availableUsersList = new DefaultListModel();
-	DefaultListModel assignedUsersList = new DefaultListModel();
 	DefaultListModel listedQualList = new DefaultListModel();
-	ArrayList<User> assignedUsers = new ArrayList<User>();
-	ArrayList<User> availUsers = new ArrayList<User>();
 	ArrayList<Qualification> listedQuals = new ArrayList<Qualification>();
+	
+	
+	//group for listing all users	
+	private JButton buttonAssignUsers; 								//move users
+	private JButton buttonRemoveUsers;								//move users
+	private JList listAssignedUsers;								//list of assidned users
+	private JList listAvailableUsers;								//list of avail. users
 	
 	//Group for allowing only one radio button to be clicked at one time
 	private final ButtonGroup buttonGroup = new ButtonGroup();
@@ -142,9 +145,7 @@ public class AdminManageUsers extends JFrame {
 	private JTextField textTaskName;
 	private JTextField txtProjectName;
 	private JButton btnCreateNewProject;
-	private JButton btnCreateNewTask;
-	private JButton buttonAssignUsers; 	
-	private JButton buttonRemoveUsers;
+	private JButton btnCreateNewTask;	
 	private JButton btn_create_project;
 	private JButton btn_create_task;
 	private JButton btn_create_job;
@@ -155,7 +156,6 @@ public class AdminManageUsers extends JFrame {
 	private JPanel pnlCreateProject;
 	private JPanel pnlCreateTask;
 	private JPanel pnlCreateJob;
-
 	/**
 	 * Launch the application.
 	 */
@@ -536,13 +536,14 @@ public class AdminManageUsers extends JFrame {
 		JTextArea textAreaProjectDescription = new JTextArea();
 		scrlPaneProjectDescription.setViewportView(textAreaProjectDescription);
 		
-		listUsersAdded = new JList(availableUsersList);
+		listUsersAdded = new JList();
 		scrlPaneUsersAdded.setViewportView(listUsersAdded);
 		
-		listUsersAvailable = new JList(assignedUsersList);
+		listUsersAvailable = new JList();
 		scrlPaneUsersAvailable.setViewportView(listUsersAvailable);
 		
 		listQualifications = new JList(listedQualList);
+		listQualifications.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrlPaneQualifications.setViewportView(listQualifications);
 		pnlCreateProject.setLayout(gl_pnlCreateProject);
 //create project end
@@ -824,7 +825,7 @@ public class AdminManageUsers extends JFrame {
 //create job start				
 		pnlCreateJob = new JPanel();
 		pnlCreateJob.setVisible(false);
-		UserManagerPages.setLayer(pnlCreateJob, 2);
+		UserManagerPages.setLayer(pnlCreateJob, 5);
 		pnlCreateJob.setBounds(0, 0, 746, 720);
 		UserManagerPages.add(pnlCreateJob);
 		
@@ -845,7 +846,7 @@ public class AdminManageUsers extends JFrame {
 		
 		JScrollPane scrlPaneAssignedUsers = new JScrollPane();
 		
-		JList listAssignedUsers = new JList();
+		listAssignedUsers = new JList();
 		scrlPaneAssignedUsers.setViewportView(listAssignedUsers);
 		
 		JTextArea txtAreaJobDescription = new JTextArea();
@@ -863,7 +864,7 @@ public class AdminManageUsers extends JFrame {
 		
 		JLabel lblUsersList = new JLabel("User List:");
 		
-		JList listAvailableUsers = new JList();
+		listAvailableUsers = new JList(userList);
 		scrlPaneAvailableUsers.setViewportView(listAvailableUsers);
 		
 		buttonAssignUsers = new JButton("->");
@@ -993,7 +994,6 @@ public class AdminManageUsers extends JFrame {
 	
 	//This method contains all of the code for creating events
 	private void createEvents() {
-
 		//called when the 'X' button of the GUI in the top right is clicked
 		//Closes the SQL connection conn1
 		addWindowListener(new WindowAdapter() {
@@ -1043,10 +1043,14 @@ public class AdminManageUsers extends JFrame {
 		//Open create new project tab
 		btn_create_project.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				pnlCreateJob.setVisible(false);
+				pnlCreateTask.setVisible(false);
+				pnlCreateUser.setVisible(false);
 				pnlCreateProject.setVisible(true);
 				UserManagerPages.setLayer(pnlUserEditInfo, 2);
 				UserManagerPages.setLayer(pnlCreateProject, 3);	
 				createQualificationsList();
+				
 			}
 		});
 		//closes create new project tab
@@ -1058,9 +1062,13 @@ public class AdminManageUsers extends JFrame {
 		//open create new task tab
 		btn_create_task.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				pnlCreateJob.setVisible(false);
+				pnlCreateProject.setVisible(false);
+				pnlCreateUser.setVisible(false);
 				pnlCreateTask.setVisible(true);
 				UserManagerPages.setLayer(pnlUserEditInfo, 2);
-				UserManagerPages.setLayer(pnlCreateTask, 3);				
+				UserManagerPages.setLayer(pnlCreateTask, 3);
+				
 			}
 		});
 		//closes create new task tab
@@ -1069,12 +1077,16 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateTask.setVisible(false);
 			}
 		});
-		//open create new job
+		//open create new job tab
 		btn_create_job.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				pnlCreateProject.setVisible(false);
+				pnlCreateTask.setVisible(false);
+				pnlCreateUser.setVisible(false);
 				pnlCreateJob.setVisible(true);
 				UserManagerPages.setLayer(pnlUserEditInfo, 2);
-				UserManagerPages.setLayer(pnlCreateJob, 3);				
+				UserManagerPages.setLayer(pnlCreateJob, 3);	
+				
 			}
 		});
 		//closes create job tab
@@ -1086,12 +1098,15 @@ public class AdminManageUsers extends JFrame {
 		//creates a new job w/ info
 		btnCreateJob.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				pnlCreateJob.setVisible(false);
+				//TODO
 			}
 		});
 		//moves the create user panel to the front to allow the user to enter the new user info
 		btn_create_new_user.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				pnlCreateJob.setVisible(false);
+				pnlCreateTask.setVisible(false);
+				pnlCreateProject.setVisible(false);
 				pnlCreateUser.setVisible(true);
 				UserManagerPages.setLayer(pnlUserEditInfo, 2);
 				UserManagerPages.setLayer(pnlCreateUser, 3);
@@ -1240,7 +1255,12 @@ public class AdminManageUsers extends JFrame {
 		userList.setElementAt(s, lastClickedIndex);
 	}
 	
-	//TODO
+	//pulls all users and fills the list
+	private void createUsersList(){
+		//TODO
+	}
+	
+	//pulls all qualifications and fills in the list
 	private void createQualificationsList(){
 		listedQualList.clear();
 		listedQuals=jdbc.get_qualifications();

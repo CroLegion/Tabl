@@ -69,6 +69,7 @@ import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.BevelBorder;
 import javax.swing.SpringLayout;
 import javax.swing.JTextArea;
+import java.awt.SystemColor;
 
 public class AdminManageUsers extends JFrame {
 
@@ -188,6 +189,14 @@ public class AdminManageUsers extends JFrame {
 	private JButton btnLogout;
 	private JLayeredPane layeredPane_1;
 	private JLabel lblPortal;
+	private JButton btnViewTickets;
+	private JPanel pnlViewTickets;
+	private JPanel pnlOpenTicketsLbl;
+	private JPanel pnlCompleteTicketsLbl;
+	private JLabel lblOpenTickets;
+	private JLabel lblCompletedTickets;
+	private JScrollPane scrlOpenTickets;
+	private JScrollPane scrlCompletedTickets;
 	/**
 	 * Launch the application.
 	 */
@@ -737,6 +746,48 @@ public class AdminManageUsers extends JFrame {
 																			.addComponent(pnlDeleteUser, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE))))
 														);
 														pnlUserEditInfo.setLayout(gl_pnlUserEditInfo);
+														
+														btnViewTickets = new JButton("Ticket Viewer");
+
+														btnViewTickets.setBounds(337, 5, 130, 23);
+														layeredPaneAdminComponents.add(btnViewTickets);
+														
+														pnlViewTickets = new JPanel();
+														layeredPaneAdminComponents.setLayer(pnlViewTickets, 10);
+														pnlViewTickets.setBounds(180, 38, 746, 720);
+														layeredPaneAdminComponents.add(pnlViewTickets);
+														pnlViewTickets.setLayout(null);
+														pnlViewTickets.setVisible(false);
+														
+														pnlOpenTicketsLbl = new JPanel();
+														pnlOpenTicketsLbl.setBackground(UIManager.getColor("Button.shadow"));
+														pnlOpenTicketsLbl.setBounds(0, 0, 746, 26);
+														pnlViewTickets.add(pnlOpenTicketsLbl);
+														pnlOpenTicketsLbl.setLayout(null);
+														
+														lblOpenTickets = new JLabel("Open Tickets");
+														lblOpenTickets.setFont(new Font("Tahoma", Font.BOLD, 14));
+														lblOpenTickets.setBounds(312, 0, 189, 15);
+														pnlOpenTicketsLbl.add(lblOpenTickets);
+														
+														pnlCompleteTicketsLbl = new JPanel();
+														pnlCompleteTicketsLbl.setBackground(SystemColor.controlShadow);
+														pnlCompleteTicketsLbl.setBounds(0, 329, 746, 26);
+														pnlViewTickets.add(pnlCompleteTicketsLbl);
+														pnlCompleteTicketsLbl.setLayout(null);
+														
+														lblCompletedTickets = new JLabel("Completed Tickets");
+														lblCompletedTickets.setFont(new Font("Tahoma", Font.BOLD, 14));
+														lblCompletedTickets.setBounds(302, 0, 189, 26);
+														pnlCompleteTicketsLbl.add(lblCompletedTickets);
+														
+														scrlOpenTickets = new JScrollPane();
+														scrlOpenTickets.setBounds(0, 22, 746, 307);
+														pnlViewTickets.add(scrlOpenTickets);
+														
+														scrlCompletedTickets = new JScrollPane();
+														scrlCompletedTickets.setBounds(0, 354, 746, 366);
+														pnlViewTickets.add(scrlCompletedTickets);
 		
 		layeredPaneLogin = new JLayeredPane();
 		layeredPane.setLayer(layeredPaneLogin, 10);
@@ -1132,6 +1183,16 @@ public class AdminManageUsers extends JFrame {
 				btn_settings.setVisible(false);
 				txtLoginUser.setText("");
 				passwordLogin.setText("");
+			}
+		});
+		
+		btnViewTickets.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (pnlViewTickets.isVisible()) {
+					pnlViewTickets.setVisible(false);
+				} else {
+					pnlViewTickets.setVisible(true);
+				}
 			}
 		});
 

@@ -13,6 +13,12 @@
 	$user=data_specificUser($_POST['userID']);
 	$user=$user->fetch_assoc();
 	$firstname=$user["firstname"];
+	$lastname=$user['lastname'];
+	$userID=$user['userID'];
+	$email=$user['email'];
+	$phone=$user['phone'];
+	$passhash=$user['passhash'];
+	$usertype=$user['usertype'];
 	$content =  <<< HTML
 		<!DOCTYPE html>
 		<html>
@@ -24,17 +30,47 @@
 				<form action='index.php' method='post' id="manage_user">
 					<fieldset>
 						<legend>User Details</legend>
+
 						<label>First Name:</label>
-						<br>
+						<br>						
+						<input type='text' name='first_name' value="{$firstname}"> 
+						<br><br>
 						
-						<input type='text' name='proj_name' value="{$firstname}"> 
+						<label>Last Name:</label>
+						<br>						
+						<input type='text' name='last_name' value="{$lastname}"> 
 						<br><br>
-						<label>Project Description:</label>
-						<br>
-						<textarea rows="4" cols="50" name="proj_desc" form="createproject">Description</textarea>
+	
+						<label>User ID:</label>
+						<br>						
+						<input type='text' name='user_id' value="{$userID}"> 
 						<br><br>
-						<input type="hidden" name='action' value='createproject'>
-						<input type='submit' value='Create'>
+
+						<label>Email:</label>
+						<br>						
+						<input type='text' name='email' value="{$email}"> 
+						<br><br>
+
+						<label>Phone:</label>
+						<br>						
+						<input type='text' name='phone' value="{$phone}"> 
+						<br><br>
+
+
+						<label>Password:</label>
+						<br>						
+						<input type='text' name='password' value="{$passhash}"> 
+						<br><br>
+
+
+						<label>User Type:</label>
+						<br>						
+						<input type='text' name='user_type' value="{$usertype}"> 
+						<br><br>
+
+
+						<input type="hidden" name='action' value='manage_user'>
+						<input type='submit' value='Submit'>
 					</fieldset>
 				</form>
 			</body>

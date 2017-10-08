@@ -101,7 +101,21 @@ public static void add_user(int usertype, String username, String firstname, Str
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
 }
-
+public static int getMaxJobID(){
+	int ID=0;
+	try {
+		Statement statement = conn1.createStatement();
+		String sql = "SELECT MAX(jobID) FROM db309amc2.jobs";
+		statement.executeUpdate(sql);
+		// Close all statements and connections
+		statement.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return ID;
+}
 
 public static void deleteUser(int userID) {
 	try {

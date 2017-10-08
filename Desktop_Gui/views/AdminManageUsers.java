@@ -189,6 +189,7 @@ public class AdminManageUsers extends JFrame {
 	private JButton btnLogout;
 	private JLayeredPane layeredPane_1;
 	private JLabel lblPortal;
+	private JTextArea textAreaProjectDescription;
 	/**
 	 * Launch the application.
 	 */
@@ -791,7 +792,7 @@ public class AdminManageUsers extends JFrame {
 				lblTablLogin.setFont(new Font("Tahoma", Font.BOLD, 30));
 		
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 20);
+		layeredPane.setLayer(layeredPaneManagerWorker, 1);
 		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneManagerWorker);
 		
@@ -922,7 +923,7 @@ public class AdminManageUsers extends JFrame {
 												btnCancelProject = new JButton("Cancel");
 												btnCancelProject.setBounds(380, 571, 82, 23);
 												
-												JTextArea textAreaProjectDescription = new JTextArea();
+												textAreaProjectDescription = new JTextArea();
 												scrlPaneProjectDescription.setViewportView(textAreaProjectDescription);
 												
 												listUsersAdded = new JList();
@@ -1249,7 +1250,7 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
-
+		
 		btn_add_qualifications.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
@@ -1350,7 +1351,19 @@ public class AdminManageUsers extends JFrame {
 				createUserList();
 			}
 		});
-		
+		//creates a new project TODO
+		btnCreateNewProject.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				int Id= jdbc.getMaxJobID()+1;
+				Job job =new Job(Id, txtProjectName.getText(), 0);
+				job.setJobdesc(textAreaProjectDescription.getText());
+				ArrayList<Job> j = new ArrayList<Job>();
+				j.add(job);
+					
+				
+			}
+		});
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateUser.setVisible(false);

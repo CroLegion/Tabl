@@ -8,7 +8,7 @@
 	$content = <<< HTML
 		<p> $message </p>
 		<form action='index.php' method='post'>
-			<fieldset>
+			<fieldset class='smallform'>
 				<input type='hidden' name='action' value='update_user_info'>
 				<legend> Edit Account Details </legend>
 				<label> First Name </label>
@@ -32,7 +32,7 @@
 		</form>
 
 		<form action='index.php' method='post'>
-			<fieldset>
+			<fieldset class='smallform'>
 				<input type='hidden' name='action' value='update_password'>
 				<legend> Change Password </legend>
 				<label> Old Password </label>
@@ -52,7 +52,7 @@
 		</form>
 
 		<form>
-			<fieldset>
+			<fieldset class='smallform'>
 				<legend> Add Contact Info </legend>
 				<label> This feature is coming soon. </label>
 			</fieldset>

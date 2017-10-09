@@ -105,6 +105,12 @@
 					}
 					require 'settings.php';
 				break;
+				case 'create_user';
+					require 'createUser.php';
+				break;
+				case 'view_tickets':
+					require 'tickets.php';
+				break;
 				default:
 					require 'login.php';
 				break;

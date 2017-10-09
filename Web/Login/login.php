@@ -9,7 +9,7 @@
 				<title>Login</title>
 				<link rel='stylesheet' type='text/css' href='styles.css'>
 			</head>
-			<body>
+			<body class='login'>
 				<form action='index.php' method='post'>
 					<fieldset>
 						<legend>Please Authenticate</legend>

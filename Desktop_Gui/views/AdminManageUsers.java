@@ -1412,15 +1412,16 @@ public class AdminManageUsers extends JFrame {
 				createUserList();
 			}
 		});
-		//creates a new project TODO
+		//creates a new project 
 		btnCreateNewProject.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				int Id= jdbc.getMaxJobID()+1;
 				Job job =new Job(Id, txtProjectName.getText(), 1);
 				job.setJobdesc(textAreaProjectDescription.getText());				
 				jdbc.add_project(job);
 				layeredPaneManagerWorker.setVisible(true);	
+				JOptionPane.showMessageDialog(null, "Project Created!");
+				pnlCreateProject.setVisible(false);
 				
 			}
 		});

@@ -41,10 +41,19 @@ HTML;
 
 	//Generate Messages section
 	$messages = <<< HTML
+		<h3> Messages </h3>
 HTML;
 
 	//If user is an admin, generate Admin section
 	$admin = '';
+
+	if($_SESSION['usertype'] == 1)
+	{
+		$admin = <<< HTML
+			<h3> Admin Tools </h3>
+			
+HTML;
+	}
 
 	//Build Navbar from all components
 	$navbar = <<< HTML

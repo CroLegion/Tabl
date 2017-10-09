@@ -1,5 +1,5 @@
 <?php
-	$title = "home";
+	$title = "Tabl Home";
 	$content = "Default content.";
 
 	require 'navbar.php';

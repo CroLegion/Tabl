@@ -265,8 +265,5 @@ SQL;
 		$conn = data_open();
 		$conn->query($sql);
 		$conn->close();
-
-
-
 	}
 ?>

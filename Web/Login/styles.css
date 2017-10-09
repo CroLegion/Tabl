@@ -1,12 +1,12 @@
 /*Main Styles for Webpages*/
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
 body
 {
 	margin: auto;
 	font-family: 'Open Sans', sans-serif;
 	width: 100%;
 	height: 100%;
-	background-color:lightblue;
 }
 div
 {
@@ -36,7 +36,6 @@ h1
 {
 	padding: 10px;
 	border-bottom: 1px solid black;
-	background-color:blue;
 }
 .page
 {

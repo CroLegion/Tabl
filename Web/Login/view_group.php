@@ -1,8 +1,8 @@
 
 <?php
 	//Import Statments
-	require 'database.php';
-	require	'util.php';
+	//require 'database.php';
+	//require	'util.php';
 
 	//Define database parameters
 	$servername = "mysql.cs.iastate.edu";
@@ -16,16 +16,21 @@
 	$company_name = $companydetails["companyname"];
 	$company_email = $companydetails["email"];
 	$company_phone = $companydetails["phone"];
-
+	$title=$company_name;
 	//Get project data
 	$projects=get_roots();
 	$numProj=$projects->num_rows;
 	$projectlist = "";
 	while($curProj = $projects->fetch_assoc()["jobname"])
 	{
-		$projectlist = $projectlist . $curProj;
-		$numProj = $numProj - 1;
-		($numProj > 0) ? $projectlist = $projectlist . ", " : $projectlist = $projectlist . "<br/>";
+		//$projectlist = $projectlist . $curProj;
+		//$numProj = $numProj - 1;
+		//($numProj > 0) ? $projectlist = $projectlist . ", " : $projectlist = $projectlist . "<br/>";
+		$projectlist=$projectlist."<form action='tree_display.php' method='post'>
+				<input type='hidden' name='projName' value=\"".$curProj."\">
+				<input type='submit' value=\"".$curProj."\">
+			</form>";
+
 	}
 	$projectlist = $projectlist . "<br/>";
 
@@ -37,7 +42,7 @@
 		$userByQualList = users_with_qualifications($curQual);
 		if($userByQualList->num_rows > 0)
 		{
-			$qualificationlist = $qualificationlist . "<h3>" . $curQual . ":</h3>";	
+			$qualificationlist = $qualificationlist . "<h3>" . $curQual . ":</h3><hr>";	
 			$rowsleft = $userByQualList->num_rows;
 			while($curUser = $userByQualList->fetch_assoc())
 			{
@@ -51,35 +56,20 @@
 			$qualificationlist = $qualificationlist . "<br/><br/>";
 		}
 	}
-
-	//Build navbar pane in HTML
-	$navbar = <<< HTML
-		
-			<div class='navbar'>
-				<input class='navbutton' type='button' value='Projects' onclick='clickProjects();'>
-				<div class='navlist' id='projectsButtons'></div>
-				<input class='navbutton' type='button' value='Messaging' onclick='clickMessages();'>
-				<div class='navlist' id='messagesButtons'></div>
-			</div>
-		
-HTML;
-
 	//Build content pane in HTML
 	$content = <<< HTML
-		<h2> $company_name </h2>
+		<h2> $company_name </h2><hr>
 		<label> Email: </label> $company_email <br>
 		<label> Phone: </label> $company_phone <br>
 		<br>
-		<h3>Projects: </h3>
-		<br>
+		<h3>Projects: </h3><hr>
 		$projectlist 
 		<br>
 		$qualificationlist 
 HTML;
-
+	require 'navbar.php';
 	//Insert page elements into frame
 	require 'frame.php';
-
 	//Echo page to client browsers
 	echo $frame;
 ?>

@@ -6,7 +6,8 @@
 	//Returns the properly hashed digest of the given username, password, and salt.
 	function hash_login($username, $password, $salt)
 	{
-		return hash("sha256", $username . $password . $salt, FALSE);
+		return $password;
+		//return hash("sha256", $username . $password . $salt, FALSE);
 	}
 
 	//Sets the global database connection parameters. Use this to specify which database you want to connect to at the beginning of a script.
@@ -40,7 +41,7 @@ SQL;
 
 		if($result->num_rows == 1)
 		{
-			return $result;
+			return $result->fetch_assoc();
 		}
 		else
 		{
@@ -51,7 +52,7 @@ SQL;
 		//Performs a query on the users table and returns all users first and last names.
 	function data_usersList()
 	{
-		$sql = "SELECT firstname, lastname FROM users";
+		$sql = "SELECT firstname, lastname, userID FROM users";
 		$conn = data_open();
 		$result = $conn->query($sql);
 		$conn->close();
@@ -64,6 +65,16 @@ SQL;
 		{
 			return -1;
 		}
+	}
+
+	//Selects a user by their id number
+	function data_specificUser($userID)
+	{
+		$sql = "SELECT * FROM users WHERE userID={$userID};";
+		$conn = data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+		return $result;
 	}
 
 	//Performs a query on the qualifications table and returns all the qualifications.
@@ -90,7 +101,7 @@ SQL;
 	{
 		$pass = hash_login($username, $password, "");
 		$userID = get_and_create_new_user_id();
-		$sql = "INSERT INTO users VALUES({$userID},{$username},{usertype},{$firstname},{$lastname},{$email},{$phone},{$pass})";
+		$sql = "INSERT INTO users VALUES({$userID},{$username},{$usertype},{$firstname},{$lastname},{$email},{$phone},{$pass})";
 		$conn = data_open();
 		$result = $conn->query($sql);
 		$conn->close();
@@ -133,8 +144,8 @@ SQL;
 		$conn->close();
 	
 		return $result;
-
 	}
+
 	//function that returns a 2d array of users by qualifications
 	function users_by_qualifications()
 	{
@@ -208,5 +219,51 @@ SQL;
 		$conn->close();
 		//echo $result->num_rows."<br/>";
 		return $result;
+	}
+	
+	//Insert new project ino database
+	function insert_project($name,$desc)
+	{
+		$minQ="SELECT max(jobID) from db309amc2.jobs;";
+		$conn = data_open();
+		$lowest_avail=$conn->query($minQ);
+		$lowest_avail=$lowest_avail->fetch_assoc()["max(jobID)"]+1;
+		$sql="INSERT INTO jobs VALUES(".$lowest_avail.",\"".$name."\",1,\"".$desc."\",NULL);";
+		$conn->query($sql);
+		$conn->close();
+	}
+	
+	//Insert new job ino database
+	function insert_job($name,$desc,$parent)
+	{
+		$minQ="SELECT max(jobID) from db309amc2.jobs;";
+		$conn = data_open();
+		$lowest_avail=$conn->query($minQ);
+		$lowest_avail=$lowest_avail->fetch_assoc()["max(jobID)"]+1;
+		$sql="INSERT INTO jobs VALUES(".$lowest_avail.",\"".$name."\",2,\"".$desc."\",\"".$parent."\");";
+		$conn->query($sql);
+		$conn->close();
+	}
+	
+	//Temporary function for create project
+	function all_jobs()
+	{
+
+		$sql="Select jobname from jobs;";
+		
+		$conn = data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+		return $result;
+	}
+
+	//Modify a user in the database
+	function update_user($newID,$username,$usertype,$firstname,$lastname,$email,$phone,$passhash,$oldID)
+	{
+		$sql="UPDATE db309amc2.users SET userID={$newID}, username =\"{$username}\", usertype=\"{$usertype}\", firstname=\"{$firstname}\", lastname=\"{$lastname}\", email=\"{$email}\", phone=\"{$phone}\",passhash=\"{$passhash}\" WHERE userID={$oldID};"; 
+		
+		$conn = data_open();
+		$conn->query($sql);
+		$conn->close();
 	}
 ?>

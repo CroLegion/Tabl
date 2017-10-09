@@ -32,13 +32,21 @@
 	$password = "x1cbBr23";
 	$database = "db309amc2";
 	data_set($servername, $username, $password, $database);
-	
-	$result = data_usersList();
-
-	$roots=get_roots();
 	$tree="";
-	$rootQ = get_root_of_tree($roots->fetch_assoc()["jobname"]);
-	$root=$rootQ->fetch_assoc();
+	$result = data_usersList();
+	if(isset($_POST['projName']))
+	{
+		$root=get_root_of_tree($_POST['projName']);
+		$root=$root->fetch_assoc();
+	}
+	else{	
+		$roots=get_roots();
+	
+		$rootQ = get_root_of_tree($roots->fetch_assoc()["jobname"]);
+		$root=$rootQ->fetch_assoc();
+	}
+	$title=$root['jobname'];
+
 	$tree=$tree. "<ul> <li> <a href=\"link\">".$root["jobname"]."</a>";
 	$rootChildren=get_children($root["jobID"]);
 	$tree=$tree. "<ul>";
@@ -46,20 +54,7 @@
 	$tree=$tree. "</ul>";
 	$tree=$tree. "</li></ul>";
 
-
-	//Build navbar pane in HTML
-	$navbar = <<< HTML
-		
-			<div class='navbar'>
-				<input class='navbutton' type='button' value='Projects' onclick='clickProjects();'>
-				<div class='navlist' id='projectsButtons'></div>
-				<input class='navbutton' type='button' value='Messaging' onclick='clickMessages();'>
-				<div class='navlist' id='messagesButtons'></div>
-			</div>
-		
-HTML;
-
-
+	require 'navbar.php';
 	$content = <<< HTML
 		<head><link rel="stylesheet" href="styles.css"></head>
 

@@ -7,9 +7,15 @@
 		</head>
 		<body onload='initialize();'>
 			<div class='header'>
-				<h1>Page Header</h1>
-				<input class='topButton' type='button' value='Notifications' onclick='clickNotifications();'>
-				<input class='topButton' type='button' value='Settings' onclick='clickSettings();'>
+				<h1> $title </h1>
+				<form action='index.php' method='post'>
+					<input type='hidden' name='action' value='notifications'>
+					<input type='submit' value='Notifications' class='topButton'>
+				</form>
+				<form action='index.php' method='post'>
+					<input type='hidden' name='action' value='settings'>
+					<input type='submit' value='Settings' class='topButton'>
+				</form>
 			</div>
 			<div class='page'>
 				<div class='navbar'> $navbar </div>

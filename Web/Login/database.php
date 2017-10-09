@@ -261,7 +261,7 @@ SQL;
 	function update_user($newID,$username,$usertype,$firstname,$lastname,$email,$phone,$passhash,$oldID)
 	{
 		$sql="UPDATE db309amc2.users SET userID={$newID}, username =\"{$username}\", usertype=\"{$usertype}\", firstname=\"{$firstname}\", lastname=\"{$lastname}\", email=\"{$email}\", phone=\"{$phone}\",passhash=\"{$passhash}\" WHERE userID={$oldID};"; 
-		echo $sql;
+		
 		$conn = data_open();
 		$conn->query($sql);
 		$conn->close();

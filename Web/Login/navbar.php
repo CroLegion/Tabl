@@ -33,6 +33,10 @@
 			<input type='hidden' name='action' value='view_group'>
 			<input type='submit' value='View Group'>
 		</form>
+		<form action='index.php' method='post'>
+			<input type='hidden' name='action' value='select_user'>
+			<input type='submit' value='Manage Users'>
+		</form>
 HTML;
 
 	//Generate Messages section

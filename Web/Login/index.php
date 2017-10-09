@@ -45,6 +45,13 @@
 				case 'view_group':
 					require 'view_group.php';
 				break;
+				case 'select_user':
+					require 'select_user.php';
+				break;
+				case 'manage_user':
+					update_user($_POST['user_id'],$_POST['username'],$_POST['user_type'],$_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['phone'],$_POST['password'],$_POST['userID']);
+					require 'default.php';
+				break;
 				case 'createproject':
 					insert_project($_POST['proj_name'],$_POST['proj_desc']);
 					require 'default.php';

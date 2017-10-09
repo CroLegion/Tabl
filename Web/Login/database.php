@@ -220,7 +220,7 @@ SQL;
 	//Get task details for task details page
 	function get_task_by_id($taskID)
 	{
-		$sql="Select * from tasks where taskID =".$taskID.";";
+		$sql="Select * from tasks where taskID ='{$taskID}';";
 		
 		$conn = data_open();
 		$result = $conn->query($sql);

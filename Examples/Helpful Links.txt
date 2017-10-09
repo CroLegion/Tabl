@@ -1,5 +1,0 @@
-This is the official Java tutorial from Oracle about concurrency (multi-threading)
-https://docs.oracle.com/javase/tutorial/essential/concurrency/
-
-The official Java tutorial from Oracle about sockets (TCP sockets)
-https://docs.oracle.com/javase/tutorial/networking/sockets/index.html

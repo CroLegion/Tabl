@@ -1,5 +1,12 @@
 <?php
-//Generate Projects section
+	//Start session if not set
+	if(session_status() != PHP_SESSION_ACTIVE)
+	{
+		session_start();
+	}
+	
+
+	//Generate Projects section
 	$tree_list="";
 	
 	$servername = "mysql.cs.iastate.edu";
@@ -51,7 +58,7 @@ HTML;
 	{
 		$admin = <<< HTML
 			<h3> Admin Tools </h3>
-			
+
 HTML;
 	}
 

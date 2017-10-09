@@ -1,5 +1,6 @@
 /*Main Styles for Webpages*/
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import url('https://fonts.googleapis.com/css?family=Quicksand');
 
 body
 {
@@ -46,6 +47,7 @@ h1
 	border-bottom: 1px solid black;
 	background-image: url(./Banner.png);
 	color: #d1d1d1;
+	font-family: 'Quicksand', sans-serif;
 }
 .page
 {

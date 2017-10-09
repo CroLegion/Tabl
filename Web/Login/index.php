@@ -106,6 +106,24 @@
 					require 'settings.php';
 				break;
 				case 'create_user';
+					$message = '';
+					require 'createUser.php';
+				break;
+				case 'add_new_user':
+					//Check for valid input
+					if(!isset($_POST['newuser_username']) || !isset($_POST['newuser_password']) || $_POST['newuser_username'] === "" || $_POST['newuser_password'] === "")
+					{
+						$message = "You must provide a username and password for a new user!";
+					}
+					else if(data_usernameExists($_POST['newuser_username']))
+					{
+						$message = "The username you have entered is already in use!";
+					}
+					else
+					{
+						data_add_new_user(1, $_POST['newuser_firstname'], $_POST['newuser_lastname'], $_POST['newuser_username'], "", "", $_POST['newuser_password']);
+						$message = "New user created!";
+					}
 					require 'createUser.php';
 				break;
 				case 'view_tickets':

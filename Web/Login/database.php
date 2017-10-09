@@ -70,11 +70,27 @@ SQL;
 	//Selects a user by their id number
 	function data_specificUser($userID)
 	{
-		$sql = "SELECT * FROM users WHERE userID={$userID};";
+		$sql = "SELECT * FROM users WHERE userID={$userID}";
 		$conn = data_open();
 		$result = $conn->query($sql);
 		$conn->close();
 		return $result;
+	}
+
+	function data_usernameExists($username)
+	{
+		$sql = "SELECT COUNT(*) FROM users WHERE username = '{$username}'";
+		$conn = data_open();
+		$result = $conn->query($sql)->fetch_row()[0];
+		$conn->close();
+		if($result > 0)
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
 	}
 
 	//Performs a query on the qualifications table and returns all the qualifications.
@@ -101,32 +117,24 @@ SQL;
 	{
 		$pass = hash_login($username, $password, "");
 		$userID = get_and_create_new_user_id();
-		$sql = "INSERT INTO users VALUES({$userID},{$username},{$usertype},{$firstname},{$lastname},{$email},{$phone},{$pass})";
+		$sql = "INSERT INTO users VALUES('{$userID}', '{$username}', '{$usertype}', '{$firstname}', '{$lastname}', '{$email}', '{$phone}', '{$pass}')";
 		$conn = data_open();
-		$result = $conn->query($sql);
+		$conn->query($sql);
 		$conn->close();
-		if($result->num_rows >= 1)
-		{
-			return 1;
-		}
-		else
-		{
-			return -1;
-		}
 	}
 
 	function get_and_create_new_user_id()
 	{
-		
+		$conn = data_open();
+		$result = 1;
+
 		while ($result != 0) {
-			$val = rand(0,PHP_MAX_INT);
+			$val = rand(0, PHP_INT_MAX);
 			$sql = "SELECT COUNT(userID) FROM users WHERE userID = {$val}";
-			$conn = data_open();
-			$result = $conn->query($sql);
-			$result = $result[0];
+			$result = $conn->query($sql)->fetch_row()[0];
 		}
-		
-		return $result;
+		$conn->close();
+		return $val;
 	}
 
 	

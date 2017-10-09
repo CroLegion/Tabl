@@ -1417,11 +1417,9 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				int Id= jdbc.getMaxJobID()+1;
-				Job job =new Job(Id, txtProjectName.getText(), 0);
-				job.setJobdesc(textAreaProjectDescription.getText());
-				ArrayList<Job> j = new ArrayList<Job>();
-				j.add(job);
-				jdbc.add_project(j);
+				Job job =new Job(Id, txtProjectName.getText(), 1);
+				job.setJobdesc(textAreaProjectDescription.getText());				
+				jdbc.add_project(job);
 				layeredPaneManagerWorker.setVisible(true);	
 				
 			}

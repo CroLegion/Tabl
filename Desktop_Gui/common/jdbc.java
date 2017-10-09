@@ -120,26 +120,15 @@ public static void deleteUser(int userID) {
 }
 
 
-public static void add_project(ArrayList<Job> jobs){
-	int jobID;
-	String jobname;
-	int jobtype;
-	String jobdesc;
-	String parentID;
+public static void add_project(Job jobs){
 	try {
 		Statement statement = conn1.createStatement();
-		
-		for(int i = 0; i < jobs.size(); i++) {
-			jobID = jobs.get(i).jobID;
-			jobname = jobs.get(i).jobname;
-			jobtype = jobs.get(i).jobtype;
-			jobdesc = jobs.get(i).jobdesc;
-			
-			System.out.printf("%d %s %d %s \n", jobID,jobname, jobtype,  jobdesc);
+	
+			System.out.printf("%d %s %d %s %s \n", jobs.jobID,jobs.jobname, jobs.jobtype,  jobs.jobdesc, jobs.parentID);
 			String sql = "INSERT INTO db309amc2.jobs " +
-               "VALUES ("+jobID+","+jobname+","+jobtype+","+jobdesc+","+null+")";
+               "VALUES ("+jobs.jobID+",\""+jobs.jobname+"\","+jobs.jobtype+",\""+jobs.jobdesc+"\","+null+");";
   			statement.executeUpdate(sql);
-		}
+		
 
 		// Close all statements
 		statement.close();
@@ -184,16 +173,15 @@ public static ArrayList<User> get_users() {
 	return users;
 }
 
-//TODO
+//Returns from server the max job id as an int
 public static int getMaxJobID(){
 	int ID=0;
 	try {
-		String query = String.format("%s", "SELECT MAX(jobID) FROM db309amc2.jobs");
+		String query = String.format("%s", "SELECT MAX(jobID) AS jobID FROM db309amc2.jobs");
 		Statement stmt = null;
 		stmt = conn1.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		while (rs.next()) {ID = rs.getInt("jobID");}
-		
 
 		// Close all statements
 		stmt.close();

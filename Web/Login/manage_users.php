@@ -9,12 +9,13 @@
 	$password = "x1cbBr23";
 	$database = "db309amc2";
 	data_set($servername, $username, $password, $database);
-
+	
 	$user=data_specificUser($_POST['userID']);
 	$user=$user->fetch_assoc();
 	$firstname=$user["firstname"];
 	$lastname=$user['lastname'];
 	$userID=$user['userID'];
+	$username=$user['username'];
 	$email=$user['email'];
 	$phone=$user['phone'];
 	$passhash=$user['passhash'];
@@ -45,6 +46,11 @@
 						<br>						
 						<input type='text' name='user_id' value="{$userID}"> 
 						<br><br>
+						
+						<label>Username:</label>
+						<br>
+						<input type='text' name="username" value="{$username}">
+						<br><br>
 
 						<label>Email:</label>
 						<br>						
@@ -68,7 +74,7 @@
 						<input type='text' name='user_type' value="{$usertype}"> 
 						<br><br>
 
-
+						<input type='hidden' name='userID' value="{$_POST['userID']}">
 						<input type="hidden" name='action' value='manage_user'>
 						<input type='submit' value='Submit'>
 					</fieldset>

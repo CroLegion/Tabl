@@ -32,7 +32,7 @@ CREATE TABLE jobs
     jobtype tinyint not null,
     jobdesc text,
     parentID int,
-    taskID int,
+    taskID int,	/*should be removed, tasks->jobs is a many-to-one relation*/
     PRIMARY KEY (jobID),
     FOREIGN KEY (parentID) REFERENCES jobs(jobID),
     FOREIGN KEY (taskID) REFERENCES tasks(taskID)

@@ -23,6 +23,15 @@
 				<div class='clear'><!-- --></div>
 			</div>
 		</body>
+		<footer>
+			<div class="footerholder">
+   				<div class="footer">
+					<p> Scalable Workforce Management Solution </p>
+					<p> Devin Johnson &#183; Jacob Stilwell &#183; Vincent Waters &#183; Mason Wray</p>
+					<p><b> Tabl &#183; Version a0.2 &#183; 2017 </b></p>
+				</div>
+			</div>
+		</footer>
 	</html>
 HTML;
 ?>

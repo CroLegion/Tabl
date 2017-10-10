@@ -19,6 +19,20 @@ h1
 	padding: 0px;
 	margin: 0px;
 }
+.footerholder {
+    background: none repeat scroll 0 0 transparent;
+    bottom: 0;
+    position: fixed;
+    text-align: center;
+    width: 100%;
+}
+.footer {
+    background: none repeat scroll 0 0;
+    font-size: 10px;
+    height: 50px;
+    margin: auto;
+    width: 500px;
+}
 .smallform
 {
 	padding: 10px;
@@ -36,10 +50,32 @@ h1
 }
 .topButton
 {
-	margin: 0px;
-	padding: 0px;
+	margin: 2px;
+	padding: 5px;
 	width: 100px;
+	border: 0px;
 	float: right;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 16px;
+	background-color: ##bcbec2;
+
+	-webkit-transition: all ease 0.2s;
+	-moz-transition: all ease 0.2s;
+	-o-transition: all ease 0.2s;
+	-ms-transition: all ease 0.2s ;
+	transition: all ease 0.2s ;
+}
+.topButton:hover
+{
+	font-weight: bold;
+	color: white;
+	background-color: #55575e;
+
+	-webkit-transition: all ease 0.2s;
+	-moz-transition: all ease 0.2s;
+	-o-transition: all ease 0.2s;
+	-ms-transition: all ease 0.2s ;
+	transition: all ease 0.2s ;
 }
 .header
 {
@@ -56,19 +92,45 @@ h1
 }
 .navbar
 {
-	width: 15%;
+	width: 10%;
 	float: left;
 }
 .content
 {
-	margin-left: 15%;
+	margin-left: 10%;
 	padding: 10px;
 }
 .navbutton
 {
-	margin: 0px;
-	padding: 0px;
+  	-webkit-appearance: none;
+  	font-family: 'Open Sans', sans-serif;
+  	background-color: ##bcbec2;
+	font-size: 16px;
+	margin: 2px;
+	padding: 5px;
 	width: 100%;
+	border: 0px;
+
+	-webkit-transition: all ease 0.1s;
+	-moz-transition: all ease 0.1s;
+	-o-transition: all ease 0.1s;
+	-ms-transition: all ease 0.1s ;
+	transition: all ease 0.1s ;
+}
+.navbutton:hover
+{
+	-webkit-appearance: none;
+	font-family: 'Open Sans', sans-serif;
+	background-color: #55575e;
+	font-weight: bold;
+	color: white;
+	border: 0;
+
+	-webkit-transition: all ease 0.2s;
+	-moz-transition: all ease 0.2s;
+	-o-transition: all ease 0.2s;
+	-ms-transition: all ease 0.2s ;
+	transition: all ease 0.2s ;
 }
 .navlist
 {

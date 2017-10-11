@@ -1,13 +1,13 @@
 /*Main Styles for Webpages*/
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
 @import url('https://fonts.googleapis.com/css?family=Quicksand');
+@import url('https://fonts.googleapis.com/css?family=Megrim');
 
 body
 {
-	margin: auto;
+	padding: 0px;
+	margin: 0px;
 	font-family: 'Open Sans', sans-serif;
-	width: 100%;
-	height: 100%;
 }
 div
 {
@@ -40,13 +40,6 @@ h1
 	float: left;
 	margin: 10px;
 	height: 300px;
-}
-.login
-{
-	text-align: center;
-	margin: auto;
-	margin-top: 50px;
-	width: 300px;
 }
 .topButton
 {
@@ -143,6 +136,89 @@ h1
 {
     clear: both;
 }
+
+/*This is some formatting stuff for the login page*/
+body
+{
+	padding: 0px;
+	margin: 0px;
+}
+.background
+{
+ outline: 0px;
+ position: absolute;
+ z-index: 0;
+ left: 0px;
+ top: 0px;
+ width: 100%;
+ height: 100%;
+}
+.overlay
+{
+	position: absolute;
+	width: 100%;
+	z-index: 1;
+}
+.title
+{
+	font-size: 100px;
+	text-align: center;
+	margin: auto;
+	margin-top: 10%;
+	width: 20%;
+	font-family: 'Megrim', sans-serif;
+}
+.login
+{
+	margin: auto;
+	width: 200px;
+	font-family: 'Open Sans', sans-serif;
+}
+.loginfield
+{
+	margin: auto;
+	width: 100%;
+	opacity: 0.4;
+}
+.loginlabel
+{
+	color: #bcbec2;
+}
+.loginbutton
+{
+	-webkit-appearance: none;
+  	font-family: 'Open Sans', sans-serif;
+  	background-color: ##bcbec2;
+	font-size: 16px;
+	margin: 2px;
+	padding: 5px;
+	width: 100%;
+	border: 0px;
+	opacity: 0.6;
+
+	-webkit-transition: all ease 0.1s;
+	-moz-transition: all ease 0.1s;
+	-o-transition: all ease 0.1s;
+	-ms-transition: all ease 0.1s ;
+	transition: all ease 0.1s ;
+}
+.loginbutton:hover
+{
+	-webkit-appearance: none;
+	font-family: 'Open Sans', sans-serif;
+	background-color: #55575e;
+	font-weight: bold;
+	color: white;
+	border: 0;
+	opacity: 1;
+
+	-webkit-transition: all ease 0.2s;
+	-moz-transition: all ease 0.2s;
+	-o-transition: all ease 0.2s;
+	-ms-transition: all ease 0.2s ;
+	transition: all ease 0.2s ;
+}
+
 
 /*some code from that website to make the list a tree, will edit and learn how it works for final code*/
 /*Now the CSS*/

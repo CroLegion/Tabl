@@ -73,26 +73,14 @@ import java.awt.SystemColor;
 import java.awt.Component;
 
 public class AdminManageUsers extends JFrame {
-
-	private JPanel contentPane;
-	private JButton btn_create_new_user;
-	private JButton btn_add_qualifications;
-	private JButton btn_settings;
-	private JTextField textFirstName;
-	private JTextField textLastName;
-	private JTextField textUsername;
-	private JTextField textEmail;
-	private JTextField textPhone;
-	private JButton btnSaveChanges;
-	int lastClickedIndex;
-	int lastClickeduserID;
-	String lastClickedUser;
-	private JList listUsers;
-	DefaultListModel userList = new DefaultListModel();
-	DefaultListModel userListAssignQual = new DefaultListModel();
-	DefaultListModel userListAvailQual = new DefaultListModel();
+	private JLabel lblUsername_2;
+	private JLabel lblPassword_1;
+	private JLabel lblTitle;
+	private JLabel lblTablLogin;	
+	private JLabel lblPortal;
+	private JLabel lblOpenTickets;
+	private JLabel lblCompletedTickets;
 	
-
 	//lists and models to display the qualifications on the gui to the user
 	private JList listAvailableQuals;
 	private JList listAssignedQuals;
@@ -110,22 +98,6 @@ public class AdminManageUsers extends JFrame {
 	private JButton btnCreateUser;
 	private JLabel lblUserType;
 
-	//lists and models to display the qualifications on the gui to the user
-	private JButton btnAssign;
-	private JButton btnRemove;
-	private JList listUsersAdded;	
-	private JList listUsersAvailable;	
-	private JList listQualifications;
-	DefaultListModel listedQualList = new DefaultListModel();
-	ArrayList<Qualification> listedQuals = new ArrayList<Qualification>();
-	
-	
-	//group for listing all users	
-	private JButton buttonAssignUsers; 								//move users
-	private JButton buttonRemoveUsers;								//move users
-	private JList listAssignedUsers;								//list of assidned users
-	private JList listAvailableUsers;								//list of avail. users
-	
 	//Group for allowing only one radio button to be clicked at one time
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JRadioButton rdbtnAdmin;
@@ -137,68 +109,103 @@ public class AdminManageUsers extends JFrame {
 	private JTextField txtCreateUsername;
 	private JTextField txtCreateEmailAddress;
 	private JTextField txtCreatePhoneNumber;
-	private JPasswordField txtCreatePassword;
-	private JButton btnChangePassword;
-	private JPanel pnlDeleteUser;
-	private JButton btnDeleteUser;
-	private JPanel pnlUserEditInfo;
-	private JButton btnCancel;
+	private JPasswordField txtCreatePassword;	
+	
+	//project creation tab
+	private JPanel pnlCreateProject;	
+	private JButton btnAssign;
+	private JButton btnRemove;
+	private JList listUsersAdded;	
+	private JList listUsersAvailable;	
+	private JList listQualifications;
+	DefaultListModel listedQualList = new DefaultListModel();
+	ArrayList<Qualification> listedQuals = new ArrayList<Qualification>();
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
-	private JTextField txtJobName;
+	private JButton btnCreateNewProject;	
+	private JButton btnCancelProject;
+	private JTextArea textAreaProjectDescription;	
+			
+	//task creation tab
+	private JPanel pnlCreateTask;
 	private JTextField textTaskName;
-	private JTextField txtProjectName;
-	private JButton btnCreateNewProject;
 	private JButton btnCreateNewTask;	
+	private JButton btnCancelTask;	
+	private JTextArea txtAreaReason;	
+	private JTextArea txtAreaDescription;
+	
+	//job creation tab
+	private JPanel pnlCreateJob;
+	private JTextField txtJobName;
+	private JButton btnCreateJob;
+	private JButton btnCancelJob;	
+	private JButton buttonAssignUsers; 								
+	private JButton buttonRemoveUsers;	
+	private JTextArea txtAreaJobDescription;
+	private JList listAssignableManagers;
+	private JList listRequiredQuals;
+	private JList listAssignedUsers;								
+	private JList listAvailableUsers;
+	
+	//other or unassigned vars
+	String lastClickedUser;
+	DefaultListModel userList = new DefaultListModel();
+	DefaultListModel userListAssignQual = new DefaultListModel();
+	DefaultListModel userListAvailQual = new DefaultListModel();	
+	int lastClickedIndex;
+	int lastClickeduserID;
+	private JScrollPane scrlOpenTickets;
+	private JScrollPane scrlCompletedTickets;										
+	private JList listUsers;
+	private JList listCreateQualAvailUsers;
+	private JList listCreateQualAssignedUsers;
+	private JPasswordField passwordLogin;
+	private JButton btnChangePassword;
+	private JButton btnDeleteUser;
+	private JButton btnCancel;	
 	private JButton btn_create_project;
 	private JButton btn_create_task;
 	private JButton btn_create_job;
-	private JButton btnCancelProject;
-	private JButton btnCancelTask;
-	private JButton btnCreateJob;
-	private JButton btnCancelJob;	
-	private JPanel pnlCreateProject;
-	private JPanel pnlCreateTask;
-	private JPanel pnlCreateJob;
-	private JLabel lblTitle;
-	private JTextField txtNewQualificationName;
 	private JButton btnCreateQual;
-	private JTextArea txtNewQualificationDesc;
-	private JList listCreateQualAvailUsers;
-	private JList listCreateQualAssignedUsers;
+	private JButton btnSaveChanges;
+	private JButton btnLogin;	
+	private JButton btnCancelAddQualifcation;
+	private JButton btn_create_new_user;
+	private JButton btn_add_qualifications;
+	private JButton btn_settings;
+	private JButton btnLogout;
+	private JButton btnViewTickets;	
 	private JButton btnAssignUserQual;
 	private JButton btnUnassignUserQual;
 	private JPanel pnlCreateQualification;
+	private JPanel contentPane;	
+	private JPanel panel;
+	private JPanel pnlViewTickets;
+	private JPanel pnlOpenTicketsLbl;
+	private JPanel pnlAdmin;
+	private JPanel pnlLogin;
+	private JPanel pnlCompleteTicketsLbl;	
+	private JPanel pnlManagerWorker;
+	private JPanel pnlDeleteUser;
+	private JPanel pnlUserEditInfo;
 	private JLayeredPane layeredPaneAdmin;
 	private JLayeredPane layeredPaneLogin;
 	private JLayeredPane layeredPaneManagerWorker;
-	private JPanel pnlAdmin;
 	private JLayeredPane layeredPaneAdminComponents;
-	private JPanel pnlLogin;
 	private JLayeredPane layeredPaneLoginComponents;
-	private JLabel lblTablLogin;
-	private JPanel pnlManagerWorker;
 	private JLayeredPane layeredPaneManagerWorkerComponents;
 	private JLayeredPane layeredPane;
-	private JLabel lblUsername_2;
-	private JLabel lblPassword_1;
-	private JButton btnLogin;
-	private JTextField txtLoginUser;
-	private JPasswordField passwordLogin;
-	private JPanel panel;
-	private JButton btnCancelAddQualifcation;
-	private JButton btnLogout;
-	private JLayeredPane layeredPane_1;
-	private JLabel lblPortal;
-	private JButton btnViewTickets;
-	private JPanel pnlViewTickets;
-	private JPanel pnlOpenTicketsLbl;
-	private JPanel pnlCompleteTicketsLbl;
-	private JLabel lblOpenTickets;
-	private JLabel lblCompletedTickets;
-	private JScrollPane scrlOpenTickets;
-	private JScrollPane scrlCompletedTickets;
-	private JTextArea textAreaProjectDescription;
+	private JLayeredPane layeredPane_1;	
+	private JTextField textFirstName;
+	private JTextField textLastName;
+	private JTextField textUsername;
+	private JTextField textEmail;
+	private JTextField textPhone;
+	private JTextField txtLoginUser;	
+	private JTextField txtProjectName;
+	private JTextField txtNewQualificationName;	
+	private JTextArea txtNewQualificationDesc;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -843,12 +850,12 @@ public class AdminManageUsers extends JFrame {
 				lblTablLogin.setFont(new Font("Tahoma", Font.BOLD, 30));
 		
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 0);
+		layeredPane.setLayer(layeredPaneManagerWorker, 20);
 		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneManagerWorker);
 		
 		pnlManagerWorker = new JPanel();
-		layeredPaneManagerWorker.setLayer(pnlManagerWorker, 10);
+		layeredPaneManagerWorker.setLayer(pnlManagerWorker, 20);
 		pnlManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPaneManagerWorker.add(pnlManagerWorker);
 		pnlManagerWorker.setLayout(null);
@@ -876,10 +883,6 @@ public class AdminManageUsers extends JFrame {
 														layeredPaneManagerWorkerComponents.add(pnlCreateTask);
 														pnlCreateTask.setVisible(false);
 														
-														JLabel lblCreateTask = new JLabel("Create a new Task");
-														lblCreateTask.setBounds(301, 47, 146, 22);
-														lblCreateTask.setFont(new Font("Tahoma", Font.PLAIN, 18));
-														
 														JLabel lblTaskName = new JLabel("Name of the Task:");
 														lblTaskName.setBounds(163, 124, 114, 14);
 														
@@ -905,21 +908,25 @@ public class AdminManageUsers extends JFrame {
 														btnCancelTask = new JButton("Cancel");
 														btnCancelTask.setBounds(398, 604, 86, 23);
 														
-														JTextArea txtAreaReason = new JTextArea();
+														txtAreaReason = new JTextArea();
 														scrlPaneReason.setViewportView(txtAreaReason);
 														
-														JTextArea txtAreaDescription = new JTextArea();
+														txtAreaDescription = new JTextArea();
 														scrlPaneDescription.setViewportView(txtAreaDescription);
 														pnlCreateTask.setLayout(null);
 														pnlCreateTask.add(lblTaskName);
 														pnlCreateTask.add(lblTaskDescription);
 														pnlCreateTask.add(lblTaskReason);
+														
+														JLabel lblCreateTask = new JLabel("Create a new Task");
+														lblCreateTask.setBounds(301, 47, 146, 22);
+														lblCreateTask.setFont(new Font("Tahoma", Font.PLAIN, 18));
+														pnlCreateTask.add(lblCreateTask);
 														pnlCreateTask.add(scrlPaneReason);
 														pnlCreateTask.add(scrlPaneDescription);
 														pnlCreateTask.add(textTaskName);
 														pnlCreateTask.add(btnCancelTask);
 														pnlCreateTask.add(btnCreateNewTask);
-														pnlCreateTask.add(lblCreateTask);
 										//create user end				
 										//create project start		
 												pnlCreateProject = new JPanel();
@@ -943,42 +950,19 @@ public class AdminManageUsers extends JFrame {
 												JScrollPane scrlPaneUsersAvailable = new JScrollPane();
 												scrlPaneUsersAvailable.setBounds(283, 354, 154, 164);
 												
-												JScrollPane scrlPaneUsersAdded = new JScrollPane();
-												scrlPaneUsersAdded.setBounds(532, 354, 154, 164);
-												
-												JLabel lblNewLabel_2 = new JLabel("Qualifications:");
-												lblNewLabel_2.setBounds(111, 322, 96, 14);
-												
-												JLabel lblNewLabel_3 = new JLabel("Users to add:");
-												lblNewLabel_3.setBounds(283, 322, 76, 14);
-												
-												JLabel lblNewLabel_4 = new JLabel("Users added:");
-												lblNewLabel_4.setBounds(532, 322, 86, 14);
-												
 												btnAssign = new JButton("->");
 												btnAssign.setBounds(455, 389, 45, 23);
 												btnRemove = new JButton("<-");
 												btnRemove.setBounds(455, 444, 45, 23);
 												
-												JLabel lblCreateANew = new JLabel("Create a new Project");
-												lblCreateANew.setBounds(299, 29, 163, 22);
-												lblCreateANew.setFont(new Font("Tahoma", Font.PLAIN, 18));
-												
 												btnCreateNewProject = new JButton("Create new Project");
 												btnCreateNewProject.setBounds(508, 571, 154, 23);
-												
-												txtProjectName = new JTextField();
-												txtProjectName.setBounds(397, 119, 86, 20);
-												txtProjectName.setColumns(10);
 												
 												btnCancelProject = new JButton("Cancel");
 												btnCancelProject.setBounds(380, 571, 82, 23);
 												
 												textAreaProjectDescription = new JTextArea();
 												scrlPaneProjectDescription.setViewportView(textAreaProjectDescription);
-												
-												listUsersAdded = new JList();
-												scrlPaneUsersAdded.setViewportView(listUsersAdded);
 												
 												listUsersAvailable = new JList();
 												scrlPaneUsersAvailable.setViewportView(listUsersAvailable);
@@ -989,17 +973,40 @@ public class AdminManageUsers extends JFrame {
 												pnlCreateProject.setLayout(null);
 												pnlCreateProject.add(lblNewLabel);
 												pnlCreateProject.add(lblNewLabel_1);
-												pnlCreateProject.add(scrlPaneProjectDescription);
-												pnlCreateProject.add(txtProjectName);
-												pnlCreateProject.add(scrlPaneQualifications);
+												
+												JLabel lblNewLabel_2 = new JLabel("Qualifications:");
+												lblNewLabel_2.setBounds(111, 322, 96, 14);
 												pnlCreateProject.add(lblNewLabel_2);
+												
+												JLabel lblNewLabel_3 = new JLabel("Users to add:");
+												lblNewLabel_3.setBounds(283, 322, 76, 14);
+												pnlCreateProject.add(lblNewLabel_3);
+												
+												JLabel lblNewLabel_4 = new JLabel("Users added:");
+												lblNewLabel_4.setBounds(532, 322, 86, 14);
+												pnlCreateProject.add(lblNewLabel_4);
+												
+												JLabel lblCreateANew = new JLabel("Create a new Project");
+												lblCreateANew.setBounds(299, 29, 163, 22);
+												lblCreateANew.setFont(new Font("Tahoma", Font.PLAIN, 18));
+												pnlCreateProject.add(lblCreateANew);
+												
+												txtProjectName = new JTextField();
+												txtProjectName.setBounds(397, 119, 86, 20);
+												txtProjectName.setColumns(10);
+												pnlCreateProject.add(txtProjectName);
+												pnlCreateProject.add(scrlPaneProjectDescription);
+												pnlCreateProject.add(scrlPaneQualifications);
 												pnlCreateProject.add(scrlPaneUsersAvailable);
+												
+												JScrollPane scrlPaneUsersAdded = new JScrollPane();
+												scrlPaneUsersAdded.setBounds(532, 354, 154, 164);
+												
+												listUsersAdded = new JList();
+												scrlPaneUsersAdded.setViewportView(listUsersAdded);
+												pnlCreateProject.add(scrlPaneUsersAdded);
 												pnlCreateProject.add(btnRemove);
 												pnlCreateProject.add(btnAssign);
-												pnlCreateProject.add(lblNewLabel_3);
-												pnlCreateProject.add(lblNewLabel_4);
-												pnlCreateProject.add(scrlPaneUsersAdded);
-												pnlCreateProject.add(lblCreateANew);
 												pnlCreateProject.add(btnCancelProject);
 												pnlCreateProject.add(btnCreateNewProject);
 												//edit user info end
@@ -1014,12 +1021,6 @@ public class AdminManageUsers extends JFrame {
 														lblCreateNewJob.setBounds(302, 22, 122, 22);
 														lblCreateNewJob.setFont(new Font("Tahoma", Font.PLAIN, 18));
 														
-														JLabel lblNewLabel_9 = new JLabel("Description:");
-														lblNewLabel_9.setBounds(176, 166, 88, 14);
-														
-														JLabel lblNewLabel_10 = new JLabel("Assigned Manager:");
-														lblNewLabel_10.setBounds(141, 241, 123, 14);
-														
 														JScrollPane scrlPaneJobDescription = new JScrollPane();
 														scrlPaneJobDescription.setBounds(395, 166, 224, 69);
 														
@@ -1032,29 +1033,17 @@ public class AdminManageUsers extends JFrame {
 														JScrollPane scrlPaneAvailableUsers = new JScrollPane();
 														scrlPaneAvailableUsers.setBounds(344, 527, 148, 138);
 														
-														JScrollPane scrlPaneAssignedUsers = new JScrollPane();
-														scrlPaneAssignedUsers.setBounds(549, 527, 148, 130);
-														
-														listAssignedUsers = new JList();
-														scrlPaneAssignedUsers.setViewportView(listAssignedUsers);
-														
-														JTextArea txtAreaJobDescription = new JTextArea();
+														txtAreaJobDescription = new JTextArea();
 														scrlPaneJobDescription.setViewportView(txtAreaJobDescription);
 														
-														JList listAssignableManagers = new JList();
+														listAssignableManagers = new JList();
 														scrlPaneAssignableManagers.setViewportView(listAssignableManagers);
 														
 														JLabel lblJobName = new JLabel("Name of the Job:");
 														lblJobName.setBounds(150, 107, 114, 14);
 														
-														JLabel lblRequiredQualifications = new JLabel("Required Qualifications:");
-														lblRequiredQualifications.setBounds(119, 356, 145, 14);
-														
-														JList listRequiredQuals = new JList();
+														listRequiredQuals = new JList();
 														scrlPaneRequiredQuals.setViewportView(listRequiredQuals);
-														
-														JLabel lblUsersList = new JLabel("User List:");
-														lblUsersList.setBounds(188, 529, 76, 14);
 														
 														listAvailableUsers = new JList(userList);
 														scrlPaneAvailableUsers.setViewportView(listAvailableUsers);
@@ -1069,12 +1058,6 @@ public class AdminManageUsers extends JFrame {
 														txtJobName.setBounds(395, 107, 86, 20);
 														txtJobName.setColumns(10);
 														
-														JLabel lblAvailableUsers_1 = new JLabel("Available Users");
-														lblAvailableUsers_1.setBounds(344, 507, 100, 14);
-														
-														JLabel lblAssignedUsers = new JLabel("Assigned Users");
-														lblAssignedUsers.setBounds(550, 507, 94, 14);
-														
 														btnCreateJob = new JButton("Create Job");
 														btnCreateJob.setBounds(594, 683, 103, 23);
 														
@@ -1083,20 +1066,44 @@ public class AdminManageUsers extends JFrame {
 														pnlCreateJob.setLayout(null);
 														pnlCreateJob.add(lblCreateNewJob);
 														pnlCreateJob.add(lblJobName);
-														pnlCreateJob.add(txtJobName);
-														pnlCreateJob.add(lblNewLabel_9);
-														pnlCreateJob.add(scrlPaneJobDescription);
-														pnlCreateJob.add(lblNewLabel_10);
-														pnlCreateJob.add(scrlPaneAssignableManagers);
-														pnlCreateJob.add(lblRequiredQualifications);
-														pnlCreateJob.add(scrlPaneRequiredQuals);
+														
+														JLabel lblAvailableUsers_1 = new JLabel("Available Users");
+														lblAvailableUsers_1.setBounds(344, 507, 100, 14);
 														pnlCreateJob.add(lblAvailableUsers_1);
+														
+														JLabel lblAssignedUsers = new JLabel("Assigned Users");
+														lblAssignedUsers.setBounds(550, 507, 94, 14);
 														pnlCreateJob.add(lblAssignedUsers);
+														
+														JLabel lblUsersList = new JLabel("User List:");
+														lblUsersList.setBounds(188, 529, 76, 14);
 														pnlCreateJob.add(lblUsersList);
+														
+														JLabel lblNewLabel_9 = new JLabel("Description:");
+														lblNewLabel_9.setBounds(176, 166, 88, 14);
+														pnlCreateJob.add(lblNewLabel_9);
+														
+														JLabel lblNewLabel_10 = new JLabel("Assigned Manager:");
+														lblNewLabel_10.setBounds(141, 241, 123, 14);
+														pnlCreateJob.add(lblNewLabel_10);
+														
+														JLabel lblRequiredQualifications = new JLabel("Required Qualifications:");
+														lblRequiredQualifications.setBounds(119, 356, 145, 14);
+														pnlCreateJob.add(lblRequiredQualifications);
+														pnlCreateJob.add(txtJobName);
+														pnlCreateJob.add(scrlPaneJobDescription);
+														pnlCreateJob.add(scrlPaneAssignableManagers);
+														pnlCreateJob.add(scrlPaneRequiredQuals);
 														pnlCreateJob.add(scrlPaneAvailableUsers);
+														
+														JScrollPane scrlPaneAssignedUsers = new JScrollPane();
+														scrlPaneAssignedUsers.setBounds(549, 527, 148, 130);
+														
+														listAssignedUsers = new JList();
+														scrlPaneAssignedUsers.setViewportView(listAssignedUsers);
+														pnlCreateJob.add(scrlPaneAssignedUsers);
 														pnlCreateJob.add(buttonAssignUsers);
 														pnlCreateJob.add(buttonRemoveUsers);
-														pnlCreateJob.add(scrlPaneAssignedUsers);
 														pnlCreateJob.add(btnCancelJob);
 														pnlCreateJob.add(btnCreateJob);
 														

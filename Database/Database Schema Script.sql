@@ -57,6 +57,54 @@ CREATE TABLE qualifications
     PRIMARY KEY (qualID)
 );
 
+CREATE TABLE qualification_requirements
+(
+	qualID int not null,
+    taskID int not null,
+    PRIMARY KEY (qualID,userID),
+    FOREIGN KEY (taskID) REFERENCES tasks(taskID),
+    FOREIGN KEY (qualID) REFERENCES quals(qualID)
+);
+CREATE TABLE job_assignments
+(
+    jobID int not null,
+    userID int not null,
+    PRIMARY KEY (jobID,userID),
+    FOREIGN KEY (userID) REFERENCES users(userID),
+    FOREIGN KEY (jobID) REFERENCES jobs(jobID)
+);
+CREATE TABLE task_assignments
+(
+    taskID int not null,
+    userID int not null,
+    PRIMARY KEY (jobID,userID),
+    FOREIGN KEY (userID) REFERENCES users(userID),
+    FOREIGN KEY (taskID) REFERENCES tasks(taskID)
+);
+CREATE TABLE job_requirements
+(
+	jobID int not null,
+    qualID int not null,
+    PRIMARY KEY (jobID, qualID),
+    FOREIGN KEY (jobID) REFERENCES jobs(jobID)
+);
+CREATE TABLE tickets
+(
+	ticketID int not null,
+    message text,
+    submittedBy varchar(32) not null,
+    submittedTo varchar(32) not null,
+    isDone boolean,
+    submittedDate varchar(32) not null
+);
+CREATE TABLE manager_assignments
+(
+    jobID int not null,
+    userID int not null,
+    PRIMARY KEY (jobID,userID),
+    FOREIGN KEY (userID) REFERENCES users(userID),
+    FOREIGN KEY (jobID) REFERENCES jobs(jobID)
+);
 CREATE TABLE qualification_assignments
 (
     qualID int not null,

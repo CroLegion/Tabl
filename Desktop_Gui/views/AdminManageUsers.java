@@ -124,7 +124,8 @@ public class AdminManageUsers extends JFrame {
 	private JLabel lblNewLabel_1;
 	private JButton btnCreateNewProject;	
 	private JButton btnCancelProject;
-	private JTextArea textAreaProjectDescription;	
+	private JTextArea textAreaProjectDescription;
+	private JButton btn_create_project;	
 			
 	//task creation tab
 	private JPanel pnlCreateTask;
@@ -133,6 +134,7 @@ public class AdminManageUsers extends JFrame {
 	private JButton btnCancelTask;	
 	private JTextArea txtAreaReason;	
 	private JTextArea txtAreaDescription;
+	private JButton btn_create_task;
 	
 	//job creation tab
 	private JPanel pnlCreateJob;
@@ -146,6 +148,47 @@ public class AdminManageUsers extends JFrame {
 	private JList listRequiredQuals;
 	private JList listAssignedUsers;								
 	private JList listAvailableUsers;
+	private JButton btn_create_job;
+
+	//Layered Pane login
+	private JButton btnLogin;
+	private JPasswordField passwordLogin;
+	private JTextField txtLoginUser;
+	private JPanel pnl_login_components;
+	private JPanel pnlLogin;
+	private JLayeredPane layeredPaneLogin;
+	private JLayeredPane layeredPaneLoginComponents;	
+	
+	//Layered Pane Admin
+	private JLayeredPane layeredPaneAdmin;
+	private JLayeredPane layeredPaneAdminComponents;
+	private JPanel pnlAdmin;
+	private JButton btn_create_new_user;
+	private JButton btn_add_qualifications;
+	private JButton btnViewTickets;
+	private JPanel pnlOpenTicketsLbl;
+	private JPanel pnlCompleteTicketsLbl;
+	private JScrollPane scrlOpenTickets;
+	private JScrollPane scrlCompletedTickets;									
+	private JList listUsers;
+	private JTextField textFirstName;
+	private JTextField textLastName;
+	private JTextField textUsername;
+	private JTextField textEmail;
+	private JTextField textPhone;	
+	private JTextField txtProjectName;	
+	private JButton btnSaveChanges;	
+	private JButton btnChangePassword;
+	private JButton btnDeleteUser;
+	private JButton btnCancel;	
+	private JButton btnAssignUserQual;
+	private JButton btnUnassignUserQual;
+	private JButton btnCreateQual;
+	private JButton btnCancelAddQualifcation;
+	private JList listCreateQualAvailUsers;
+	private JList listCreateQualAssignedUsers;
+	private JTextArea txtNewQualificationDesc;
+	private JTextField txtNewQualificationName;	
 	
 	//other or unassigned vars
 	String lastClickedUser;
@@ -154,57 +197,18 @@ public class AdminManageUsers extends JFrame {
 	DefaultListModel userListAvailQual = new DefaultListModel();	
 	int lastClickedIndex;
 	int lastClickeduserID;
-	private JScrollPane scrlOpenTickets;
-	private JScrollPane scrlCompletedTickets;										
-	private JList listUsers;
-	private JList listCreateQualAvailUsers;
-	private JList listCreateQualAssignedUsers;
-	private JPasswordField passwordLogin;
-	private JButton btnChangePassword;
-	private JButton btnDeleteUser;
-	private JButton btnCancel;	
-	private JButton btn_create_project;
-	private JButton btn_create_task;
-	private JButton btn_create_job;
-	private JButton btnCreateQual;
-	private JButton btnSaveChanges;
-	private JButton btnLogin;	
-	private JButton btnCancelAddQualifcation;
-	private JButton btn_create_new_user;
-	private JButton btn_add_qualifications;
 	private JButton btn_settings;
 	private JButton btnLogout;
-	private JButton btnViewTickets;	
-	private JButton btnAssignUserQual;
-	private JButton btnUnassignUserQual;
 	private JPanel pnlCreateQualification;
 	private JPanel contentPane;	
-	private JPanel panel;
-	private JPanel pnlViewTickets;
-	private JPanel pnlOpenTicketsLbl;
-	private JPanel pnlAdmin;
-	private JPanel pnlLogin;
-	private JPanel pnlCompleteTicketsLbl;	
+	private JPanel pnlViewTickets;	
 	private JPanel pnlManagerWorker;
 	private JPanel pnlDeleteUser;
 	private JPanel pnlUserEditInfo;
-	private JLayeredPane layeredPaneAdmin;
-	private JLayeredPane layeredPaneLogin;
-	private JLayeredPane layeredPaneManagerWorker;
-	private JLayeredPane layeredPaneAdminComponents;
-	private JLayeredPane layeredPaneLoginComponents;
+	private JLayeredPane layeredPane_1;	
 	private JLayeredPane layeredPaneManagerWorkerComponents;
 	private JLayeredPane layeredPane;
-	private JLayeredPane layeredPane_1;	
-	private JTextField textFirstName;
-	private JTextField textLastName;
-	private JTextField textUsername;
-	private JTextField textEmail;
-	private JTextField textPhone;
-	private JTextField txtLoginUser;	
-	private JTextField txtProjectName;
-	private JTextField txtNewQualificationName;	
-	private JTextArea txtNewQualificationDesc;
+	private JLayeredPane layeredPaneManagerWorker;
 	
 	/**
 	 * Launch the application.
@@ -284,24 +288,6 @@ public class AdminManageUsers extends JFrame {
 		pnlUsers.add(lblUsers);
 		lblUsers.setFont(new Font("Tahoma", Font.BOLD, 13));
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 38, 157, 720);
-		layeredPaneAdminComponents.add(scrollPane);
-		listUsers = new JList(userList);
-		
-		scrollPane.setViewportView(listUsers);
-		listUsers.setBackground(UIManager.getColor("Button.background"));
-		listUsers.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		listUsers.setLayoutOrientation(JList.VERTICAL);
-		listUsers.setVisibleRowCount(1);
-		
-		btn_create_new_user = new JButton("Create New User");
-		btn_create_new_user.setBounds(177, 0, 130, 28);
-		layeredPaneAdminComponents.add(btn_create_new_user);
-		btn_add_qualifications = new JButton("Add Qualifications");
-		btn_add_qualifications.setBounds(678, 0, 150, 28);
-		layeredPaneAdminComponents.add(btn_add_qualifications);
-		
 		pnlCreateQualification = new JPanel();
 		pnlCreateQualification.setBounds(180, 38, 746, 720);
 		layeredPaneAdminComponents.add(pnlCreateQualification);
@@ -318,15 +304,30 @@ public class AdminManageUsers extends JFrame {
 		lblTitle.setBounds(111, 131, 56, 20);
 		pnlCreateQualification.add(lblTitle);
 		
-		txtNewQualificationName = new JTextField();
-		txtNewQualificationName.setBounds(240, 133, 154, 20);
-		pnlCreateQualification.add(txtNewQualificationName);
-		txtNewQualificationName.setColumns(10);
-		
 		JLabel lblDescription = new JLabel("Description:");
 		lblDescription.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblDescription.setBounds(61, 193, 120, 14);
 		pnlCreateQualification.add(lblDescription);
+		
+		JLabel lblAssignToUsers = new JLabel("Assign to Users");
+		lblAssignToUsers.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblAssignToUsers.setBounds(247, 298, 147, 14);
+		pnlCreateQualification.add(lblAssignToUsers);
+		
+		JLabel lblAvailable_1 = new JLabel("Available");
+		lblAvailable_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblAvailable_1.setBounds(121, 314, 60, 14);
+		pnlCreateQualification.add(lblAvailable_1);
+		
+		JLabel lblAssigned_1 = new JLabel("Assigned");
+		lblAssigned_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblAssigned_1.setBounds(462, 314, 67, 14);
+		pnlCreateQualification.add(lblAssigned_1);
+		
+		txtNewQualificationName = new JTextField();
+		txtNewQualificationName.setBounds(240, 133, 154, 20);
+		pnlCreateQualification.add(txtNewQualificationName);
+		txtNewQualificationName.setColumns(10);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(240, 194, 387, 79);
@@ -348,11 +349,6 @@ public class AdminManageUsers extends JFrame {
 		listCreateQualAssignedUsers = new JList(userListAssignQual);
 		scrollPane_3.setViewportView(listCreateQualAssignedUsers);
 		
-		JLabel lblAssignToUsers = new JLabel("Assign to Users");
-		lblAssignToUsers.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblAssignToUsers.setBounds(247, 298, 147, 14);
-		pnlCreateQualification.add(lblAssignToUsers);
-		
 		btnAssignUserQual = new JButton("->");
 		
 				btnAssignUserQual.setFont(new Font("Tahoma", Font.BOLD, 16));
@@ -364,16 +360,6 @@ public class AdminManageUsers extends JFrame {
 						btnUnassignUserQual.setFont(new Font("Tahoma", Font.BOLD, 16));
 						btnUnassignUserQual.setBounds(271, 519, 89, 23);
 						pnlCreateQualification.add(btnUnassignUserQual);
-						
-						JLabel lblAvailable_1 = new JLabel("Available");
-						lblAvailable_1.setFont(new Font("Tahoma", Font.BOLD, 11));
-						lblAvailable_1.setBounds(121, 314, 60, 14);
-						pnlCreateQualification.add(lblAvailable_1);
-						
-						JLabel lblAssigned_1 = new JLabel("Assigned");
-						lblAssigned_1.setFont(new Font("Tahoma", Font.BOLD, 11));
-						lblAssigned_1.setBounds(462, 314, 67, 14);
-						pnlCreateQualification.add(lblAssigned_1);
 						
 						btnCreateQual = new JButton("CREATE");
 						
@@ -756,11 +742,6 @@ public class AdminManageUsers extends JFrame {
 														);
 														pnlUserEditInfo.setLayout(gl_pnlUserEditInfo);
 														
-														btnViewTickets = new JButton("Ticket Viewer");
-
-														btnViewTickets.setBounds(337, 5, 130, 23);
-														layeredPaneAdminComponents.add(btnViewTickets);
-														
 														pnlViewTickets = new JPanel();
 														layeredPaneAdminComponents.setLayer(pnlViewTickets, 10);
 														pnlViewTickets.setBounds(180, 38, 746, 720);
@@ -797,6 +778,29 @@ public class AdminManageUsers extends JFrame {
 														scrlCompletedTickets = new JScrollPane();
 														scrlCompletedTickets.setBounds(0, 354, 746, 366);
 														pnlViewTickets.add(scrlCompletedTickets);
+														
+														JScrollPane scrollPane = new JScrollPane();
+														scrollPane.setBounds(0, 38, 157, 720);
+														layeredPaneAdminComponents.add(scrollPane);
+														listUsers = new JList(userList);
+														
+														scrollPane.setViewportView(listUsers);
+														listUsers.setBackground(UIManager.getColor("Button.background"));
+														listUsers.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+														listUsers.setLayoutOrientation(JList.VERTICAL);
+														listUsers.setVisibleRowCount(1);
+														
+														btn_create_new_user = new JButton("Create New User");
+														btn_create_new_user.setBounds(177, 0, 130, 28);
+														layeredPaneAdminComponents.add(btn_create_new_user);
+														btn_add_qualifications = new JButton("Add Qualifications");
+														btn_add_qualifications.setBounds(678, 0, 150, 28);
+														layeredPaneAdminComponents.add(btn_add_qualifications);
+														
+														btnViewTickets = new JButton("Ticket Viewer");
+														
+																												btnViewTickets.setBounds(337, 5, 130, 23);
+																												layeredPaneAdminComponents.add(btnViewTickets);
 		
 		layeredPaneLogin = new JLayeredPane();
 		layeredPane.setLayer(layeredPaneLogin, 10);
@@ -813,41 +817,41 @@ public class AdminManageUsers extends JFrame {
 		layeredPaneLoginComponents.setBounds(0, 0, 941, 760);
 		pnlLogin.add(layeredPaneLoginComponents);
 		
-		panel = new JPanel();
-		panel.setBorder(new TitledBorder(null, "Login", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(134, 109, 639, 354);
-		layeredPaneLoginComponents.add(panel);
-		panel.setLayout(null);
+		pnl_login_components = new JPanel();
+		pnl_login_components.setBorder(new TitledBorder(null, "Login", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnl_login_components.setBounds(134, 109, 639, 354);
+		layeredPaneLoginComponents.add(pnl_login_components);
+		pnl_login_components.setLayout(null);
 		
 		btnLogin = new JButton("Login");
 		btnLogin.setBounds(308, 320, 89, 23);
-		panel.add(btnLogin);
+		pnl_login_components.add(btnLogin);
 		
 				btnLogin.setFont(new Font("Tahoma", Font.BOLD, 11));
 				
 				passwordLogin = new JPasswordField();
 				passwordLogin.setBounds(306, 237, 192, 19);
-				panel.add(passwordLogin);
+				pnl_login_components.add(passwordLogin);
 				
 				lblPassword_1 = new JLabel("Password:");
 				lblPassword_1.setBounds(136, 237, 105, 14);
-				panel.add(lblPassword_1);
+				pnl_login_components.add(lblPassword_1);
 				lblPassword_1.setFont(new Font("Tahoma", Font.BOLD, 16));
 				
 				lblUsername_2 = new JLabel("Username:");
 				lblUsername_2.setBounds(136, 153, 105, 14);
-				panel.add(lblUsername_2);
+				pnl_login_components.add(lblUsername_2);
 				lblUsername_2.setFont(new Font("Tahoma", Font.BOLD, 16));
-				
-				txtLoginUser = new JTextField();
-				txtLoginUser.setBounds(306, 152, 192, 20);
-				panel.add(txtLoginUser);
-				txtLoginUser.setColumns(10);
 				
 				lblTablLogin = new JLabel("TABL LOGIN");
 				lblTablLogin.setBounds(196, 32, 274, 60);
-				panel.add(lblTablLogin);
+				pnl_login_components.add(lblTablLogin);
 				lblTablLogin.setFont(new Font("Tahoma", Font.BOLD, 30));
+				
+				txtLoginUser = new JTextField();
+				txtLoginUser.setBounds(306, 152, 192, 20);
+				pnl_login_components.add(txtLoginUser);
+				txtLoginUser.setColumns(10);
 		
 		layeredPaneManagerWorker = new JLayeredPane();
 		layeredPane.setLayer(layeredPaneManagerWorker, 20);

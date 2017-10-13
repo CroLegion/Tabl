@@ -61,9 +61,8 @@ CREATE TABLE qualification_requirements
 (
 	qualID int not null,
     taskID int not null,
-    PRIMARY KEY (qualID,userID),
-    FOREIGN KEY (taskID) REFERENCES tasks(taskID),
-    FOREIGN KEY (qualID) REFERENCES quals(qualID)
+    PRIMARY KEY (qualID,taskID),
+    FOREIGN KEY (taskID) REFERENCES tasks(taskID)
 );
 CREATE TABLE job_assignments
 (
@@ -77,7 +76,7 @@ CREATE TABLE task_assignments
 (
     taskID int not null,
     userID int not null,
-    PRIMARY KEY (jobID,userID),
+    PRIMARY KEY (taskID,userID),
     FOREIGN KEY (userID) REFERENCES users(userID),
     FOREIGN KEY (taskID) REFERENCES tasks(taskID)
 );

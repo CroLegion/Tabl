@@ -1,6 +1,8 @@
 package common;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,51 +65,46 @@ public static User login(String username, String password) {
 	}
 	return u;
 }
+
 /*Create a random integer to be used as a user's userID between 1 and the max integer value.  
  * Checks the data base to see if that Id is present, and then keeps trying until a new one is created.*/
-public static int get_user_id() throws SQLException {
+public static int get_new_id(String tableName) {
+	Map<String, String> map = new HashMap<String, String>();
+	map.put("users", "userID");
+	map.put("jobs", "jobID");
+	map.put("tickets", "ticketID");
+	map.put("qualifications", "qualID");
+	map.put("tasks", "taskID");
 	int randomNum = 0;
 	
 	while(true) {
-		randomNum = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);		
-		String query = String.format("SELECT userID FROM db309amc2.users WHERE userID = %d", randomNum);
-		Statement stmt = null;
-		stmt = conn1.createStatement();
-		ResultSet rs = stmt.executeQuery(query);
-		if (!rs.next()) {break;} //leave loop if new ID is found 
-		stmt.close();
+		try {
+			randomNum = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);		
+			String query = String.format("SELECT %s FROM db309amc2.%s WHERE %s = %d", map.get(tableName), tableName, map.get(tableName), randomNum);
+			Statement stmt = null;
+			stmt = conn1.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			if (!rs.next()) {break;} //leave loop if new ID is found 
+			stmt.close();
+		} catch (SQLException e) {
+			System.out.println("SQLException: " + e.getMessage());
+			System.out.println("SQLState: " + e.getSQLState());
+			System.out.println("VendorError: " + e.getErrorCode());
+		}
+		
 	}
 	
 	return randomNum;
-	
 	
 }
 
-/*Create a random integer to be used as a qualifications qualID between 1 and the max integer value.  
- * Checks the data base to see if that Id is present, and then keeps trying until a new one is created.*/
-public static int get_qual_id() throws SQLException {
-	int randomNum = 0;
 	
-	while(true) {
-		randomNum = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);		
-		String query = String.format("SELECT qualID FROM db309amc2.qualifications WHERE qualID = %d", randomNum);
-		Statement stmt = null;
-		stmt = conn1.createStatement();
-		ResultSet rs = stmt.executeQuery(query);
-		if (!rs.next()) {break;} //leave loop if new ID is found 
-		stmt.close();
-	}
-	
-	return randomNum;
-	
-	
-}
-	
+
 
 //adds a user to the database, first randomly generates a userID using the get_user_id() function
 
 public static void add_user(int usertype, String username, String firstname, String lastname, String email, String phone, String passhash) throws SQLException {
-	int userID = get_user_id();
+	int userID = get_new_id("users");
 	try {
 		Statement statement = conn1.createStatement();
 		String sql = "INSERT INTO users " +
@@ -486,16 +483,8 @@ public static boolean createQual(String name, String desc, ArrayList<String> use
 		    userIDs.add(getIdOfUser(m.group(1)));
 		}
 	}	
-	int id = 0;
-	
-	try {
-		id = get_qual_id();
-	} catch (SQLException e) {
-		System.out.println("SQLException: " + e.getMessage());
-		System.out.println("SQLState: " + e.getSQLState());
-		System.out.println("VendorError: " + e.getErrorCode());
-		return false;
-	}
+	int id = get_new_id("qualifications");
+
 	
 	//add the qualification to the qualification table
 	try {
@@ -529,6 +518,31 @@ public static boolean createQual(String name, String desc, ArrayList<String> use
 	}
 	return true;
 	
+}
+
+public static boolean createTicket(String title, String message, int submittedBy) {
+	submittedBy = 123;
+	if (message.length() == 0 || submittedBy == 0) {
+		return false;
+	}
+	int ticketID = get_new_id("tickets");
+	String timeStamp = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date());
+	
+	
+	//add the ticket to the tickets table
+		try {
+			Statement statement = conn1.createStatement();
+			String sql = String.format("INSERT INTO db309amc2.tickets VALUES(%d, '%s', '%s', %d, %s, '%s')", ticketID, title, message, submittedBy, "false", timeStamp);
+			statement.executeUpdate(sql);
+			// Close all statements
+			statement.close();
+		} catch (SQLException e) {
+			System.out.println("SQLException: " + e.getMessage());
+			System.out.println("SQLState: " + e.getSQLState());
+			System.out.println("VendorError: " + e.getErrorCode());
+			return false;
+		}
+	return true;
 }
 
 

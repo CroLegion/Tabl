@@ -73,6 +73,8 @@ import java.awt.SystemColor;
 import java.awt.Component;
 
 public class AdminManageUsers extends JFrame {
+	private int currentSessionUserID;
+	
 	private JLabel lblUsername_2;
 	private JLabel lblPassword_1;
 	private JLabel lblTitle;
@@ -209,6 +211,11 @@ public class AdminManageUsers extends JFrame {
 	private JLayeredPane layeredPaneManagerWorkerComponents;
 	private JLayeredPane layeredPane;
 	private JLayeredPane layeredPaneManagerWorker;
+	private JButton btnCreateTicket;
+	private JPanel pnlCreateTicket;
+	private JTextField txtNewTicketTitle;
+	private JButton btnSendTicket;
+	private JTextArea txtNewTicketDesc;
 	
 	/**
 	 * Launch the application.
@@ -262,7 +269,7 @@ public class AdminManageUsers extends JFrame {
 		
 		layeredPaneAdmin = new JLayeredPane();
 		layeredPaneAdmin.setBackground(new Color(100, 149, 237));
-		layeredPane.setLayer(layeredPaneAdmin, 20);
+		layeredPane.setLayer(layeredPaneAdmin, 0);
 		layeredPaneAdmin.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneAdmin);
 		
@@ -798,7 +805,7 @@ public class AdminManageUsers extends JFrame {
 																pnlUserEditInfo.setLayout(gl_pnlUserEditInfo);
 														
 														pnlViewTickets = new JPanel();
-														layeredPaneAdminComponents.setLayer(pnlViewTickets, 0);
+														layeredPaneAdminComponents.setLayer(pnlViewTickets, 10);
 														pnlViewTickets.setBounds(180, 38, 746, 720);
 														layeredPaneAdminComponents.add(pnlViewTickets);
 														pnlViewTickets.setVisible(false);
@@ -971,7 +978,7 @@ public class AdminManageUsers extends JFrame {
 		layeredPane.add(layeredPaneManagerWorker);
 		
 		pnlManagerWorker = new JPanel();
-		layeredPaneManagerWorker.setLayer(pnlManagerWorker, 20);
+		layeredPaneManagerWorker.setLayer(pnlManagerWorker, 10);
 		pnlManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPaneManagerWorker.add(pnlManagerWorker);
 		
@@ -1349,6 +1356,9 @@ public class AdminManageUsers extends JFrame {
 																		.addComponent(btnCreateJob)))
 														);
 														pnlCreateJob.setLayout(gl_pnlCreateJob);
+														
+														btnCreateTicket = new JButton("Create Ticket");
+
 														GroupLayout gl_pnlManagerWorker = new GroupLayout(pnlManagerWorker);
 														gl_pnlManagerWorker.setHorizontalGroup(
 															gl_pnlManagerWorker.createParallelGroup(Alignment.LEADING)
@@ -1360,7 +1370,10 @@ public class AdminManageUsers extends JFrame {
 																			.addComponent(btn_create_task, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE))
 																		.addComponent(btn_create_project, GroupLayout.PREFERRED_SIZE, 136, GroupLayout.PREFERRED_SIZE))
 																	.addGap(3)
-																	.addComponent(btn_create_job, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE))
+																	.addComponent(btn_create_job, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
+																	.addPreferredGap(ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
+																	.addComponent(btnCreateTicket)
+																	.addGap(82))
 																.addGroup(gl_pnlManagerWorker.createSequentialGroup()
 																	.addGap(181)
 																	.addComponent(layeredPaneManagerWorkerComponents, GroupLayout.PREFERRED_SIZE, 746, GroupLayout.PREFERRED_SIZE))
@@ -1371,10 +1384,52 @@ public class AdminManageUsers extends JFrame {
 																	.addGroup(gl_pnlManagerWorker.createParallelGroup(Alignment.LEADING)
 																		.addComponent(btn_create_task, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
 																		.addComponent(btn_create_project, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-																		.addComponent(btn_create_job, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+																		.addGroup(gl_pnlManagerWorker.createParallelGroup(Alignment.BASELINE)
+																			.addComponent(btn_create_job, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+																			.addComponent(btnCreateTicket)))
 																	.addGap(13)
 																	.addComponent(layeredPaneManagerWorkerComponents, GroupLayout.PREFERRED_SIZE, 719, GroupLayout.PREFERRED_SIZE))
 														);
+														
+														pnlCreateTicket = new JPanel();
+														pnlCreateTicket.setBorder(new TitledBorder(null, "Ticket Creator", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+														layeredPaneManagerWorkerComponents.setLayer(pnlCreateTicket, 0);
+														pnlCreateTicket.setBounds(0, 0, 746, 720);
+														layeredPaneManagerWorkerComponents.add(pnlCreateTicket);
+														pnlCreateTicket.setLayout(null);
+														pnlCreateTicket.setVisible(false);
+														
+														JLabel lblNewLabel_5 = new JLabel("Create New Ticket");
+														lblNewLabel_5.setFont(new Font("Tahoma", Font.BOLD, 16));
+														lblNewLabel_5.setBounds(310, 11, 170, 41);
+														pnlCreateTicket.add(lblNewLabel_5);
+														
+														JLabel lblTitle_1 = new JLabel("Title:");
+														lblTitle_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+														lblTitle_1.setBounds(120, 90, 46, 14);
+														pnlCreateTicket.add(lblTitle_1);
+														
+														JLabel lblDescription_1 = new JLabel("Description:");
+														lblDescription_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+														lblDescription_1.setBounds(10, 161, 134, 14);
+														pnlCreateTicket.add(lblDescription_1);
+														
+														JScrollPane scrollPane_4 = new JScrollPane();
+														scrollPane_4.setBounds(186, 157, 459, 123);
+														pnlCreateTicket.add(scrollPane_4);
+														
+														txtNewTicketDesc = new JTextArea();
+														scrollPane_4.setViewportView(txtNewTicketDesc);
+														
+														txtNewTicketTitle = new JTextField();
+														txtNewTicketTitle.setBounds(186, 87, 431, 20);
+														pnlCreateTicket.add(txtNewTicketTitle);
+														txtNewTicketTitle.setColumns(10);
+														
+														btnSendTicket = new JButton("SEND");
+
+														btnSendTicket.setBounds(324, 347, 89, 23);
+														pnlCreateTicket.add(btnSendTicket);
 														pnlManagerWorker.setLayout(gl_pnlManagerWorker);
 														
 														btnLogout = new JButton("LOGOUT");
@@ -1445,6 +1500,7 @@ public class AdminManageUsers extends JFrame {
 						lblPortal.setText("Worker Portal - "+u.get_firstname()+ " " + u.get_lastname());
 						
 					}
+					currentSessionUserID = u.get_userID();
 					btnLogout.setVisible(true);
 					lblPortal.setVisible(true);
 					btn_settings.setVisible(true);
@@ -1754,6 +1810,33 @@ public class AdminManageUsers extends JFrame {
 				}
 			}
 		});
+		
+		btnCreateTicket.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (pnlCreateTicket.isVisible()) {
+					pnlCreateTicket.setVisible(false);
+				} else {
+					pnlCreateTicket.setVisible(true);
+					pnlCreateJob.setVisible(false);
+					pnlCreateTask.setVisible(false);
+					pnlCreateProject.setVisible(false);
+				}
+			}
+		});
+		
+		btnSendTicket.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (jdbc.createTicket(txtNewTicketTitle.getText(), txtNewTicketDesc.getText(), currentSessionUserID)) {
+					JOptionPane.showMessageDialog(null, "Ticket sent to Admin");
+					pnlCreateTicket.setVisible(false);
+				} else {
+					txtNewTicketTitle.setText("");
+					txtNewTicketDesc.setText("");
+					JOptionPane.showMessageDialog(null, "Ticket not sent to Admin");
+				}
+				
+			}
+		});
 	}
 
 	//Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
@@ -1840,5 +1923,4 @@ public class AdminManageUsers extends JFrame {
 		}
 		
 	}
-	
 }

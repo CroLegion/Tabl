@@ -90,11 +90,13 @@ CREATE TABLE job_requirements
 CREATE TABLE tickets
 (
 	ticketID int not null,
+    title text not null,
     message text,
-    submittedBy varchar(32) not null,
-    submittedTo varchar(32) not null,
+    submittedBy int not null,
     isDone boolean,
-    submittedDate varchar(32) not null
+    submittedDate varchar(32) not null,
+    PRIMARY KEY (ticketID),
+    FOREIGN KEY (submittedBy) REFERENCES users(userID)
 );
 CREATE TABLE manager_assignments
 (

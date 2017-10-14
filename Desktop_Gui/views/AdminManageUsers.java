@@ -262,7 +262,7 @@ public class AdminManageUsers extends JFrame {
 		
 		layeredPaneAdmin = new JLayeredPane();
 		layeredPaneAdmin.setBackground(new Color(100, 149, 237));
-		layeredPane.setLayer(layeredPaneAdmin, 0);
+		layeredPane.setLayer(layeredPaneAdmin, 20);
 		layeredPaneAdmin.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneAdmin);
 		
@@ -966,7 +966,7 @@ public class AdminManageUsers extends JFrame {
 				pnlLogin.setLayout(gl_pnlLogin);
 		
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 20);
+		layeredPane.setLayer(layeredPaneManagerWorker, 0);
 		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneManagerWorker);
 		
@@ -1592,6 +1592,7 @@ public class AdminManageUsers extends JFrame {
 		btn_add_qualifications.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
+				pnlUserEditInfo.setVisible(false);
 				pnlCreateTask.setVisible(false);
 				pnlCreateProject.setVisible(false);
 				pnlCreateUser.setVisible(false);
@@ -1716,7 +1717,20 @@ public class AdminManageUsers extends JFrame {
 		
 		btnCreateQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				ArrayList<String> usernames = new ArrayList<String>();
+				for (int i = 0; i < userListAssignQual.size(); i++) {
+					usernames.add(userListAssignQual.getElementAt(i).toString());
+				}
+				boolean worked = jdbc.createQual(txtNewQualificationName.getText(), txtNewQualificationDesc.getText(), usernames);
+				if (worked) {
+					JOptionPane.showMessageDialog(null, "Qualification Created!");
+				} else {
+					JOptionPane.showMessageDialog(null, "Qualification not created.");
+					txtNewQualificationDesc.setText("");
+					txtNewQualificationName.setText("");
+					userListAssignQual.clear();
+					createUserListQual();
+				}
 			}
 		});
 		
@@ -1826,4 +1840,5 @@ public class AdminManageUsers extends JFrame {
 		}
 		
 	}
+	
 }

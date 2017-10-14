@@ -2,6 +2,8 @@ package common;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class jdbc {
 
@@ -69,6 +71,26 @@ public static int get_user_id() throws SQLException {
 	while(true) {
 		randomNum = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);		
 		String query = String.format("SELECT userID FROM db309amc2.users WHERE userID = %d", randomNum);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		if (!rs.next()) {break;} //leave loop if new ID is found 
+		stmt.close();
+	}
+	
+	return randomNum;
+	
+	
+}
+
+/*Create a random integer to be used as a qualifications qualID between 1 and the max integer value.  
+ * Checks the data base to see if that Id is present, and then keeps trying until a new one is created.*/
+public static int get_qual_id() throws SQLException {
+	int randomNum = 0;
+	
+	while(true) {
+		randomNum = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);		
+		String query = String.format("SELECT qualID FROM db309amc2.qualifications WHERE qualID = %d", randomNum);
 		Statement stmt = null;
 		stmt = conn1.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
@@ -418,10 +440,6 @@ public static void assignQuals(int lastClickeduserID, ArrayList<Qualification> a
 			// Close all statements and connections
 			statement.close();
 		}
-		
-		
-
-		
 	} catch (SQLException e) {
 		System.out.println("SQLException: " + e.getMessage());
 		System.out.println("SQLState: " + e.getSQLState());
@@ -451,6 +469,66 @@ public static ArrayList<Qualification> getQualifications() {
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
 	return quals;
+}
+
+public static boolean createQual(String name, String desc, ArrayList<String> usernames) {
+	if (name.length() == 0 || desc.length() == 0) {
+		return false;
+	}
+	
+	//Get userIDs of all users in the usernames array
+	ArrayList<Integer> userIDs = new ArrayList<Integer>();
+	for (int i = 0; i < usernames.size(); i++) {
+		Pattern p = Pattern.compile("\\[(.*?)\\]");
+		Matcher m = p.matcher(usernames.get(i));
+		if (m.find())
+		{
+		    userIDs.add(getIdOfUser(m.group(1)));
+		}
+	}	
+	int id = 0;
+	
+	try {
+		id = get_qual_id();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+		return false;
+	}
+	
+	//add the qualification to the qualification table
+	try {
+		Statement statement = conn1.createStatement();
+		String sql = String.format("INSERT INTO db309amc2.qualifications VALUES(%d, '%s', '%s')", id , name, desc);
+		statement.executeUpdate(sql);
+		// Close all statements
+		statement.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+		return false;
+	}
+	
+	
+	//add the qualification assignment to the table
+	for (int i = 0; i < userIDs.size(); i++) {
+		try {
+			Statement statement = conn1.createStatement();
+			String sql = String.format("INSERT INTO db309amc2.qualification_assignments VALUES(%d, %d)", id, userIDs.get(i));
+			statement.executeUpdate(sql);
+			// Close all statements and connections
+			statement.close();
+		} catch (SQLException e) {
+			System.out.println("SQLException: " + e.getMessage());
+			System.out.println("SQLState: " + e.getSQLState());
+			System.out.println("VendorError: " + e.getErrorCode());
+			return false;
+		}
+	}
+	return true;
+	
 }
 
 

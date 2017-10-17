@@ -143,7 +143,7 @@ CREATE TABLE messages
     timesent timestamp not null,
     PRIMARY KEY (msgID),
     FOREIGN KEY (msgsender) REFERENCES users(userID),
-    FOREIGN KEY (msgdest) REFERENCES groups(groupID)
+    FOREIGN KEY (msgdest) REFERENCES conversations(conversationID)
 );
 
 CREATE TABLE conversations
@@ -168,6 +168,8 @@ CREATE TABLE attachments
     att_message int not null,
     att_location varchar(64) not null,
     att_name varchar(32) not null,
+    att_data longtext,
+    att_type tinyint,
     PRIMARY KEY (attID),
     FOREIGN KEY (att_message) REFERENCES messages(msgID)
 );

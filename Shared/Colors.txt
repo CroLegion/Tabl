@@ -1,0 +1,19 @@
+TABL Color Scheme
+
+Banner Pallete
+ - Login background and banner use 4 colors, one at each corner, and linearly interpolate intermediary colors
+Color TL:	#189EB1
+Color TR:	#073D6D
+Color BL:	#964E6B
+Color BR:	#0F2A54
+
+UI Pallete
+ - UI elements adhere to a color scheme by class
+Button Color:	#BCBEC2
+Button Hover:	#55575E
+
+Font Pallete
+ - Fonts and heading levels adhere to a unified color scheme
+Button Color:	#000000
+Button Hover:	#FFFFFF
+

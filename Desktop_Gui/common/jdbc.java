@@ -212,12 +212,36 @@ public static int getMaxJobID(){
 	return ID;
 	
 }
-//gets a single user given its username.
 
+//gets a single user given its username.
 public static User get_user(String username) {
 	User u = null;
 	try {
 	String query = String.format("SELECT * FROM db309amc2.users WHERE username='%s'", username);
+	Statement stmt = null;
+	stmt = conn1.createStatement();
+	ResultSet rs = stmt.executeQuery(query);
+	while (rs.next()) {
+		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"));
+		u.setEmail(rs.getString("email"));
+		u.setPhone(rs.getString("phone"));
+	}
+	// Close all statements
+	stmt.close();
+
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return u;
+}
+
+//gets a single user given its userID.
+public static User get_user(int  userID) {
+	User u = null;
+	try {
+	String query = String.format("SELECT * FROM db309amc2.users WHERE userID=%d", userID);
 	Statement stmt = null;
 	stmt = conn1.createStatement();
 	ResultSet rs = stmt.executeQuery(query);
@@ -258,7 +282,7 @@ public static void updateUser(int id, String firstname, String lastname, String 
 	}
 }
 
-//Gets tue userID of a user given its usernaeme
+//Gets the userID of a user given its username
 
 public static int getIdOfUser(String username) {
 	int userID = 0;
@@ -530,19 +554,43 @@ public static boolean createTicket(String title, String message, int submittedBy
 	
 	
 	//add the ticket to the tickets table
-		try {
-			Statement statement = conn1.createStatement();
-			String sql = String.format("INSERT INTO db309amc2.tickets VALUES(%d, '%s', '%s', %d, %s, '%s')", ticketID, title, message, submittedBy, "false", timeStamp);
-			statement.executeUpdate(sql);
-			// Close all statements
-			statement.close();
-		} catch (SQLException e) {
-			System.out.println("SQLException: " + e.getMessage());
-			System.out.println("SQLState: " + e.getSQLState());
-			System.out.println("VendorError: " + e.getErrorCode());
-			return false;
-		}
+	try {
+		Statement statement = conn1.createStatement();
+		String sql = String.format("INSERT INTO db309amc2.tickets VALUES(%d, '%s', '%s', %d, %s, '%s')", ticketID, title, message, submittedBy, "false", timeStamp);
+		statement.executeUpdate(sql);
+		// Close all statements
+		statement.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+		return false;
+	}
 	return true;
+}
+
+public static ArrayList<Ticket> getTickets() {
+	ArrayList<Ticket> tickets = new ArrayList<Ticket>();
+	
+	try {		
+		String query = "SELECT * FROM db309amc2.tickets";
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			Ticket t = new Ticket(rs.getInt("ticketID"), rs.getString("title"), rs.getString("message"), rs.getInt("submittedBy"), rs.getBoolean("isDone"), rs.getString("submittedDate"));
+			tickets.add(t);
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	return tickets;
 }
 
 

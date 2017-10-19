@@ -43,6 +43,7 @@ import common.jdbc;
 import common.User;
 import common.Job;
 import common.Qualification;
+import common.Ticket;
 
 import javax.swing.JLabel;
 
@@ -81,7 +82,7 @@ public class AdminManageUsers extends JFrame {
 	private JLabel lblTablLogin;	
 	private JLabel lblPortal;
 	private JLabel lblOpenTickets;
-	private JLabel lblCompletedTickets;
+	private JLabel lblClosedTickets;
 	
 	//lists and models to display the qualifications on the gui to the user
 	private JList listAvailableQuals;
@@ -169,9 +170,9 @@ public class AdminManageUsers extends JFrame {
 	private JButton btn_add_qualifications;
 	private JButton btnViewTickets;
 	private JPanel pnlOpenTicketsLbl;
-	private JPanel pnlCompleteTicketsLbl;
+	private JPanel pnlClosedTicketsLbl;
 	private JScrollPane scrlOpenTickets;
-	private JScrollPane scrlCompletedTickets;									
+	private JScrollPane scrlClosedTickets;									
 	private JList listUsers;
 	private JTextField textFirstName;
 	private JTextField textLastName;
@@ -196,7 +197,9 @@ public class AdminManageUsers extends JFrame {
 	String lastClickedUser;
 	DefaultListModel userList = new DefaultListModel();
 	DefaultListModel userListAssignQual = new DefaultListModel();
-	DefaultListModel userListAvailQual = new DefaultListModel();	
+	DefaultListModel userListAvailQual = new DefaultListModel();
+	DefaultListModel openTickets = new DefaultListModel();
+	DefaultListModel closedTickets = new DefaultListModel();
 	int lastClickedIndex;
 	int lastClickeduserID;
 	private JButton btn_settings;
@@ -216,6 +219,8 @@ public class AdminManageUsers extends JFrame {
 	private JTextField txtNewTicketTitle;
 	private JButton btnSendTicket;
 	private JTextArea txtNewTicketDesc;
+	private JList listOpenTickets;
+	private JList listClosedTickets;
 	
 	/**
 	 * Launch the application.
@@ -269,7 +274,7 @@ public class AdminManageUsers extends JFrame {
 		
 		layeredPaneAdmin = new JLayeredPane();
 		layeredPaneAdmin.setBackground(new Color(100, 149, 237));
-		layeredPane.setLayer(layeredPaneAdmin, 0);
+		layeredPane.setLayer(layeredPaneAdmin, 20);
 		layeredPaneAdmin.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneAdmin);
 		
@@ -819,25 +824,25 @@ public class AdminManageUsers extends JFrame {
 														lblOpenTickets.setBounds(312, 0, 189, 15);
 														pnlOpenTicketsLbl.add(lblOpenTickets);
 														
-														pnlCompleteTicketsLbl = new JPanel();
-														pnlCompleteTicketsLbl.setBackground(SystemColor.controlShadow);
-														pnlCompleteTicketsLbl.setLayout(null);
+														pnlClosedTicketsLbl = new JPanel();
+														pnlClosedTicketsLbl.setBackground(SystemColor.controlShadow);
+														pnlClosedTicketsLbl.setLayout(null);
 														
-														lblCompletedTickets = new JLabel("Completed Tickets");
-														lblCompletedTickets.setFont(new Font("Tahoma", Font.BOLD, 14));
-														lblCompletedTickets.setBounds(302, 0, 189, 26);
-														pnlCompleteTicketsLbl.add(lblCompletedTickets);
+														lblClosedTickets = new JLabel("Closed Tickets");
+														lblClosedTickets.setFont(new Font("Tahoma", Font.BOLD, 14));
+														lblClosedTickets.setBounds(302, 0, 189, 26);
+														pnlClosedTicketsLbl.add(lblClosedTickets);
 														
 														scrlOpenTickets = new JScrollPane();
 														
-														scrlCompletedTickets = new JScrollPane();
+														scrlClosedTickets = new JScrollPane();
 														GroupLayout gl_pnlViewTickets = new GroupLayout(pnlViewTickets);
 														gl_pnlViewTickets.setHorizontalGroup(
 															gl_pnlViewTickets.createParallelGroup(Alignment.LEADING)
 																.addComponent(scrlOpenTickets, GroupLayout.PREFERRED_SIZE, 746, GroupLayout.PREFERRED_SIZE)
 																.addComponent(pnlOpenTicketsLbl, GroupLayout.PREFERRED_SIZE, 746, GroupLayout.PREFERRED_SIZE)
-																.addComponent(pnlCompleteTicketsLbl, GroupLayout.PREFERRED_SIZE, 746, GroupLayout.PREFERRED_SIZE)
-																.addComponent(scrlCompletedTickets, GroupLayout.PREFERRED_SIZE, 746, GroupLayout.PREFERRED_SIZE)
+																.addComponent(pnlClosedTicketsLbl, GroupLayout.PREFERRED_SIZE, 746, GroupLayout.PREFERRED_SIZE)
+																.addComponent(scrlClosedTickets, GroupLayout.PREFERRED_SIZE, 746, GroupLayout.PREFERRED_SIZE)
 														);
 														gl_pnlViewTickets.setVerticalGroup(
 															gl_pnlViewTickets.createParallelGroup(Alignment.LEADING)
@@ -848,11 +853,19 @@ public class AdminManageUsers extends JFrame {
 																			.addComponent(scrlOpenTickets, GroupLayout.PREFERRED_SIZE, 307, GroupLayout.PREFERRED_SIZE))
 																		.addComponent(pnlOpenTicketsLbl, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
 																	.addGroup(gl_pnlViewTickets.createParallelGroup(Alignment.LEADING)
-																		.addComponent(pnlCompleteTicketsLbl, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+																		.addComponent(pnlClosedTicketsLbl, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
 																		.addGroup(gl_pnlViewTickets.createSequentialGroup()
 																			.addGap(25)
-																			.addComponent(scrlCompletedTickets, GroupLayout.PREFERRED_SIZE, 366, GroupLayout.PREFERRED_SIZE))))
+																			.addComponent(scrlClosedTickets, GroupLayout.PREFERRED_SIZE, 366, GroupLayout.PREFERRED_SIZE))))
 														);
+														
+														listClosedTickets = new JList(closedTickets);
+														listClosedTickets.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+														scrlClosedTickets.setViewportView(listClosedTickets);
+														
+														listOpenTickets = new JList(openTickets);
+														listOpenTickets.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+														scrlOpenTickets.setViewportView(listOpenTickets);
 														pnlViewTickets.setLayout(gl_pnlViewTickets);
 														
 														JScrollPane scrollPane = new JScrollPane();
@@ -1524,6 +1537,7 @@ public class AdminManageUsers extends JFrame {
 		
 		btnViewTickets.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				loadTickets();
 				if (pnlViewTickets.isVisible()) {
 					pnlViewTickets.setVisible(false);
 				} else {
@@ -1922,5 +1936,27 @@ public class AdminManageUsers extends JFrame {
 			availableQualList.addElement(q.getQualName());
 		}
 		
+	}
+	
+	private void loadTickets() {
+		openTickets.clear();
+		closedTickets.clear();
+		ArrayList<Ticket> tickets = jdbc.getTickets();
+		
+		for (Ticket t : tickets) {
+			User u = jdbc.get_user(t.submittedBy);
+			String submittedBy = "Submitted By: "+u.get_lastname()+", "+u.get_firstname();
+			String id = "Ticket ID: "+t.ticketID;
+			String title = "Title: "+t.title;
+			if (t.isDone) {
+				String status = "Status: Closed";
+				String s = String.format("%s %.30s %40s %50s", id, title, submittedBy, status);
+				closedTickets.addElement(s);
+			} else {
+				String status = "Status: Open";
+				String s = String.format("%s %.30s %40s %50s", id, title, submittedBy, status);
+				openTickets.addElement(s);
+			}
+		}
 	}
 }

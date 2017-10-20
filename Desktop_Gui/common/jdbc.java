@@ -83,6 +83,7 @@ public static int get_user_id() throws SQLException {
 	
 }
 
+
 /*Create a random integer to be used as a qualifications qualID between 1 and the max integer value.  
  * Checks the data base to see if that Id is present, and then keeps trying until a new one is created.*/
 public static int get_qual_id() throws SQLException {
@@ -104,6 +105,7 @@ public static int get_qual_id() throws SQLException {
 }
 	
 
+
 //adds a user to the database, first randomly generates a userID using the get_user_id() function
 
 public static void add_user(int usertype, String username, String firstname, String lastname, String email, String phone, String passhash) throws SQLException {
@@ -124,6 +126,7 @@ public static void add_user(int usertype, String username, String firstname, Str
 	}
 }
 
+//
 
 public static void deleteUser(int userID) {
 	try {
@@ -141,6 +144,12 @@ public static void deleteUser(int userID) {
 	}
 }
 
+//adds a manager to a job
+//TODO
+public static void add_Manager(User user) {
+	
+}
+//adds a project to the database
 
 public static void add_project(Job jobs){
 	try {
@@ -162,7 +171,38 @@ public static void add_project(Job jobs){
 	}
 }
 
+public static ArrayList<User> get_Managers() {
+	ArrayList<User> users = new ArrayList<User>();
+		try {
+		String query = "SELECT * FROM db309amc2.users where usertype=2;";
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			int userID = rs.getInt("userID");
+   			int usertype = rs.getInt("userID");
+   			String username = rs.getString("username");
+   			String firstname = rs.getString("firstname");
+   			String lastname = rs.getString("lastname");
+   			String email = rs.getString("email");
+   			String phone = rs.getString("phone");
+   			User u = new User(userID, usertype, username, firstname, lastname);
+   			u.setEmail(email);
+   			u.setPhone(phone);
+   			users.add(u);
+		}
+		// Close all statements
+		stmt.close();
+		
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return users;
+}
 //Gets a list of all of the users for the Admin.  These users are displayed in the contentpane on the left side
+
 
 public static ArrayList<User> get_users() {
 	ArrayList<User> users = new ArrayList<User>();
@@ -196,6 +236,7 @@ public static ArrayList<User> get_users() {
 }
 
 //Returns from server the max job id as an int
+
 public static int getMaxJobID(){
 	int ID=0;
 	try {
@@ -215,6 +256,7 @@ public static int getMaxJobID(){
 	return ID;
 	
 }
+
 //gets a single user given its username.
 
 public static User get_user(String username) {
@@ -239,7 +281,6 @@ public static User get_user(String username) {
 	}
 	return u;
 }
-
 
 //Updates a user's information, called when the Admin clicks SAVE on the update user panel
 
@@ -286,6 +327,7 @@ public static int getIdOfUser(String username) {
 	return userID;
 }
 
+//
 
 public static void get_projects() throws SQLException {
 		try {
@@ -311,9 +353,9 @@ public static void get_projects() throws SQLException {
 	}
 
 }
-/*
- * returns a list of qualifications
- */
+
+//returns a list of qualifications
+ 
 public static ArrayList<Qualification> get_qualifications(){
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();	
 	try{

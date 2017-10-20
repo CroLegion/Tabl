@@ -192,6 +192,7 @@ public class AdminManageUsers extends JFrame {
 	
 	//other or unassigned vars
 	String lastClickedUser;
+	DefaultListModel managerList = new DefaultListModel();
 	DefaultListModel userList = new DefaultListModel();
 	DefaultListModel userListAssignQual = new DefaultListModel();
 	DefaultListModel userListAvailQual = new DefaultListModel();	
@@ -1220,7 +1221,7 @@ public class AdminManageUsers extends JFrame {
 														txtAreaJobDescription = new JTextArea();
 														scrlPaneJobDescription.setViewportView(txtAreaJobDescription);
 														
-														listAssignableManagers = new JList();
+														listAssignableManagers = new JList(managerList);
 														scrlPaneAssignableManagers.setViewportView(listAssignableManagers);
 														
 														JLabel lblJobName = new JLabel("Name of the Job:");
@@ -1560,7 +1561,7 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateQualification.setVisible(false);
 				pnlCreateJob.setVisible(true);
 				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);	
-				
+				createAllUsersList();
 			}
 		});
 		//closes create job tab
@@ -1569,10 +1570,30 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateJob.setVisible(false);
 			}
 		});
-		//creates a new job w/ info
+//		private JPanel pnlCreateJob;
+//		private JTextField txtJobName;
+//		private JButton btnCreateJob;
+//		private JButton btnCancelJob;	
+//		private JButton buttonAssignUsers; 								
+//		private JButton buttonRemoveUsers;
+//		private JButton btn_create_job;	
+//		private JTextArea txtAreaJobDescription;
+//		private JList listAssignableManagers;
+//		private JList listRequiredQuals;
+//		private JList listAssignedUsers;								
+//		private JList listAvailableUsers;
+		
+		//creates a new job w/ info, assigns a manager to it,
 		btnCreateJob.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO
+				int Id= jdbc.getMaxJobID()+1;
+				Job job =new Job(Id, txtJobName.getText(), 2);
+				job.setJobdesc(txtAreaJobDescription.getText());				
+				jdbc.add_project(job);
+				createManagersList();
+				layeredPaneManagerWorker.setVisible(true);	
+				JOptionPane.showMessageDialog(null, "job Created!");
+				pnlCreateJob.setVisible(false);
 			}
 		});
 		//moves the create user panel to the front to allow the user to enter the new user info
@@ -1809,8 +1830,21 @@ public class AdminManageUsers extends JFrame {
 	}
 	
 	//pulls all users and fills the list
-	private void createUsersList(){
-		//TODO
+	private void createAllUsersList(){
+		userList.clear();
+		ArrayList<User> users = jdbc.get_users();
+		for (int i = 0; i < users.size(); i++) {
+			userList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
+		}
+	}
+	
+	//pulls all managers and fills the list
+	private void createManagersList(){
+		managerList.clear();
+		ArrayList<User> users = jdbc.get_Managers();
+		for (int i = 0; i < users.size(); i++) {
+			managerList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
+		}
 	}
 	
 	//pulls all qualifications and fills in the list

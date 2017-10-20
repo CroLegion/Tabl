@@ -221,6 +221,8 @@ public class AdminManageUsers extends JFrame {
 	private JTextArea txtNewTicketDesc;
 	private JList listOpenTickets;
 	private JList listClosedTickets;
+	private JPanel pnlTicketDetails;
+	private JLabel lblDone;
 	
 	/**
 	 * Launch the application.
@@ -899,6 +901,43 @@ public class AdminManageUsers extends JFrame {
 																													gl_pnlAdmin.createParallelGroup(Alignment.LEADING)
 																														.addComponent(layeredPaneAdminComponents, GroupLayout.PREFERRED_SIZE, 760, GroupLayout.PREFERRED_SIZE)
 																												);
+																												
+																												pnlTicketDetails = new JPanel();
+																												pnlTicketDetails.setBorder(new TitledBorder(null, "Ticket Details", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+																												layeredPaneAdminComponents.setLayer(pnlTicketDetails, 30);
+																												pnlTicketDetails.setBounds(180, 38, 746, 720);
+																												layeredPaneAdminComponents.add(pnlTicketDetails);
+																												pnlTicketDetails.setLayout(null);
+																												
+																												JLabel lblTicketDetails = new JLabel("Ticket Details");
+																												lblTicketDetails.setFont(new Font("Tahoma", Font.BOLD, 20));
+																												lblTicketDetails.setBounds(265, 11, 155, 65);
+																												pnlTicketDetails.add(lblTicketDetails);
+																												
+																												JLabel lblTitle_2 = new JLabel("Title:");
+																												lblTitle_2.setFont(new Font("Tahoma", Font.BOLD, 16));
+																												lblTitle_2.setBounds(69, 78, 121, 14);
+																												pnlTicketDetails.add(lblTitle_2);
+																												
+																												JLabel lblMessage = new JLabel("Message:");
+																												lblMessage.setFont(new Font("Tahoma", Font.BOLD, 16));
+																												lblMessage.setBounds(69, 103, 121, 32);
+																												pnlTicketDetails.add(lblMessage);
+																												
+																												JLabel lblSubmittedBy = new JLabel("Submitted By:");
+																												lblSubmittedBy.setFont(new Font("Tahoma", Font.BOLD, 16));
+																												lblSubmittedBy.setBounds(69, 213, 155, 26);
+																												pnlTicketDetails.add(lblSubmittedBy);
+																												
+																												JLabel lblDateSubmitted = new JLabel("Date Submitted:");
+																												lblDateSubmitted.setFont(new Font("Tahoma", Font.BOLD, 16));
+																												lblDateSubmitted.setBounds(69, 274, 142, 14);
+																												pnlTicketDetails.add(lblDateSubmitted);
+																												
+																												lblDone = new JLabel("Done?");
+																												lblDone.setFont(new Font("Tahoma", Font.BOLD, 16));
+																												lblDone.setBounds(282, 421, 87, 46);
+																												pnlTicketDetails.add(lblDone);
 																												pnlAdmin.setLayout(gl_pnlAdmin);
 		
 		layeredPaneLogin = new JLayeredPane();
@@ -1678,6 +1717,7 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateTask.setVisible(false);
 				pnlCreateProject.setVisible(false);
 				pnlCreateQualification.setVisible(false);
+				pnlUserEditInfo.setVisible(true);
 			}
 		});
 		
@@ -1695,6 +1735,7 @@ public class AdminManageUsers extends JFrame {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
+                  pnlUserEditInfo.setVisible(true);
                   displayUserInfo(listUsers.getSelectedValue().toString());
                   //saves the index of the array that was clicked on
                   lastClickedIndex = listUsers.getSelectedIndex();
@@ -1851,6 +1892,28 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
+		
+		//Displays the closed ticket information
+		listClosedTickets.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                  pnlUserEditInfo.setVisible(true);
+                  
+                }
+            }
+        });
+		
+		//Displays the open ticket information
+		listOpenTickets.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                  pnlUserEditInfo.setVisible(true);
+                  
+                }
+            }
+        });
 	}
 
 	//Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
@@ -1950,11 +2013,11 @@ public class AdminManageUsers extends JFrame {
 			String title = "Title: "+t.title;
 			if (t.isDone) {
 				String status = "Status: Closed";
-				String s = String.format("%s %.30s %40s %50s", id, title, submittedBy, status);
+				String s = String.format("%-40s%-40s%-40s%-40s", id, title, submittedBy, status);
 				closedTickets.addElement(s);
 			} else {
 				String status = "Status: Open";
-				String s = String.format("%s %.30s %40s %50s", id, title, submittedBy, status);
+				String s = String.format("%-30s%-30s%-30s%-30s", id, title, submittedBy, status);
 				openTickets.addElement(s);
 			}
 		}

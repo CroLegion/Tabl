@@ -593,5 +593,34 @@ public static ArrayList<Ticket> getTickets() {
 	return tickets;
 }
 
+public static Ticket getTicket(int ticketID) {
+	Ticket t = null;
+	
+	try {		
+		String query = String.format("SELECT * FROM db309amc2.tickets WHERE userID=%d", ticketID);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			t.ticketID = rs.getInt("ticketID");
+			t.isDone = rs.getBoolean("isDone");
+			t.title = rs.getString("title");
+			t.message = rs.getString("message");
+			t.submittedBy = rs.getInt("submittedBy");
+			t.submittedDate = rs.getString("submittedDate");
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	
+	return t;
+}
+
 
 }

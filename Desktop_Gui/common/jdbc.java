@@ -104,8 +104,6 @@ public static int get_qual_id() throws SQLException {
 	
 }
 	
-
-
 //adds a user to the database, first randomly generates a userID using the get_user_id() function
 
 public static void add_user(int usertype, String username, String firstname, String lastname, String email, String phone, String passhash) throws SQLException {
@@ -174,7 +172,7 @@ public static void add_project(Job jobs){
 public static ArrayList<User> get_Managers() {
 	ArrayList<User> users = new ArrayList<User>();
 		try {
-		String query = "SELECT * FROM db309amc2.users where usertype=2;";
+		String query = "SELECT * FROM db309amc2.users where usertype=2";
 		Statement stmt = null;
 		stmt = conn1.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
@@ -201,8 +199,8 @@ public static ArrayList<User> get_Managers() {
 	}
 	return users;
 }
-//Gets a list of all of the users for the Admin.  These users are displayed in the contentpane on the left side
 
+//Gets a list of all of the users for the Admin.  These users are displayed in the contentpane on the left side
 
 public static ArrayList<User> get_users() {
 	ArrayList<User> users = new ArrayList<User>();

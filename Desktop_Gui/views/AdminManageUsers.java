@@ -263,7 +263,7 @@ public class AdminManageUsers extends JFrame {
 		
 		layeredPaneAdmin = new JLayeredPane();
 		layeredPaneAdmin.setBackground(new Color(100, 149, 237));
-		layeredPane.setLayer(layeredPaneAdmin, 20);
+		layeredPane.setLayer(layeredPaneAdmin, 0);
 		layeredPaneAdmin.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneAdmin);
 		
@@ -967,7 +967,7 @@ public class AdminManageUsers extends JFrame {
 				pnlLogin.setLayout(gl_pnlLogin);
 		
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 0);
+		layeredPane.setLayer(layeredPaneManagerWorker, 20);
 		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneManagerWorker);
 		
@@ -1222,6 +1222,7 @@ public class AdminManageUsers extends JFrame {
 														scrlPaneJobDescription.setViewportView(txtAreaJobDescription);
 														
 														listAssignableManagers = new JList(managerList);
+														listAssignableManagers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 														scrlPaneAssignableManagers.setViewportView(listAssignableManagers);
 														
 														JLabel lblJobName = new JLabel("Name of the Job:");
@@ -1251,7 +1252,7 @@ public class AdminManageUsers extends JFrame {
 														
 														JLabel lblNewLabel_9 = new JLabel("Description:");
 														
-														JLabel lblNewLabel_10 = new JLabel("Assigned Manager:");
+														JLabel lblNewLabel_10 = new JLabel("Assignable Manager:");
 														
 														JLabel lblRequiredQualifications = new JLabel("Required Qualifications:");
 														
@@ -1557,11 +1558,10 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateProject.setVisible(false);
 				pnlCreateTask.setVisible(false);
-				pnlCreateUser.setVisible(false);
-				pnlCreateQualification.setVisible(false);
-				pnlCreateJob.setVisible(true);
-				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);	
+				pnlCreateJob.setVisible(true);	
+				createManagersList();			
 				createAllUsersList();
+
 			}
 		});
 		//closes create job tab
@@ -1590,7 +1590,6 @@ public class AdminManageUsers extends JFrame {
 				Job job =new Job(Id, txtJobName.getText(), 2);
 				job.setJobdesc(txtAreaJobDescription.getText());				
 				jdbc.add_project(job);
-				createManagersList();
 				layeredPaneManagerWorker.setVisible(true);	
 				JOptionPane.showMessageDialog(null, "job Created!");
 				pnlCreateJob.setVisible(false);
@@ -1777,8 +1776,8 @@ public class AdminManageUsers extends JFrame {
 		});
 	}
 
-	//Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
-	//This string is then added to the userList that is displayed on the left panel
+	/*Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
+	This string is then added to the userList that is displayed on the left panel*/
 	private void createUserList() {
 		userList.clear();
 		ArrayList<User> users = jdbc.get_users();
@@ -1795,11 +1794,9 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 	
-
-	//This function takes the string from the userList and uses a regular expression to get the username between the []
-	//then it gets the user from the database, and displays that information in the view user panel
-	//it also calls the createQualList method that gets both assigned and available qualifications 
-
+	/*This function takes the string from the userList and uses a regular expression to get the username between the []
+	then it gets the user from the database, and displays that information in the view user panel
+	it also calls the createQualList method that gets both assigned and available qualifications*/ 
 	private void displayUserInfo(String name) {
 		String username = null;
 		Pattern p = Pattern.compile("\\[(.*?)\\]");
@@ -1818,11 +1815,9 @@ public class AdminManageUsers extends JFrame {
 		createQualLists(u.get_userID());
 	}
 	
-
-	//This function is used when a user is updated because their firstname, lastname, or username could have changed
-	//meaning they need to be displayed correctly on the left side panel
-	//it gets the new information from the server and then users the lastClickedIndex to update the string at that spot
-
+	/*This function is used when a user is updated because their firstname, lastname, or username could have changed
+	meaning they need to be displayed correctly on the left side panel
+	it gets the new information from the server and then users the lastClickedIndex to update the string at that spot*/
 	private void updateUserList() {
 		User u = jdbc.get_user(lastClickedUser);
 		String s = String.format("%s, %s [%s]", u.get_lastname(), u.get_firstname(), u.get_username());
@@ -1856,9 +1851,8 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 
-	//Populates both the assigned and available qualification lists for a user after clicked on one
-	//Is also called each time a qualification is assigned or unassigned to update the lists.
-
+	/*Populates both the assigned and available qualification lists for a user after clicked on one
+	Is also called each time a qualification is assigned or unassigned to update the lists.*/
 	private void createQualLists(int userID) {
 		assignedQualList.clear();
 		availableQualList.clear();

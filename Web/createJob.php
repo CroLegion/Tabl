@@ -3,11 +3,30 @@
 
 	$jobs=all_jobs();
 	$radio="";
+	$even=0;
 	while($curjob=$jobs->fetch_assoc()["jobname"])
 	{
-		$radio=$radio."<input type = \"radio\" name =\"Parent\" value=\"".$curjob."\"> ".$curjob."<br>";
-	
+		$radio=$radio."<input type = \"radio\" name =\"Parent\" value=\"".$curjob."\"> ".$curjob."&#09;";
+		if($even==2){$radio=$radio."<BR>";$even=0;}
+		else{$even=$even+1;}
 	}
+	$radio=$radio."<BR>";
+	
+	$qualList=data_qual_List();
+	$quals="";
+	$even=0;
+	while($curQual=$qualList->fetch_assoc())
+	{
+		$quals=$quals."<input type=\"checkbox\" name = \"quals[]\" value=\"".$curQual["qualID"]."\"";
+	
+			
+		$quals=$quals."	> ".$curQual["qualname"]."&#09;&#09;";
+		if($even==2){$quals=$quals."<br>";$even=0;}
+		else{$even=$even+1;}
+
+	}
+	$quals=$quals."<br>";
+
 	$content =  <<< HTML
 		<!DOCTYPE html>
 		<html>
@@ -30,8 +49,11 @@
 						<input type="hidden" name='action' value='createjob'>
 						<label>Select Parent:</label>
 						<br>
-						$radio	
-				
+						$radio
+						<br>
+						<label>Select Qualifications:</label>	
+						<br>
+						$quals				
 						<br><br>
 						<input type='submit' value='Create'>
 					</fieldset>

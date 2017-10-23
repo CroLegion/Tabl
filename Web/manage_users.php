@@ -20,6 +20,34 @@
 	$phone=$user['phone'];
 	$passhash=$user['passhash'];
 	$usertype=$user['usertype'];
+	$userQuals=qualifications_for_user($userID);
+
+	$qualArray=[];
+	$index=0;
+	while($row=$userQuals->fetch_assoc()["qualID"])
+	{
+		$qualArray[$index]=$row;
+		$index=$index+1;
+	}
+	$qualList=data_qual_List();
+	$quals="";
+	$even=0;
+	while($curQual=$qualList->fetch_assoc())
+	{
+		$quals=$quals."<input type=\"checkbox\" name = \"quals[]\" value=\"".$curQual["qualID"]."\"";
+
+		if(in_array($curQual["qualID"], $qualArray))
+		{
+			$quals=$quals."checked";
+		}	
+			
+		$quals=$quals."	> ".$curQual["qualname"]."&#09;&#09;";
+		if($even==2){$quals=$quals."<br>";$even=0;}
+		else{$even=$even+1;}
+
+	}
+	$quals=$quals."<br>";
+
 	$content =  <<< HTML
 		<!DOCTYPE html>
 		<html>
@@ -33,51 +61,58 @@
 						<legend>User Details</legend>
 
 						<label>First Name:</label>
-						<br>						
+												
 						<input type='text' name='first_name' value="{$firstname}"> 
-						<br><br>
+						
 						
 						<label>Last Name:</label>
-						<br>						
+												
 						<input type='text' name='last_name' value="{$lastname}"> 
 						<br><br>
 	
-						<label>User ID:</label>
-						<br>						
-						<input type='text' name='user_id' value="{$userID}"> 
+						<label>Username:</label>
+						
+						<input type='text' name="username" value="{$username}">
+						
+						<label>Password:</label>						
+						<input type='text' name='password' value="{$passhash}"> 
 						<br><br>
 						
-						<label>Username:</label>
-						<br>
-						<input type='text' name="username" value="{$username}">
+						
+						<label>User ID:</label>
+										
+						<input type='text' name='user_id' value="{$userID}"> 
+					
+
+						<label>User Type:</label>
+											
+						<input type='text' name='user_type' value="{$usertype}"> 
 						<br><br>
+						
 
 						<label>Email:</label>
-						<br>						
+												
 						<input type='text' name='email' value="{$email}"> 
-						<br><br>
+
 
 						<label>Phone:</label>
-						<br>						
+												
 						<input type='text' name='phone' value="{$phone}"> 
 						<br><br>
 
+						$quals
+	
+						 
 
-						<label>Password:</label>
-						<br>						
-						<input type='text' name='password' value="{$passhash}"> 
-						<br><br>
-
-
-						<label>User Type:</label>
-						<br>						
-						<input type='text' name='user_type' value="{$usertype}"> 
-						<br><br>
 
 						<input type='hidden' name='userID' value="{$_POST['userID']}">
 						<input type="hidden" name='action' value='manage_user'>
-						<input type='submit' value='Submit'>
+						<input type='submit' value='Update'>
 					</fieldset>
+				</form>
+				<form action='index.php' method='post' id='deleteuser'>
+				<input type='hidden' name='delButton' value="{$userID}">
+				<input type='submit' value='Delete User'>
 				</form>
 			</body>
 		</html>

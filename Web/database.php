@@ -152,22 +152,21 @@ SQL;
 		$conn->close();
 	
 		return $result;
+	
 	}
 
-	//function that returns a 2d array of users by qualifications
-	function users_by_qualifications()
+
+	//Function that gets qualifications for a user by id
+	function qualifications_for_user($userID)
 	{
-		//$sql = "SELECT firstname, lastname, qualname FROM users,qualifications, qualification assignment where users.userID = qualification_assignment && quala";
-		$sql = "SELECT firstname, lastname, qualname
-				FROM ((db309amc2.users
-				INNER join db309amc2.qualification_assignments on users.userID=qualification_assignments.userID)
-				INNER join db309amc2.qualifications on qualification_assignments.qualID=qualifications.qualID)
-				ORDER BY qualname ASC"; 
-		//Modify result to be formated 2d arrary
-		
-		return $sql;
-
+		$sql = "select qualID from qualification_assignments where userID={$userID};";
+		$conn=data_open();
+		$result=$conn->query($sql);
+		$conn->close();
+		return $result;
 	}
+
+
 
 
 	//function that gets company details for view group
@@ -273,5 +272,10 @@ SQL;
 		$conn = data_open();
 		$conn->query($sql);
 		$conn->close();
+
 	}
+
+
+
+
 ?>

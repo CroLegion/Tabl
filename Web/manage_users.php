@@ -20,13 +20,33 @@
 	$phone=$user['phone'];
 	$passhash=$user['passhash'];
 	$usertype=$user['usertype'];
+	$userQuals=qualifications_for_user($userID);
 
+	$qualArray=[];
+	$index=0;
+	while($row=$userQuals->fetch_assoc()["qualID"])
+	{
+		$qualArray[$index]=$row;
+		$index=$index+1;
+	}
 	$qualList=data_qual_List();
 	$quals="";
+	$even=0;
 	while($curQual=$qualList->fetch_assoc())
 	{
-		$quals=$quals."<input type=\"checkbox\" name = \"quals\" value=\"".$curQual["qualID"]."\"> \"".$curQual["qualname"]."\" <br>";
+		$quals=$quals."<input type=\"checkbox\" name = \"quals[]\" value=\"".$curQual["qualID"]."\"";
+
+		if(in_array($curQual["qualID"], $qualArray))
+		{
+			$quals=$quals."checked";
+		}	
+			
+		$quals=$quals."	> ".$curQual["qualname"]."&#09;&#09;";
+		if($even==2){$quals=$quals."<br>";$even=0;}
+		else{$even=$even+1;}
+
 	}
+	$quals=$quals."<br>";
 	$content =  <<< HTML
 		<!DOCTYPE html>
 		<html>

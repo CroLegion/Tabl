@@ -275,7 +275,20 @@ SQL;
 
 	}
 
+	//Removes all qualifitcations for auser, then adds in new ones
+	function update_user_quals($userID,$qualList)
+	{
+		$sql="Delete from qualification_assignments where userID={$userID};";
+		$conn=data_open();
+		$conn->query($sql);
 
+		foreach($qualList as $qual)
+		{
+			$sqlb="insert into qualification_assignments values({$qual},{$userID});";
+			$conn->query($sqlb);
+		}	
+		$conn->close();
+	}
 
 
 ?>

@@ -47,6 +47,7 @@
 
 	}
 	$quals=$quals."<br>";
+
 	$content =  <<< HTML
 		<!DOCTYPE html>
 		<html>
@@ -106,8 +107,12 @@
 
 						<input type='hidden' name='userID' value="{$_POST['userID']}">
 						<input type="hidden" name='action' value='manage_user'>
-						<input type='submit' value='Submit'>
+						<input type='submit' value='Update'>
 					</fieldset>
+				</form>
+				<form action='index.php' method='post' id='deleteuser'>
+				<input type='hidden' name='delButton' value="{$userID}">
+				<input type='submit' value='Delete User'>
 				</form>
 			</body>
 		</html>

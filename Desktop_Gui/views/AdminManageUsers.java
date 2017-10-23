@@ -70,6 +70,7 @@ import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.BevelBorder;
 import javax.swing.SpringLayout;
 import javax.swing.JTextArea;
+
 import java.awt.SystemColor;
 import java.awt.Component;
 
@@ -1762,8 +1763,6 @@ public class AdminManageUsers extends JFrame {
 				createManagersList();
 				createAllUsersList();
 				createQualificationsList();
-				q=(Qualification) listRequiredQuals.getSelectedValue();
-				createAllUsersList(q);
 			}
 		});
 		//closes create job tab
@@ -1831,6 +1830,17 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {				
 			}
 		});
+		//Display user information that was clicked on the left.
+		listRequiredQuals.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                  String qual = (String) listRequiredQuals.getSelectedValue();
+                  lastClickedIndex = listRequiredQuals.getSelectedIndex();
+                  int id = jdbc.getIdOfQual(qual);
+                }
+            }
+        });
 		//Display user information that was clicked on the left.
 		listUsers.addListSelectionListener(new ListSelectionListener() {
             @Override

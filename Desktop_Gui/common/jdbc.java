@@ -306,24 +306,38 @@ public static void updateUser(int id, int usertype, String firstname, String las
 public static int getIdOfUser(String username) {
 	int userID = 0;
 	try {
-
 		String query = String.format("SELECT userID FROM db309amc2.users WHERE username='%s'", username);
 		Statement stmt = null;
 		stmt = conn1.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		while (rs.next()) {userID = rs.getInt("userID");}
-		
-
 		// Close all statements
 		stmt.close();
-
 	} catch (SQLException e) {
 		System.out.println("SQLException: " + e.getMessage());
 		System.out.println("SQLState: " + e.getSQLState());
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
-	
 	return userID;
+}
+
+//Gets the qualID of a qual given its name
+public static int getIdOfQual(String qual) {
+	int qualID = 0;
+	try {
+		String query = String.format("SELECT qualID FROM db309amc2.qualifications WHERE qualname='%s'", qual);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {qualID = rs.getInt("qualID");}
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return qualID;
 }
 
 //returns a list of projects

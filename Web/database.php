@@ -306,5 +306,6 @@ SQL;
 		$conn->close();
 	}
 
+	//Gets job related info by ID
 
 ?>

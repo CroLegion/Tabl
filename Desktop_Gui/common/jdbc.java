@@ -241,10 +241,10 @@ public static User get_user(String username) {
 public static User get_user(int  userID) {
 	User u = null;
 	try {
-	String query = String.format("SELECT * FROM db309amc2.users WHERE userID=%d", userID);
-	Statement stmt = null;
-	stmt = conn1.createStatement();
-	ResultSet rs = stmt.executeQuery(query);
+		String query = String.format("SELECT * FROM db309amc2.users WHERE userID=%d", userID);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
 	while (rs.next()) {
 		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"));
 		u.setEmail(rs.getString("email"));
@@ -264,11 +264,11 @@ public static User get_user(int  userID) {
 
 //Updates a user's information, called when the Admin clicks SAVE on the update user panel
 
-public static void updateUser(int id, String firstname, String lastname, String username, String email, String phone) throws SQLException {
+public static void updateUser(int id, int usertype, String firstname, String lastname, String username, String email, String phone) throws SQLException {
 	try {
 
 		Statement statement = conn1.createStatement();
-		String sql = String.format("UPDATE db309amc2.users SET firstname='%s', lastname='%s', username='%s', email='%s', phone='%s' WHERE userID=%d", firstname, lastname, username, email, phone, id);
+		String sql = String.format("UPDATE db309amc2.users SET usertype= %d, firstname='%s', lastname='%s', username='%s', email='%s', phone='%s' WHERE userID=%d", usertype, firstname, lastname, username, email, phone, id);
 		statement.executeUpdate(sql);
 		
 
@@ -597,17 +597,12 @@ public static Ticket getTicket(int ticketID) {
 	Ticket t = null;
 	
 	try {		
-		String query = String.format("SELECT * FROM db309amc2.tickets WHERE userID=%d", ticketID);
+		String query = String.format("SELECT * FROM db309amc2.tickets WHERE ticketID=%d", ticketID);
 		Statement stmt = null;
 		stmt = conn1.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		while (rs.next()) {
-			t.ticketID = rs.getInt("ticketID");
-			t.isDone = rs.getBoolean("isDone");
-			t.title = rs.getString("title");
-			t.message = rs.getString("message");
-			t.submittedBy = rs.getInt("submittedBy");
-			t.submittedDate = rs.getString("submittedDate");
+			t = new Ticket(rs.getInt("ticketID"), rs.getString("title"), rs.getString("message"), rs.getInt("submittedBy"), rs.getBoolean("isDone"), rs.getString("submittedDate"));
 		}
 		
 		// Close all statements

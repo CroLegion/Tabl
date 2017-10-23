@@ -1116,7 +1116,7 @@ public class AdminManageUsers extends JFrame {
 				pnlLogin.setLayout(gl_pnlLogin);
 		
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 0);
+		layeredPane.setLayer(layeredPaneManagerWorker, 20);
 		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneManagerWorker);
 		
@@ -1752,15 +1752,18 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateTask.setVisible(false);
 			}
 		});
-		//open create new job tab
+		//open create new job tab TODO
 		btn_create_job.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Qualification q=null;
 				pnlCreateProject.setVisible(false);
 				pnlCreateTask.setVisible(false);
 				pnlCreateJob.setVisible(true);	
-				createManagersList();			
+				createManagersList();
 				createAllUsersList();
 				createQualificationsList();
+				q=(Qualification) listRequiredQuals.getSelectedValue();
+				createAllUsersList(q);
 			}
 		});
 		//closes create job tab
@@ -1769,18 +1772,6 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateJob.setVisible(false);
 			}
 		});
-//		private JPanel pnlCreateJob;
-//		private JTextField txtJobName;
-//		private JButton btnCreateJob;
-//		private JButton btnCancelJob;	
-//		private JButton buttonAssignUsers; 								
-//		private JButton buttonRemoveUsers;
-//		private JButton btn_create_job;	
-//		private JTextArea txtAreaJobDescription;
-//		private JList listAssignableManagers;
-//		private JList listRequiredQuals;
-//		private JList listAssignedUsers;								
-//		private JList listAvailableUsers;
 		
 		//creates a new job w/ info, assigns a manager to it,
 		btnCreateJob.addActionListener(new ActionListener() {
@@ -2100,16 +2091,22 @@ public class AdminManageUsers extends JFrame {
 		userList.setElementAt(s, lastClickedIndex);
 	}
 	
-	//pulls all users with selected qualification or if nothing is chosen, all users
+	//pulls all users with selected qualification
+	private void createAllUsersList(Qualification q){
+		userList.clear();
+		ArrayList<User> users = jdbc.getUsersWithQual(q);
+		for (int i = 0; i < users.size(); i++) {
+			userList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
+		}
+	}
+	//pulls all users 
 	private void createAllUsersList(){
 		userList.clear();
 		ArrayList<User> users = jdbc.get_users();
 		for (int i = 0; i < users.size(); i++) {
 			userList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
 		}
-	}
-	
-	
+	}	
 	//pulls all managers and fills the list
 	private void createManagersList(){
 		managerList.clear();

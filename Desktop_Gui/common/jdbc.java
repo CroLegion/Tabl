@@ -283,7 +283,6 @@ public static User get_user(int userID) {
 	return u;
 }
 
-
 //Updates a user's information, called when the Admin clicks SAVE on the update user panel
 public static void updateUser(int id, int usertype, String firstname, String lastname, String username, String email, String phone) throws SQLException {
 	try {
@@ -377,6 +376,7 @@ public static ArrayList<User> getUsersWithQual(Qualification q){
 	}
 	return users;
 }
+
 //returns a list of qualifications
 public static ArrayList<Qualification> get_qualifications(){
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();	
@@ -580,6 +580,7 @@ public static boolean createQual(String name, String desc, ArrayList<String> use
 	return true;
 }
 
+//
 public static boolean createTicket(String title, String message, int submittedBy) {
 	submittedBy = 123;
 	if (message.length() == 0 || submittedBy == 0) {
@@ -605,7 +606,7 @@ public static boolean createTicket(String title, String message, int submittedBy
 	return true;
 }
 
-
+//
 public static ArrayList<Ticket> getTickets() {
 	ArrayList<Ticket> tickets = new ArrayList<Ticket>();
 	
@@ -630,6 +631,7 @@ public static ArrayList<Ticket> getTickets() {
 	return tickets;
 }
 
+//
 public static Ticket getTicket(int ticketID) {
 	Ticket t = null;
 	

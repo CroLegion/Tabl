@@ -14,7 +14,7 @@
 	function data_set($servername, $username, $password, $database)
 	{
 		$GLOBALS['servername'] = $servername;
-		$GLOBALS['username'] = $username;
+		$GLOBALS['usernamea'] = $username;
 		$GLOBALS['password'] = $password;
 		$GLOBALS['database'] = $database;
 	}
@@ -22,7 +22,7 @@
 	//Opens a new database connection to the globally specified database and returns a MySQLI object.
 	function data_open()
 	{
-		return new mysqli($GLOBALS['servername'], $GLOBALS['username'], $GLOBALS['password'], $GLOBALS['database']);
+		return new mysqli($GLOBALS['servername'], $GLOBALS['usernamea'], $GLOBALS['password'], $GLOBALS['database']);
 	}
 
 	//Performs a query on the users table, and returns the userID and usertype of the user if username and password are valid, -1 if they are not.
@@ -97,7 +97,7 @@ SQL;
 	//added for job creation and project creation
 	function data_qual_List()
 	{
-		$sql = "SELECT qualname FROM qualifications";
+		$sql = "SELECT qualname, qualID FROM qualifications";
 		$conn = data_open();
 		$result = $conn->query($sql);
 		$conn->close();

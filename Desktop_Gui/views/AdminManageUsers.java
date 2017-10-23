@@ -1227,7 +1227,7 @@ public class AdminManageUsers extends JFrame {
 														
 														JLabel lblJobName = new JLabel("Name of the Job:");
 														
-														listRequiredQuals = new JList();
+														listRequiredQuals = new JList(listedQualList);
 														scrlPaneRequiredQuals.setViewportView(listRequiredQuals);
 														
 														listAvailableUsers = new JList(userList);
@@ -1561,7 +1561,7 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateJob.setVisible(true);	
 				createManagersList();			
 				createAllUsersList();
-
+				createQualificationsList();
 			}
 		});
 		//closes create job tab
@@ -1824,7 +1824,7 @@ public class AdminManageUsers extends JFrame {
 		userList.setElementAt(s, lastClickedIndex);
 	}
 	
-	//pulls all users and fills the list
+	//pulls all users with selected qualification or if nothing is chosen, all users
 	private void createAllUsersList(){
 		userList.clear();
 		ArrayList<User> users = jdbc.get_users();
@@ -1832,6 +1832,7 @@ public class AdminManageUsers extends JFrame {
 			userList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
 		}
 	}
+	
 	
 	//pulls all managers and fills the list
 	private void createManagersList(){

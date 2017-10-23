@@ -40,10 +40,6 @@
 			<input type='hidden' name='action' value='view_group'>
 			<input type='submit' value='View Group' class='navbutton'>
 		</form>
-		<form action='index.php' method='post'>
-			<input type='hidden' name='action' value='select_user'>
-			<input type='submit' value='Manage Users' class='navbutton'>
-		</form>
 HTML;
 
 	//Generate Messages section
@@ -67,6 +63,11 @@ HTML;
 				<input type='hidden' name='action' value='view_tickets'>
 				<input type='submit' value='View Tickets' class='navbutton'>
 			</form>
+			<form action='index.php' method='post'>
+				<input type='hidden' name='action' value='select_user'>
+				<input type='submit' value='Manage Users' class='navbutton'>
+			</form>
+
 HTML;
 	}
 

@@ -290,5 +290,21 @@ SQL;
 		$conn->close();
 	}
 
+	//Adds qualifications to job
+	function add_job_qual($jobName,$qualList)
+	{
+		$conn=data_open();
+		$getID="Select jobID from jobs where jobname=\"{$jobName}\";";
+		$jobID=$conn->query($getID)->fetch_assoc()['jobID'];
+		echo $jobID;
+		foreach($qualList as $qual)
+		{
+		
+			$sql="insert into job_requirements values({$jobID},{$qual});";
+			$conn->query($sql);
+		}
+		$conn->close();
+	}
+
 
 ?>

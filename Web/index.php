@@ -60,6 +60,7 @@
 				break;
 				case 'createjob':
 					insert_job($_POST['job_name'],$_POST['job_desc'],get_root_of_tree($_POST['Parent'])->fetch_assoc()['jobID']);
+					add_job_qual($_POST['job_name'],$_POST['quals']);
 					require 'default.php';
 				break;
 				case 'update_user_info':

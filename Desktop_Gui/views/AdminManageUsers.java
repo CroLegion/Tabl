@@ -43,6 +43,7 @@ import common.jdbc;
 import common.User;
 import common.Job;
 import common.Qualification;
+import common.Ticket;
 
 import javax.swing.JLabel;
 
@@ -81,7 +82,7 @@ public class AdminManageUsers extends JFrame {
 	private JLabel lblTablLogin;	
 	private JLabel lblPortal;
 	private JLabel lblOpenTickets;
-	private JLabel lblCompletedTickets;
+	private JLabel lblClosedTickets;
 	
 	//lists and models to display the qualifications on the gui to the user
 	private JList listAvailableQuals;
@@ -169,9 +170,9 @@ public class AdminManageUsers extends JFrame {
 	private JButton btn_add_qualifications;
 	private JButton btnViewTickets;
 	private JPanel pnlOpenTicketsLbl;
-	private JPanel pnlCompleteTicketsLbl;
+	private JPanel pnlClosedTicketsLbl;
 	private JScrollPane scrlOpenTickets;
-	private JScrollPane scrlCompletedTickets;									
+	private JScrollPane scrlClosedTickets;									
 	private JList listUsers;
 	private JTextField textFirstName;
 	private JTextField textLastName;
@@ -197,9 +198,12 @@ public class AdminManageUsers extends JFrame {
 	DefaultListModel managerList = new DefaultListModel();
 	DefaultListModel userList = new DefaultListModel();
 	DefaultListModel userListAssignQual = new DefaultListModel();
-	DefaultListModel userListAvailQual = new DefaultListModel();	
+	DefaultListModel userListAvailQual = new DefaultListModel();
+	DefaultListModel openTickets = new DefaultListModel();
+	DefaultListModel closedTickets = new DefaultListModel();
 	int lastClickedIndex;
 	int lastClickeduserID;
+	int lastClickedUserType;
 	private JButton btn_settings;
 	private JButton btnLogout;
 	private JPanel pnlCreateQualification;
@@ -217,6 +221,23 @@ public class AdminManageUsers extends JFrame {
 	private JTextField txtNewTicketTitle;
 	private JButton btnSendTicket;
 	private JTextArea txtNewTicketDesc;
+	private JList listOpenTickets;
+	private JList listClosedTickets;
+	private JPanel pnlTicketDetails;
+	private JLabel lblDone;
+	private final ButtonGroup buttonGroup_1 = new ButtonGroup();
+	private JRadioButton rdbtnAdminDetails;
+	private JRadioButton rdbtnManagerDetails;
+	private JRadioButton rdbtnWorkerDetails;
+	private JRadioButton rdbtnTicketDoneYes;
+	private JRadioButton rdbtnTicketDoneNo;
+	private JLabel lblTicketDetailsTitle;
+	private JLabel lblTicketDetailsMessage;
+	private JLabel lblTicketDetailsSubmittedBy;
+	private JLabel lblTicketDetailsDate;
+	private final ButtonGroup buttonGroup_2 = new ButtonGroup();
+	private JButton btnTicketDetailsClose;
+	private JButton btnTicketDoneSave;
 	
 	/**
 	 * Launch the application.
@@ -694,32 +715,24 @@ public class AdminManageUsers extends JFrame {
 																btnDeleteUser.setFont(new Font("Tahoma", Font.BOLD, 10));
 																btnDeleteUser.setBounds(24, 27, 120, 39);
 																pnlDeleteUser.add(btnDeleteUser);
+																
+																JLabel lblUserType_1 = new JLabel("User Type");
+																lblUserType_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+																
+																rdbtnAdminDetails = new JRadioButton("Admin");
+																buttonGroup_1.add(rdbtnAdminDetails);
+																
+																rdbtnManagerDetails = new JRadioButton("Manager");
+																buttonGroup_1.add(rdbtnManagerDetails);
+																
+																rdbtnWorkerDetails = new JRadioButton("Worker");
+																buttonGroup_1.add(rdbtnWorkerDetails);
 																GroupLayout gl_pnlUserEditInfo = new GroupLayout(pnlUserEditInfo);
 																gl_pnlUserEditInfo.setHorizontalGroup(
 																	gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
 																		.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
 																			.addGap(258)
 																			.addComponent(lblFullName, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE))
-																		.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-																			.addGap(79)
-																			.addComponent(lblFirstName)
-																			.addGap(50)
-																			.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
-																		.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-																			.addGap(80)
-																			.addComponent(lblLastName)
-																			.addGap(50)
-																			.addComponent(textLastName, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
-																		.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-																			.addGap(84)
-																			.addComponent(lblUsername)
-																			.addGap(50)
-																			.addComponent(textUsername, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
-																		.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-																			.addGap(57)
-																			.addComponent(lblEmailAddress)
-																			.addGap(50)
-																			.addComponent(textEmail, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
 																		.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
 																			.addGap(49)
 																			.addComponent(lblPhoneNumber)
@@ -749,6 +762,40 @@ public class AdminManageUsers extends JFrame {
 																			.addComponent(scrlPaneAssignedQuals, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
 																			.addGap(82)
 																			.addComponent(pnlDeleteUser, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE))
+																		.addGroup(Alignment.TRAILING, gl_pnlUserEditInfo.createSequentialGroup()
+																			.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																					.addGap(79)
+																					.addComponent(lblFirstName)
+																					.addGap(50)
+																					.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
+																				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																					.addGap(80)
+																					.addComponent(lblLastName)
+																					.addGap(50)
+																					.addComponent(textLastName, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
+																				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																					.addGap(84)
+																					.addComponent(lblUsername)
+																					.addGap(50)
+																					.addComponent(textUsername, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE))
+																				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																					.addGap(57)
+																					.addComponent(lblEmailAddress)
+																					.addGap(50)
+																					.addComponent(textEmail, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)))
+																			.addPreferredGap(ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+																			.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																				.addComponent(rdbtnWorkerDetails)
+																				.addComponent(rdbtnManagerDetails)
+																				.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING, false)
+																					.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																						.addComponent(rdbtnAdminDetails)
+																						.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+																					.addGroup(Alignment.TRAILING, gl_pnlUserEditInfo.createSequentialGroup()
+																						.addComponent(lblUserType_1)
+																						.addGap(50))))
+																			.addGap(46))
 																);
 																gl_pnlUserEditInfo.setVerticalGroup(
 																	gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
@@ -757,33 +804,44 @@ public class AdminManageUsers extends JFrame {
 																			.addGap(28)
 																			.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
 																				.addComponent(lblFirstName)
-																				.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-																			.addGap(23)
-																			.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-																				.addComponent(lblLastName)
-																				.addComponent(textLastName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-																			.addGap(25)
+																				.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.BASELINE)
+																					.addComponent(textFirstName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+																					.addComponent(lblUserType_1)))
 																			.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
 																				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-																					.addGap(3)
-																					.addComponent(lblUsername))
-																				.addComponent(textUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-																			.addGap(30)
-																			.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																					.addGap(23)
+																					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																						.addComponent(lblLastName)
+																						.addComponent(textLastName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+																					.addGap(25)
+																					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																							.addGap(3)
+																							.addComponent(lblUsername))
+																						.addComponent(textUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+																					.addGap(30)
+																					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																							.addGap(3)
+																							.addComponent(lblEmailAddress))
+																						.addComponent(textEmail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+																					.addGap(34)
+																					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																						.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
+																							.addGap(3)
+																							.addComponent(lblPhoneNumber))
+																						.addComponent(textPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+																					.addGap(28)
+																					.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
+																						.addComponent(btnSaveChanges, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
+																						.addComponent(btnChangePassword, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)))
 																				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-																					.addGap(3)
-																					.addComponent(lblEmailAddress))
-																				.addComponent(textEmail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-																			.addGap(34)
-																			.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-																				.addGroup(gl_pnlUserEditInfo.createSequentialGroup()
-																					.addGap(3)
-																					.addComponent(lblPhoneNumber))
-																				.addComponent(textPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-																			.addGap(28)
-																			.addGroup(gl_pnlUserEditInfo.createParallelGroup(Alignment.LEADING)
-																				.addComponent(btnSaveChanges, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
-																				.addComponent(btnChangePassword, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE))
+																					.addGap(18)
+																					.addComponent(rdbtnAdminDetails)
+																					.addGap(18)
+																					.addComponent(rdbtnManagerDetails)
+																					.addGap(18)
+																					.addComponent(rdbtnWorkerDetails)))
 																			.addGap(11)
 																			.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 																			.addGap(32)
@@ -820,25 +878,25 @@ public class AdminManageUsers extends JFrame {
 														lblOpenTickets.setBounds(312, 0, 189, 15);
 														pnlOpenTicketsLbl.add(lblOpenTickets);
 														
-														pnlCompleteTicketsLbl = new JPanel();
-														pnlCompleteTicketsLbl.setBackground(SystemColor.controlShadow);
-														pnlCompleteTicketsLbl.setLayout(null);
+														pnlClosedTicketsLbl = new JPanel();
+														pnlClosedTicketsLbl.setBackground(SystemColor.controlShadow);
+														pnlClosedTicketsLbl.setLayout(null);
 														
-														lblCompletedTickets = new JLabel("Completed Tickets");
-														lblCompletedTickets.setFont(new Font("Tahoma", Font.BOLD, 14));
-														lblCompletedTickets.setBounds(302, 0, 189, 26);
-														pnlCompleteTicketsLbl.add(lblCompletedTickets);
+														lblClosedTickets = new JLabel("Closed Tickets");
+														lblClosedTickets.setFont(new Font("Tahoma", Font.BOLD, 14));
+														lblClosedTickets.setBounds(302, 0, 189, 26);
+														pnlClosedTicketsLbl.add(lblClosedTickets);
 														
 														scrlOpenTickets = new JScrollPane();
 														
-														scrlCompletedTickets = new JScrollPane();
+														scrlClosedTickets = new JScrollPane();
 														GroupLayout gl_pnlViewTickets = new GroupLayout(pnlViewTickets);
 														gl_pnlViewTickets.setHorizontalGroup(
 															gl_pnlViewTickets.createParallelGroup(Alignment.LEADING)
 																.addComponent(scrlOpenTickets, GroupLayout.PREFERRED_SIZE, 746, GroupLayout.PREFERRED_SIZE)
 																.addComponent(pnlOpenTicketsLbl, GroupLayout.PREFERRED_SIZE, 746, GroupLayout.PREFERRED_SIZE)
-																.addComponent(pnlCompleteTicketsLbl, GroupLayout.PREFERRED_SIZE, 746, GroupLayout.PREFERRED_SIZE)
-																.addComponent(scrlCompletedTickets, GroupLayout.PREFERRED_SIZE, 746, GroupLayout.PREFERRED_SIZE)
+																.addComponent(pnlClosedTicketsLbl, GroupLayout.PREFERRED_SIZE, 746, GroupLayout.PREFERRED_SIZE)
+																.addComponent(scrlClosedTickets, GroupLayout.PREFERRED_SIZE, 746, GroupLayout.PREFERRED_SIZE)
 														);
 														gl_pnlViewTickets.setVerticalGroup(
 															gl_pnlViewTickets.createParallelGroup(Alignment.LEADING)
@@ -849,11 +907,19 @@ public class AdminManageUsers extends JFrame {
 																			.addComponent(scrlOpenTickets, GroupLayout.PREFERRED_SIZE, 307, GroupLayout.PREFERRED_SIZE))
 																		.addComponent(pnlOpenTicketsLbl, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
 																	.addGroup(gl_pnlViewTickets.createParallelGroup(Alignment.LEADING)
-																		.addComponent(pnlCompleteTicketsLbl, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+																		.addComponent(pnlClosedTicketsLbl, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
 																		.addGroup(gl_pnlViewTickets.createSequentialGroup()
 																			.addGap(25)
-																			.addComponent(scrlCompletedTickets, GroupLayout.PREFERRED_SIZE, 366, GroupLayout.PREFERRED_SIZE))))
+																			.addComponent(scrlClosedTickets, GroupLayout.PREFERRED_SIZE, 366, GroupLayout.PREFERRED_SIZE))))
 														);
+														
+														listClosedTickets = new JList(closedTickets);
+														listClosedTickets.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+														scrlClosedTickets.setViewportView(listClosedTickets);
+														
+														listOpenTickets = new JList(openTickets);
+														listOpenTickets.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+														scrlOpenTickets.setViewportView(listOpenTickets);
 														pnlViewTickets.setLayout(gl_pnlViewTickets);
 														
 														JScrollPane scrollPane = new JScrollPane();
@@ -887,6 +953,82 @@ public class AdminManageUsers extends JFrame {
 																													gl_pnlAdmin.createParallelGroup(Alignment.LEADING)
 																														.addComponent(layeredPaneAdminComponents, GroupLayout.PREFERRED_SIZE, 760, GroupLayout.PREFERRED_SIZE)
 																												);
+																												
+																												pnlTicketDetails = new JPanel();
+																												pnlTicketDetails.setBorder(new TitledBorder(null, "Ticket Details", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+																												layeredPaneAdminComponents.setLayer(pnlTicketDetails, 0);
+																												pnlTicketDetails.setBounds(180, 38, 746, 720);
+																												layeredPaneAdminComponents.add(pnlTicketDetails);
+																												pnlTicketDetails.setLayout(null);
+																												pnlTicketDetails.setVisible(false);
+																												
+																												JLabel lblTicketDetails = new JLabel("Ticket Details");
+																												lblTicketDetails.setFont(new Font("Tahoma", Font.BOLD, 20));
+																												lblTicketDetails.setBounds(265, 11, 155, 65);
+																												pnlTicketDetails.add(lblTicketDetails);
+																												
+																												JLabel lblTitle_2 = new JLabel("Title:");
+																												lblTitle_2.setFont(new Font("Tahoma", Font.BOLD, 16));
+																												lblTitle_2.setBounds(69, 78, 121, 14);
+																												pnlTicketDetails.add(lblTitle_2);
+																												
+																												JLabel lblMessage = new JLabel("Message:");
+																												lblMessage.setFont(new Font("Tahoma", Font.BOLD, 16));
+																												lblMessage.setBounds(69, 103, 121, 32);
+																												pnlTicketDetails.add(lblMessage);
+																												
+																												JLabel lblSubmittedBy = new JLabel("Submitted By:");
+																												lblSubmittedBy.setFont(new Font("Tahoma", Font.BOLD, 16));
+																												lblSubmittedBy.setBounds(69, 213, 155, 26);
+																												pnlTicketDetails.add(lblSubmittedBy);
+																												
+																												JLabel lblDateSubmitted = new JLabel("Date Submitted:");
+																												lblDateSubmitted.setFont(new Font("Tahoma", Font.BOLD, 16));
+																												lblDateSubmitted.setBounds(69, 274, 142, 14);
+																												pnlTicketDetails.add(lblDateSubmitted);
+																												
+																												lblDone = new JLabel("Done?");
+																												lblDone.setFont(new Font("Tahoma", Font.BOLD, 16));
+																												lblDone.setBounds(297, 421, 87, 46);
+																												pnlTicketDetails.add(lblDone);
+																												
+																												rdbtnTicketDoneYes = new JRadioButton("Yes");
+																												buttonGroup_2.add(rdbtnTicketDoneYes);
+																												rdbtnTicketDoneYes.setFont(new Font("Tahoma", Font.BOLD, 12));
+																												rdbtnTicketDoneYes.setBounds(224, 474, 109, 23);
+																												pnlTicketDetails.add(rdbtnTicketDoneYes);
+																												
+																												rdbtnTicketDoneNo = new JRadioButton("No");
+																												buttonGroup_2.add(rdbtnTicketDoneNo);
+																												rdbtnTicketDoneNo.setFont(new Font("Tahoma", Font.BOLD, 12));
+																												rdbtnTicketDoneNo.setBounds(369, 474, 109, 23);
+																												pnlTicketDetails.add(rdbtnTicketDoneNo);
+																												
+																												lblTicketDetailsTitle = new JLabel("");
+																												lblTicketDetailsTitle.setBounds(200, 80, 487, 23);
+																												pnlTicketDetails.add(lblTicketDetailsTitle);
+																												
+																												btnTicketDetailsClose = new JButton("Close");
+																												
+																												btnTicketDetailsClose.setBounds(647, 11, 89, 23);
+																												pnlTicketDetails.add(btnTicketDetailsClose);
+																												
+																												lblTicketDetailsMessage = new JLabel(" ");
+																												lblTicketDetailsMessage.setBounds(200, 114, 503, 88);
+																												pnlTicketDetails.add(lblTicketDetailsMessage);
+																												
+																												lblTicketDetailsSubmittedBy = new JLabel("");
+																												lblTicketDetailsSubmittedBy.setBounds(200, 221, 503, 18);
+																												pnlTicketDetails.add(lblTicketDetailsSubmittedBy);
+																												
+																												lblTicketDetailsDate = new JLabel("");
+																												lblTicketDetailsDate.setBounds(221, 276, 354, 26);
+																												pnlTicketDetails.add(lblTicketDetailsDate);
+																												
+																												btnTicketDoneSave = new JButton("Save");
+																												
+																												btnTicketDoneSave.setBounds(280, 520, 89, 23);
+																												pnlTicketDetails.add(btnTicketDoneSave);
 																												pnlAdmin.setLayout(gl_pnlAdmin);
 		
 		layeredPaneLogin = new JLayeredPane();
@@ -974,7 +1116,7 @@ public class AdminManageUsers extends JFrame {
 				pnlLogin.setLayout(gl_pnlLogin);
 		
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 20);
+		layeredPane.setLayer(layeredPaneManagerWorker, 0);
 		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneManagerWorker);
 		
@@ -1526,6 +1668,7 @@ public class AdminManageUsers extends JFrame {
 		
 		btnViewTickets.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				loadTickets();
 				if (pnlViewTickets.isVisible()) {
 					pnlViewTickets.setVisible(false);
 				} else {
@@ -1684,6 +1827,7 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateTask.setVisible(false);
 				pnlCreateProject.setVisible(false);
 				pnlCreateQualification.setVisible(false);
+				pnlUserEditInfo.setVisible(true);
 			}
 		});
 		
@@ -1701,12 +1845,20 @@ public class AdminManageUsers extends JFrame {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
+                  pnlUserEditInfo.setVisible(true);
                   displayUserInfo(listUsers.getSelectedValue().toString());
                   //saves the index of the array that was clicked on
                   lastClickedIndex = listUsers.getSelectedIndex();
                   int id = jdbc.getIdOfUser(textUsername.getText());
                   //saved the userID of the user that is displayed
                   lastClickeduserID = id;
+                  if (rdbtnAdminDetails.isSelected()) {
+                	  lastClickedUserType = 1;
+                  } else if (rdbtnManagerDetails.isSelected()) {
+                	  lastClickedUserType = 2;
+                  } else {
+                	  lastClickedUserType = 3;
+                  }
                 }
             }
         });
@@ -1716,7 +1868,7 @@ public class AdminManageUsers extends JFrame {
 				int id = jdbc.getIdOfUser(textUsername.getText());
 				lastClickeduserID = id;
 				try {
-					jdbc.updateUser(id, textFirstName.getText(), textLastName.getText(), textUsername.getText(), textEmail.getText(), textPhone.getText());
+					jdbc.updateUser(id, lastClickedUserType, textFirstName.getText(), textLastName.getText(), textUsername.getText(), textEmail.getText(), textPhone.getText());
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -1857,6 +2009,40 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
+		
+		//Displays the closed ticket information
+		listClosedTickets.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                	pnlTicketDetails.setVisible(true);
+                	displayTicketDetails(listClosedTickets.getSelectedValue().toString());
+                }
+            }
+        });
+		
+		//Displays the open ticket information
+		listOpenTickets.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                	pnlTicketDetails.setVisible(true);
+                	displayTicketDetails(listOpenTickets.getSelectedValue().toString());
+                }
+            }
+        });
+		
+		btnTicketDetailsClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				pnlTicketDetails.setVisible(false);
+			}
+		});
+		
+		btnTicketDoneSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 	}
 
 	/*Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
@@ -1893,6 +2079,13 @@ public class AdminManageUsers extends JFrame {
 		textFirstName.setText(u.get_firstname());
 		textLastName.setText(u.get_lastname());
 		textUsername.setText(u.get_username());
+		if (u.get_usertype() == 1) {
+			rdbtnAdminDetails.setSelected(true);
+		} else if (u.get_usertype() == 2) {
+			rdbtnManagerDetails.setSelected(true);
+		} else {
+			rdbtnWorkerDetails.setSelected(true);
+		}
 		if (u.get_email() != null) {textEmail.setText(u.get_email());} else {textEmail.setText("No Email Address in Database.");}
 		if (u.get_phone() != null) {textPhone.setText(u.get_phone());} else {textPhone.setText("No Phone Number in Database.");}				
 		createQualLists(u.get_userID());
@@ -1954,5 +2147,46 @@ public class AdminManageUsers extends JFrame {
 	}
 
 	
+	private void loadTickets() {
+		openTickets.clear();
+		closedTickets.clear();
+		ArrayList<Ticket> tickets = jdbc.getTickets();
+		
+		for (Ticket t : tickets) {
+			User u = jdbc.get_user(t.submittedBy);
+			String submittedBy = "Submitted By: "+u.get_lastname()+", "+u.get_firstname();
+			String id = "Ticket ID: "+t.ticketID;
+			String title = "Title: "+t.title;
+			if (t.isDone) {
+				String status = "Status: Closed";
+				String s = String.format("%-40s%-40s%-40s%-40s", id, title, submittedBy, status);
+				closedTickets.addElement(s);
+			} else {
+				String status = "Status: Open";
+				String s = String.format("%-30s%-30s%-30s%-30s", id, title, submittedBy, status);
+				openTickets.addElement(s);
+			}
+		}
+	}
+	
+	private void displayTicketDetails(String s) {
+		int i = 0;
+		while (i < s.length() && !Character.isDigit(s.charAt(i))) i++;
+		int j = i;
+		while (j < s.length() && Character.isDigit(s.charAt(j))) j++;
+		int id = Integer.parseInt(s.substring(i, j));
+		System.out.println("Ticket ID: "+id);
+		Ticket t = jdbc.getTicket(id);
+		lblTicketDetailsTitle.setText(t.title);
+		lblTicketDetailsMessage.setText(t.message);
+		User u = jdbc.get_user(t.submittedBy);
+		lblTicketDetailsSubmittedBy.setText(u.get_lastname()+", "+u.get_firstname());
+		lblTicketDetailsDate.setText(t.submittedDate);
+		if (t.isDone) {
+			rdbtnTicketDoneYes.setSelected(true);
+		} else {
+			rdbtnTicketDoneNo.setSelected(true);
+		}
+	}
 }
 

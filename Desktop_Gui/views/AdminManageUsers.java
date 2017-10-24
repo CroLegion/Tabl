@@ -1607,15 +1607,15 @@ public class AdminManageUsers extends JFrame {
 	
 	//This method contains all of the code for creating events
 	private void createEvents() {
-		//called when the 'X' button of the GUI in the top right is clicked
-		//Closes the SQL connection conn1
+		/*called when the 'X' button of the GUI in the top right is clicked
+		Closes the SQL connection conn1*/
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				jdbc.closeSQLConnection();
 			}
 		});
-		
+		//
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -1653,7 +1653,7 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
-		
+		//
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				layeredPane.setLayer(layeredPaneLogin, 10);
@@ -1666,7 +1666,7 @@ public class AdminManageUsers extends JFrame {
 				passwordLogin.setText("");
 			}
 		});
-		
+		//
 		btnViewTickets.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				loadTickets();
@@ -1677,7 +1677,6 @@ public class AdminManageUsers extends JFrame {
 				}
 			}
 		});
-
 		//assigns users to a project
 		btnAssign.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1704,13 +1703,13 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateTask.setVisible(false);
 			}
 		});	
-		//assign users to task
+		//assign users to job
 		buttonAssignUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub			
 			}
 		});
-		//removes users from task
+		//removes users from job
 		buttonRemoveUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub				
@@ -1721,8 +1720,6 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
 				pnlCreateTask.setVisible(false);
-				pnlCreateUser.setVisible(false);
-				pnlCreateQualification.setVisible(false);
 				pnlCreateProject.setVisible(true);
 				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);	
 				createQualificationsList();
@@ -1740,8 +1737,6 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
 				pnlCreateProject.setVisible(false);
-				pnlCreateQualification.setVisible(false);
-				pnlCreateUser.setVisible(false);
 				pnlCreateTask.setVisible(true);
 				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);
 				
@@ -1770,8 +1765,7 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
 			}
-		});
-		
+		});	
 		//creates a new job w/ info, assigns a manager to it,
 		btnCreateJob.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1797,7 +1791,7 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
-		
+		//
 		btn_add_qualifications.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
@@ -1810,7 +1804,7 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
-		
+		//
 		btnCancelAddQualifcation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
@@ -1820,12 +1814,12 @@ public class AdminManageUsers extends JFrame {
 				pnlUserEditInfo.setVisible(true);
 			}
 		});
-		
+		//
 		btn_settings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		
+		//
 		btnChangePassword.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {				
 			}
@@ -1835,9 +1829,9 @@ public class AdminManageUsers extends JFrame {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
-                  String qual = (String) listRequiredQuals.getSelectedValue();
-                  lastClickedIndex = listRequiredQuals.getSelectedIndex();
-                  int id = jdbc.getIdOfQual(qual);
+                  String q = (String) listRequiredQuals.getSelectedValue();
+                  Qualification qual= jdbc.getQualwithString(q);
+                  createAllUsersList(qual);
                 }
             }
         });
@@ -1876,9 +1870,9 @@ public class AdminManageUsers extends JFrame {
 				updateUserList();
 			}
 		});
-		//Called when the -> button is clicked to add some qualifications to a user
-		//all edits are done with the jdbc function assignQuals()
-		//parameters are the userId, the ArrayList of available qualifications and the selected indices of the qualification list
+		/*Called when the -> button is clicked to add some qualifications to a user
+		all edits are done with the jdbc function assignQuals()
+		parameters are the userId, the ArrayList of available qualifications and the selected indices of the qualification list*/
 		assignQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				//parameters are the userId, the ArrayList of available qualifications and the selected indices of the qualification list
@@ -1886,8 +1880,8 @@ public class AdminManageUsers extends JFrame {
 				createQualLists(lastClickeduserID);
 			}
 		});
-		//Called when the <- button is clicked to remove some qualifications from a user
-		//all edits are done with the jdbc function UnassignQuals()
+		/*Called when the <- button is clicked to remove some qualifications from a user
+		all edits are done with the jdbc function UnassignQuals()*/
 		unassignQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//parameters are the userId, the ArrayList of assigned qualifications and the selected indices of the qualification list
@@ -1932,6 +1926,7 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
+		//
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateUser.setVisible(false);
@@ -1943,7 +1938,7 @@ public class AdminManageUsers extends JFrame {
 				jdbc.deleteUser(lastClickeduserID);
 			}
 		});
-		
+		//
 		btnCreateQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ArrayList<String> usernames = new ArrayList<String>();
@@ -1962,7 +1957,7 @@ public class AdminManageUsers extends JFrame {
 				}
 			}
 		});
-		
+		//
 		btnAssignUserQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int[] selected = listCreateQualAvailUsers.getSelectedIndices();
@@ -1973,7 +1968,7 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
-		
+		//
 		btnUnassignUserQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int[] selected = listCreateQualAssignedUsers.getSelectedIndices();
@@ -1983,7 +1978,7 @@ public class AdminManageUsers extends JFrame {
 				}
 			}
 		});
-		
+		//
 		btnCreateTicket.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (pnlCreateTicket.isVisible()) {
@@ -1996,7 +1991,7 @@ public class AdminManageUsers extends JFrame {
 				}
 			}
 		});
-		
+		//
 		btnSendTicket.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (jdbc.createTicket(txtNewTicketTitle.getText(), txtNewTicketDesc.getText(), currentSessionUserID)) {
@@ -2010,7 +2005,6 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
-		
 		//Displays the closed ticket information
 		listClosedTickets.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -2021,7 +2015,6 @@ public class AdminManageUsers extends JFrame {
                 }
             }
         });
-		
 		//Displays the open ticket information
 		listOpenTickets.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -2032,13 +2025,13 @@ public class AdminManageUsers extends JFrame {
                 }
             }
         });
-		
+		//
 		btnTicketDetailsClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				pnlTicketDetails.setVisible(false);
 			}
 		});
-		
+		//
 		btnTicketDoneSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -2152,7 +2145,6 @@ public class AdminManageUsers extends JFrame {
 		}
 		
 	}
-
 	
 	private void loadTickets() {
 		openTickets.clear();

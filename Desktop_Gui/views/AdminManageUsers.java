@@ -290,7 +290,7 @@ public class AdminManageUsers extends JFrame {
 		
 		layeredPaneAdmin = new JLayeredPane();
 		layeredPaneAdmin.setBackground(new Color(100, 149, 237));
-		layeredPane.setLayer(layeredPaneAdmin, 20);
+		layeredPane.setLayer(layeredPaneAdmin, 0);
 		layeredPaneAdmin.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneAdmin);
 		

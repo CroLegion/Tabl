@@ -322,14 +322,16 @@ public static int getIdOfUser(String username) {
 }
 
 //Gets the qualID of a qual given its name
-public static int getIdOfQual(String qual) {
-	int qualID = 0;
+public static Qualification getQualwithString(String qual) {
+	Qualification q = null;
 	try {
-		String query = String.format("SELECT qualID FROM db309amc2.qualifications WHERE qualname='%s'", qual);
+		String query = String.format("SELECT * FROM db309amc2.qualifications WHERE qualname='%s'", qual);
 		Statement stmt = null;
 		stmt = conn1.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
-		while (rs.next()) {qualID = rs.getInt("qualID");}
+		while (rs.next()) {
+			q = new Qualification(rs.getInt("qualID"), rs.getString("qualname"), rs.getString("qualdescription"));
+			}
 		// Close all statements
 		stmt.close();
 	} catch (SQLException e) {
@@ -337,7 +339,7 @@ public static int getIdOfQual(String qual) {
 		System.out.println("SQLState: " + e.getSQLState());
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
-	return qualID;
+	return q;
 }
 
 //returns a list of projects

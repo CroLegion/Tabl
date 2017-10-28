@@ -18,6 +18,7 @@ CREATE TABLE users
     email varchar(64),
     phone varchar(11),
     passhash varchar(32) not null,
+    isActive boolean not null,
     PRIMARY KEY (userID)
 );
 

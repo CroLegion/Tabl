@@ -136,7 +136,10 @@
 					echo "DELETED";
 					require 'default.php';
 				break;
-
+				case 'loadDetails':
+					echo $_POST['node'];
+					require 'default.php';
+				break;
 				default:
 					echo "in default";
 					require 'login.php';

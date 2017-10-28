@@ -16,7 +16,7 @@
 				<link rel='stylesheet' type='text/css' href='styles.css'>
 			</head>
 			<body>
-				<form action='manage_users.php' method='post' id="createproject">
+				<form action='manage_users.php' method='post'>
 					<fieldset>
 						<legend>Select User</legend>
 						<label>Name:</label>

@@ -141,7 +141,7 @@ SQL;
 	//function that returns users with a qualification
 	function users_with_qualifications($qualification)
 	{
-		// will this work?
+	
 		$sql = "SELECT firstname, lastname
 				FROM ((db309amc2.users
 				INNER join db309amc2.qualification_assignments on users.userID=qualification_assignments.userID)
@@ -315,5 +315,14 @@ SQL;
 		$conn->close();
 		return $result;
 	}
-	
+
+	//Gets qualification requirements for a job
+	function get_job_reqs($id)
+	{
+		$sql="select * from job_requirements join qualifications on job_requirements.qualID=qualifications.qualID and job_requirements.jobID={$id};";
+		$conn=data_open();
+		$result=$conn->query($sql);
+		$conn->close();
+		return $result;
+	}
 ?>

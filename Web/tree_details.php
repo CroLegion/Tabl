@@ -43,6 +43,9 @@ HTML;
 	else
 	{
 
+		$allQual=data_qual_List();
+		$assignedQual=get_job_reqs({$node['jobID']});	
+
 		$content =<<<HTML
 			<!DOCTYPE html>
 			<html>
@@ -59,7 +62,10 @@ HTML;
 							</br></br>	
 							<label>Job Description:</label></br>
 							<textarea rows="4" cols="50" name="job_desc" form="edit_task">{$node['jobdesc']}</textarea>
-
+							</br></br>
+							<label>Qualifications:</label>
+							{$qualBoxes}
+							</br></br>
 
 							</br></br>	
 							<input type='hidden' name='action' value='edit_job'>

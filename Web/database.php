@@ -307,5 +307,13 @@ SQL;
 	}
 
 	//Gets job related info by ID
-
+	function get_job($jobID)
+	{
+		$conn=data_open();
+		$sql="Select * from jobs where jobID={$jobID}";
+		$result=$conn->query($sql);
+		$conn->close();
+		return $result;
+	}
+	
 ?>

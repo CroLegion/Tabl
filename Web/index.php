@@ -140,6 +140,11 @@
 					echo $_POST['node'];
 					require 'default.php';
 				break;
+				case 'edit_job':
+					update_job_reqs($_POST['nodeID'],$_POST['quals']);
+					require 'default.php';
+					
+				break;
 				default:
 					echo "in default";
 					require 'login.php';

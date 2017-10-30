@@ -325,4 +325,39 @@ SQL;
 		$conn->close();
 		return $result;
 	}
+
+	//Gets users with quallification by id
+	function get_users_by_qualid($id)
+	{
+		$sql="select * from qualification_assignments join users on qualification_assignments.userID=users.userID and qualID={$id};";
+		$conn=data_open();
+		$result=$conn->query($sql);
+		$conn->close();
+		return $result;
+	}
+
+	//Gets qualification information from its ID
+	function get_qual_by_id($id)
+	{
+		$sql="select * from qualifications where qualID={$id};";
+		$conn=data_open();
+		$result=$conn->query($sql);
+		$conn->close();
+		return $result;
+	}
+
+	//Removes all qualification assignemnts, then assigns new ones
+	function update_job_reqs($jobID,$qualList)
+	{
+		$sql="Delete from job_requirements where jobID={$jobID};";
+		$conn=data_open();
+		$conn->query($sql);
+
+		foreach($qualList as $qual)
+		{
+			$sqlb="insert into job_requirements values({$jobID},{$qual});";
+			$conn->query($sqlb);
+		}	
+		$conn->close();
+	}
 ?>

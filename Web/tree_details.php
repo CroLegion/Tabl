@@ -44,7 +44,43 @@ HTML;
 	{
 
 		$allQual=data_qual_List();
-		$assignedQual=get_job_reqs({$node['jobID']});	
+		$assignedQual=get_job_reqs($node['jobID']);
+		$qualBoxes="";
+		$even=0;	
+		$qualArray=[];
+		$index=0;
+		while($row=$assignedQual->fetch_assoc()["qualID"])
+		{
+			$qualArray[$index]=$row;
+			$index=$index+1;
+		}
+
+		while($curQual=$allQual->fetch_assoc())
+		{
+			$qualBoxes=$qualBoxes."<input type=\"checkbox\" name = \"quals[]\" value=\"".$curQual["qualID"]."\"";
+
+			if(in_array($curQual["qualID"], $qualArray))
+			{
+				$qualBoxes=$qualBoxes."checked";
+			}	
+			
+			$qualBoxes=$qualBoxes."	> ".$curQual["qualname"]."&#09;&#09;";
+			if($even==2){$qualBoxes=$qualBoxes."<br>";$even=0;}
+			else{$even=$even+1;}
+		}
+
+		$workerBoxes="";
+		$assignedQual=get_job_reqs($node['jobID']);
+		while($curQual=$assignedQual->fetch_assoc()["qualID"])
+		{
+			$workerBoxes=$workerBoxes."<label>".get_qual_by_id($curQual)->fetch_assoc()["qualname"]."</label>";
+			$usersWithQual=get_users_by_qualid($curQual);
+			while($curUser=$usersWithQual->fetch_assoc())
+			{
+				
+			}
+	
+		}
 
 		$content =<<<HTML
 			<!DOCTYPE html>
@@ -66,8 +102,12 @@ HTML;
 							<label>Qualifications:</label>
 							{$qualBoxes}
 							</br></br>
+							
+							{$workerBoxes}
+							</br></br>
 
-							</br></br>	
+							</br></br>
+							<input type='hidden' name='nodeID' value="{$node['jobID']}">
 							<input type='hidden' name='action' value='edit_job'>
 							<input type='submit' value='Save'>
 						</fieldset>

@@ -44,10 +44,12 @@ import common.User;
 import common.Job;
 import common.Qualification;
 import common.Ticket;
+import common.Task;
 
 import javax.swing.JLabel;
 
 import com.jgoodies.forms.factories.DefaultComponentFactory;
+import com.sun.xml.internal.bind.v2.model.core.ID;
 
 import javax.swing.UIManager;
 import javax.swing.JInternalFrame;
@@ -1696,10 +1698,12 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateProject.setVisible(false);
 			}
 		});
-		//creates a new Task with given inputs
+		//creates a new Task with given inputs TODO fix
 		btnCreateNewTask.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub		
+				Task task = new Task(textTaskName.getText(), txtAreaDescription.getText(), txtAreaReason.getText(), 1, jdbc.getMaxTaskID()+1);
+				jdbc.add_task(task);
+				JOptionPane.showMessageDialog(null, "Task Created!");
 				pnlCreateTask.setVisible(false);
 			}
 		});	
@@ -1774,7 +1778,7 @@ public class AdminManageUsers extends JFrame {
 				job.setJobdesc(txtAreaJobDescription.getText());				
 				jdbc.add_project(job);
 				layeredPaneManagerWorker.setVisible(true);	
-				JOptionPane.showMessageDialog(null, "job Created!");
+				JOptionPane.showMessageDialog(null, "Job Created!");
 				pnlCreateJob.setVisible(false);
 			}
 		});

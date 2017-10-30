@@ -101,7 +101,7 @@ public static void add_user(int usertype, String username, String firstname, Str
 	try {
 		Statement statement = conn1.createStatement();
 		String sql = "INSERT INTO users " +
-           "VALUES ("+userID+",'"+username+"',"+usertype+",'"+firstname+"','"+lastname+"','"+email+"','"+phone+"','"+passhash+"');";
+           "VALUES ("+userID+",'"+username+"',"+usertype+",'"+firstname+"','"+lastname+"','"+email+"','"+phone+"','"+passhash+"',true );";
 		statement.executeUpdate(sql);
 		// Close all statements and connections
 		statement.close();

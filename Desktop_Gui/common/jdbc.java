@@ -101,7 +101,7 @@ public static void add_user(int usertype, String username, String firstname, Str
 	try {
 		Statement statement = conn1.createStatement();
 		String sql = "INSERT INTO users " +
-           "VALUES ("+userID+",'"+username+"',"+usertype+",'"+firstname+"','"+lastname+"','"+email+"','"+phone+"','"+passhash+"');";
+           "VALUES ("+userID+",'"+username+"',"+usertype+",'"+firstname+"','"+lastname+"','"+email+"','"+phone+"','"+passhash+"',true );";
 		statement.executeUpdate(sql);
 		// Close all statements and connections
 		statement.close();
@@ -150,6 +150,23 @@ public static void add_project(Job jobs){
 	}
 }
 
+//adds a task to the database
+public static void add_task(Task tasks){
+	try {
+		Statement statement = conn1.createStatement();
+	
+			System.out.printf("%s %s %s %d %d \n", tasks.name, tasks.desc,  tasks.reason, tasks.taskID, tasks.parentID);
+			String sql = "INSERT INTO db309amc2.tasks " +
+               "VALUES ("+tasks.taskID+",\""+tasks.name+"\",\""+tasks.desc+"\","+tasks.parentID+",\""+tasks.reason+"\");";
+  			statement.executeUpdate(sql);		
+		// Close all statements
+		statement.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+}
 //returns a list of all managers
 public static ArrayList<User> get_Managers() {
 	ArrayList<User> users = new ArrayList<User>();
@@ -223,6 +240,26 @@ public static int getMaxJobID(){
 		stmt = conn1.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		while (rs.next()) {ID = rs.getInt("jobID");}
+
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return ID;
+	
+}
+//Returns from server the task job id as an int
+public static int getMaxTaskID(){
+	int ID=0;
+	try {
+		String query = String.format("%s", "SELECT MAX(taskID) AS taskID FROM db309amc2.tasks");
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {ID = rs.getInt("taskID");}
 
 		// Close all statements
 		stmt.close();

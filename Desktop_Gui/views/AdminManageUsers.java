@@ -202,6 +202,7 @@ public class AdminManageUsers extends JFrame {
 	DefaultListModel userListAvailQual = new DefaultListModel();
 	DefaultListModel openTickets = new DefaultListModel();
 	DefaultListModel closedTickets = new DefaultListModel();
+	DefaultListModel archivedUserList = new DefaultListModel();
 	int lastClickedIndex;
 	int lastClickeduserID;
 	int lastClickedUserType;
@@ -239,6 +240,7 @@ public class AdminManageUsers extends JFrame {
 	private final ButtonGroup buttonGroup_2 = new ButtonGroup();
 	private JButton btnTicketDetailsClose;
 	private JButton btnTicketDoneSave;
+	private JList listArchivedUsers;
 	
 	/**
 	 * Launch the application.
@@ -292,7 +294,7 @@ public class AdminManageUsers extends JFrame {
 		
 		layeredPaneAdmin = new JLayeredPane();
 		layeredPaneAdmin.setBackground(new Color(100, 149, 237));
-		layeredPane.setLayer(layeredPaneAdmin, 0);
+		layeredPane.setLayer(layeredPaneAdmin, 20);
 		layeredPaneAdmin.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneAdmin);
 		
@@ -711,10 +713,10 @@ public class AdminManageUsers extends JFrame {
 														pnlDeleteUser.setBackground(new Color(245, 222, 179));
 														pnlDeleteUser.setLayout(null);
 														
-														btnDeleteUser = new JButton("DELETE USER");
+														btnDeleteUser = new JButton("ARCHIVE USER");
 														
 																btnDeleteUser.setFont(new Font("Tahoma", Font.BOLD, 10));
-																btnDeleteUser.setBounds(24, 27, 120, 39);
+																btnDeleteUser.setBounds(17, 27, 140, 39);
 																pnlDeleteUser.add(btnDeleteUser);
 																
 																JLabel lblUserType_1 = new JLabel("User Type");
@@ -924,7 +926,7 @@ public class AdminManageUsers extends JFrame {
 														pnlViewTickets.setLayout(gl_pnlViewTickets);
 														
 														JScrollPane scrollPane = new JScrollPane();
-														scrollPane.setBounds(0, 38, 157, 720);
+														scrollPane.setBounds(0, 23, 157, 314);
 														layeredPaneAdminComponents.add(scrollPane);
 														listUsers = new JList(userList);
 														
@@ -1030,6 +1032,25 @@ public class AdminManageUsers extends JFrame {
 																												
 																												btnTicketDoneSave.setBounds(280, 520, 89, 23);
 																												pnlTicketDetails.add(btnTicketDoneSave);
+																												
+																												JPanel pnlArchivedUsers = new JPanel();
+																												pnlArchivedUsers.setBackground(Color.LIGHT_GRAY);
+																												pnlArchivedUsers.setBounds(0, 337, 157, 28);
+																												layeredPaneAdminComponents.add(pnlArchivedUsers);
+																												pnlArchivedUsers.setLayout(null);
+																												
+																												JLabel lblNewLabel_6 = new JLabel("ARCHIVED USERS");
+																												lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 11));
+																												lblNewLabel_6.setBounds(24, 5, 107, 20);
+																												pnlArchivedUsers.add(lblNewLabel_6);
+																												
+																												JScrollPane scrollPane_5 = new JScrollPane();
+																												scrollPane_5.setBounds(0, 365, 157, 393);
+																												layeredPaneAdminComponents.add(scrollPane_5);
+																												
+																												listArchivedUsers = new JList(archivedUserList);
+																												listArchivedUsers.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+																												scrollPane_5.setViewportView(listArchivedUsers);
 																												pnlAdmin.setLayout(gl_pnlAdmin);
 		
 		layeredPaneLogin = new JLayeredPane();
@@ -1117,7 +1138,7 @@ public class AdminManageUsers extends JFrame {
 				pnlLogin.setLayout(gl_pnlLogin);
 		
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 20);
+		layeredPane.setLayer(layeredPaneManagerWorker, 0);
 		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneManagerWorker);
 		
@@ -1843,7 +1864,32 @@ public class AdminManageUsers extends JFrame {
                   pnlUserEditInfo.setVisible(true);
                   displayUserInfo(listUsers.getSelectedValue().toString());
                   //saves the index of the array that was clicked on
+                  btnDeleteUser.setText("ARCHIVE USER");
                   lastClickedIndex = listUsers.getSelectedIndex();
+                  int id = jdbc.getIdOfUser(textUsername.getText());
+                  //saved the userID of the user that is displayed
+                  lastClickeduserID = id;
+                  if (rdbtnAdminDetails.isSelected()) {
+                	  lastClickedUserType = 1;
+                  } else if (rdbtnManagerDetails.isSelected()) {
+                	  lastClickedUserType = 2;
+                  } else {
+                	  lastClickedUserType = 3;
+                  }
+                }
+            }
+        });
+		
+		//Display user information that was clicked on the left.
+		listArchivedUsers.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                  pnlUserEditInfo.setVisible(true);
+                  displayUserInfo(listArchivedUsers.getSelectedValue().toString());
+                  //saves the index of the array that was clicked on
+                  lastClickedIndex = listArchivedUsers.getSelectedIndex();
+                  btnDeleteUser.setText("UNARCHIVE USER");
                   int id = jdbc.getIdOfUser(textUsername.getText());
                   //saved the userID of the user that is displayed
                   lastClickeduserID = id;
@@ -1935,7 +1981,12 @@ public class AdminManageUsers extends JFrame {
 		//TODO make it so they turn into an 'archived' user instead of complete deletion.
 		btnDeleteUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				jdbc.deleteUser(lastClickeduserID);
+				boolean b = true;
+				if (btnDeleteUser.getText() == "ARCHIVE USER") {
+					b = false;
+				} 
+				jdbc.archiveUser(lastClickeduserID, b);
+				createUserList();
 			}
 		});
 		//
@@ -2042,10 +2093,16 @@ public class AdminManageUsers extends JFrame {
 	/*Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
 	This string is then added to the userList that is displayed on the left panel*/
 	private void createUserList() {
+		archivedUserList.clear();
 		userList.clear();
 		ArrayList<User> users = jdbc.get_users();
 		for (int i = 0; i < users.size(); i++) {
-			userList.addElement(String.format("%s, %s [%s]", users.get(i).get_lastname(), users.get(i).get_firstname(), users.get(i).get_username()));
+			if (users.get(i).active()) {
+				userList.addElement(String.format("%s, %s [%s]", users.get(i).get_lastname(), users.get(i).get_firstname(), users.get(i).get_username()));
+			} else {
+				archivedUserList.addElement(String.format("%s, %s [%s]", users.get(i).get_lastname(), users.get(i).get_firstname(), users.get(i).get_username()));
+			}
+			
 		}
 	}
 	

@@ -8,6 +8,7 @@ public class User {
    private String email;
    private String phone;
    private String passhash;
+   private boolean isActive;
    public String[] errors=new String[]{
    "Your password doesn't have a length of at least 6",
    "Your password doesn't have a number in it.",
@@ -16,12 +17,13 @@ public class User {
    };
    public Boolean[] haveErrors=new Boolean[]{false,false,false,false};
    
-   public User(int userID, int usertype, String username, String firstname, String lastname) {
+   public User(int userID, int usertype, String username, String firstname, String lastname, boolean isActive) {
          this.userID = userID;
          this.usertype = usertype;
          this.username = username;
          this.firstname = firstname;
          this.lastname = lastname;
+         this.isActive = isActive;
    }
    
    
@@ -92,6 +94,10 @@ public class User {
 //    	  str.insert(7, '-');
 //		  p = new String(str);
 //      }return false;
+   }
+   
+   public boolean active() {
+	   return isActive;
    }
    
    public int get_userID() {

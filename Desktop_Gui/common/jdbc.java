@@ -234,6 +234,26 @@ public static int getMaxJobID(){
 	return ID;
 	
 }
+//Returns from server the task job id as an int
+public static int getMaxTaskID(){
+	int ID=0;
+	try {
+		String query = String.format("%s", "SELECT MAX(taskID) AS taskID FROM db309amc2.tasks");
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {ID = rs.getInt("taskID");}
+
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return ID;
+	
+}
 
 //gets a single user given its username.
 public static User get_user(String username) {

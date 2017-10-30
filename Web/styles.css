@@ -19,14 +19,65 @@ h1
 	padding: 0px;
 	margin: 0px;
 }
-.footerholder {
+.actionbutton
+{
+	margin: 2px;
+	padding: 5px;
+	width: 100px;
+	border: 0px;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 16px;
+	background-color: #bcbec2;
+
+	-webkit-transition: all ease 0.2s;
+	-moz-transition: all ease 0.2s;
+	-o-transition: all ease 0.2s;
+	-ms-transition: all ease 0.2s ;
+	transition: all ease 0.2s ;
+}
+.actionbutton:hover
+{
+	font-weight: bold;
+	color: white;
+	background-color: #55575e;
+
+	-webkit-transition: all ease 0.2s;
+	-moz-transition: all ease 0.2s;
+	-o-transition: all ease 0.2s;
+	-ms-transition: all ease 0.2s ;
+	transition: all ease 0.2s ;
+}
+.messages
+{
+	float: left;
+	height: 70%;
+	width: 79%;
+}
+.messagebox
+{
+	float: left;
+	height: 10%;
+	width: 79%;
+}
+.conversations
+{
+	float: top;
+	float: right;
+	height: 80%;
+	width: 20%;
+	border-style: solid;
+    border-width: 1px;
+}
+.footerholder 
+{
     background: none repeat scroll 0 0 transparent;
     bottom: 0;
     position: fixed;
     text-align: center;
     width: 100%;
 }
-.footer {
+.footer 
+{
     background: none repeat scroll 0 0;
     font-size: 10px;
     height: 50px;

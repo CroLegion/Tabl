@@ -30,6 +30,10 @@
 		{
 			switch($_POST['action'])
 			{
+				case 'view_messages':
+					require 'messages.php';
+				break;
+
 				case 'notifications':
 					require 'notifications.php';
 				break;

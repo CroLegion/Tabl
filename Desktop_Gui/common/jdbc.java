@@ -16,7 +16,6 @@ public static Connection conn1;
 
 
 //called each time a GUI is opened to speed up the process. sets the global conn1 variable
-
 public static void openSQLConnection() {
 	try {
 		conn1 = DriverManager.getConnection(dbUrl, user, password);
@@ -28,10 +27,8 @@ public static void openSQLConnection() {
 	}
 }
 
-
-//called when the 'X' button of the GUI in the top right is clicked
-//Closes the SQL connection conn1
-
+/*called when the 'X' button of the GUI in the top right is clicked
+Closes the SQL connection conn1*/
 public static void closeSQLConnection() {
 	try {
 		conn1.close();
@@ -43,6 +40,7 @@ public static void closeSQLConnection() {
 	}
 }
 
+//
 public static User login(String username, String password) {
 	User u = null;
 	try {
@@ -51,13 +49,12 @@ public static User login(String username, String password) {
 	stmt = conn1.createStatement();
 	ResultSet rs = stmt.executeQuery(query);
 	while (rs.next()) {
-		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"));
+		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), rs.getBoolean("isActive"));
 		u.setEmail(rs.getString("email"));
 		u.setPhone(rs.getString("phone"));
 	}
 	// Close all statements
 	stmt.close();
-
 	} catch (SQLException e) {
 		System.out.println("SQLException: " + e.getMessage());
 		System.out.println("SQLState: " + e.getSQLState());
@@ -98,20 +95,14 @@ public static int get_new_id(String tableName) {
 	
 }
 
-	
-
-
 //adds a user to the database, first randomly generates a userID using the get_user_id() function
-
 public static void add_user(int usertype, String username, String firstname, String lastname, String email, String phone, String passhash) throws SQLException {
 	int userID = get_new_id("users");
 	try {
 		Statement statement = conn1.createStatement();
 		String sql = "INSERT INTO users " +
-           "VALUES ("+userID+",'"+username+"',"+usertype+",'"+firstname+"','"+lastname+"','"+email+"','"+phone+"','"+passhash+"');";
+           "VALUES ("+userID+",'"+username+"',"+usertype+",'"+firstname+"','"+lastname+"','"+email+"','"+phone+"','"+passhash+"',true );";
 		statement.executeUpdate(sql);
-		
-
 		// Close all statements and connections
 		statement.close();
 	} catch (SQLException e) {
@@ -121,14 +112,12 @@ public static void add_user(int usertype, String username, String firstname, Str
 	}
 }
 
-
-public static void deleteUser(int userID) {
+//removes a user from the database
+public static void archiveUser(int userID, boolean b) {
 	try {
 		Statement statement = conn1.createStatement();
-		String sql = String.format("DELETE FROM db309amc2.users WHERE userID=%d", userID);
+		String sql = String.format("UPDATE db309amc2.users SET isActive=%b WHERE userID=%d", b, userID);
 		statement.executeUpdate(sql);
-		
-
 		// Close all statements and connections
 		statement.close();
 	} catch (SQLException e) {
@@ -138,7 +127,12 @@ public static void deleteUser(int userID) {
 	}
 }
 
+//adds a manager to a job TODO
+public static void add_Manager(User user) {
+	
+}
 
+//adds a project to the database
 public static void add_project(Job jobs){
 	try {
 		Statement statement = conn1.createStatement();
@@ -146,12 +140,9 @@ public static void add_project(Job jobs){
 			System.out.printf("%d %s %d %s %s \n", jobs.jobID,jobs.jobname, jobs.jobtype,  jobs.jobdesc, jobs.parentID);
 			String sql = "INSERT INTO db309amc2.jobs " +
                "VALUES ("+jobs.jobID+",\""+jobs.jobname+"\","+jobs.jobtype+",\""+jobs.jobdesc+"\","+null+");";
-  			statement.executeUpdate(sql);
-		
-
+  			statement.executeUpdate(sql);		
 		// Close all statements
 		statement.close();
-
 	} catch (SQLException e) {
 		System.out.println("SQLException: " + e.getMessage());
 		System.out.println("SQLState: " + e.getSQLState());
@@ -159,8 +150,40 @@ public static void add_project(Job jobs){
 	}
 }
 
-//Gets a list of all of the users for the Admin.  These users are displayed in the contentpane on the left side
+//returns a list of all managers
+public static ArrayList<User> get_Managers() {
+	ArrayList<User> users = new ArrayList<User>();
+		try {
+		String query = "SELECT * FROM db309amc2.users where usertype=2";
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			int userID = rs.getInt("userID");
+   			int usertype = rs.getInt("userID");
+   			String username = rs.getString("username");
+   			String firstname = rs.getString("firstname");
+   			String lastname = rs.getString("lastname");
+   			String email = rs.getString("email");
+   			String phone = rs.getString("phone");
+   			boolean isActive = rs.getBoolean("isActive");
+   			User u = new User(userID, usertype, username, firstname, lastname, isActive);
+   			u.setEmail(email);
+   			u.setPhone(phone);
+   			users.add(u);
+		}
+		// Close all statements
+		stmt.close();
+		
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return users;
+}
 
+//Gets a list of all of the users for the Admin.  These users are displayed in the contentpane on the left side
 public static ArrayList<User> get_users() {
 	ArrayList<User> users = new ArrayList<User>();
 		try {
@@ -176,7 +199,8 @@ public static ArrayList<User> get_users() {
    			String lastname = rs.getString("lastname");
    			String email = rs.getString("email");
    			String phone = rs.getString("phone");
-   			User u = new User(userID, usertype, username, firstname, lastname);
+   			boolean isActive = rs.getBoolean("isActive");
+   			User u = new User(userID, usertype, username, firstname, lastname, isActive);
    			u.setEmail(email);
    			u.setPhone(phone);
    			users.add(u);
@@ -222,7 +246,7 @@ public static User get_user(String username) {
 	stmt = conn1.createStatement();
 	ResultSet rs = stmt.executeQuery(query);
 	while (rs.next()) {
-		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"));
+		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), rs.getBoolean("isActive"));
 		u.setEmail(rs.getString("email"));
 		u.setPhone(rs.getString("phone"));
 	}
@@ -238,15 +262,15 @@ public static User get_user(String username) {
 }
 
 //gets a single user given its userID.
-public static User get_user(int  userID) {
+public static User get_user(int userID) {
 	User u = null;
 	try {
-		String query = String.format("SELECT * FROM db309amc2.users WHERE userID=%d", userID);
-		Statement stmt = null;
-		stmt = conn1.createStatement();
-		ResultSet rs = stmt.executeQuery(query);
+	String query = String.format("SELECT * FROM db309amc2.users WHERE userID=%s", userID);
+	Statement stmt = null;
+	stmt = conn1.createStatement();
+	ResultSet rs = stmt.executeQuery(query);
 	while (rs.next()) {
-		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"));
+		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), rs.getBoolean("isActive"));
 		u.setEmail(rs.getString("email"));
 		u.setPhone(rs.getString("phone"));
 	}
@@ -261,9 +285,7 @@ public static User get_user(int  userID) {
 	return u;
 }
 
-
 //Updates a user's information, called when the Admin clicks SAVE on the update user panel
-
 public static void updateUser(int id, int usertype, String firstname, String lastname, String username, String email, String phone) throws SQLException {
 	try {
 
@@ -283,31 +305,46 @@ public static void updateUser(int id, int usertype, String firstname, String las
 }
 
 //Gets the userID of a user given its username
-
 public static int getIdOfUser(String username) {
 	int userID = 0;
 	try {
-
 		String query = String.format("SELECT userID FROM db309amc2.users WHERE username='%s'", username);
 		Statement stmt = null;
 		stmt = conn1.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		while (rs.next()) {userID = rs.getInt("userID");}
-		
-
 		// Close all statements
 		stmt.close();
-
 	} catch (SQLException e) {
 		System.out.println("SQLException: " + e.getMessage());
 		System.out.println("SQLState: " + e.getSQLState());
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
-	
 	return userID;
 }
 
+//Gets the qualID of a qual given its name
+public static Qualification getQualwithString(String qual) {
+	Qualification q = null;
+	try {
+		String query = String.format("SELECT * FROM db309amc2.qualifications WHERE qualname='%s'", qual);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			q = new Qualification(rs.getInt("qualID"), rs.getString("qualname"), rs.getString("qualdescription"));
+			}
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return q;
+}
 
+//returns a list of projects
 public static void get_projects() throws SQLException {
 		try {
 		String query = "SELECT * FROM db309amc2.jobs";
@@ -324,17 +361,41 @@ public static void get_projects() throws SQLException {
 		}
 		// Close all statements
 		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+}
+
+//returns a list of user w/ a qualification
+public static ArrayList<User> getUsersWithQual(Qualification q){
+	ArrayList<User> users = new ArrayList<User>();	
+	try{
+		String query = String.format("SELECT users.userID, usertype, username, firstname, lastname FROM ((db309amc2.users "
+		        + "INNER join db309amc2.qualification_assignments on users.userID=qualification_assignments.userID)"
+				+ "INNER join db309amc2.qualifications on qualification_assignments.qualID=qualifications.qualID) WHERE qualifications.qualID=%d", q.getQualID());
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			    User u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), rs.getBoolean("isActive"));
+				users.add(u);
+				System.out.println(u);		
+		}
+		
+		// Close all statements
+		stmt.close();
 
 	} catch (SQLException e) {
 		System.out.println("SQLException: " + e.getMessage());
 		System.out.println("SQLState: " + e.getSQLState());
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
-
+	return users;
 }
-/*
- * returns a list of qualifications
- */
+
+//returns a list of qualifications
 public static ArrayList<Qualification> get_qualifications(){
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();	
 	try{
@@ -362,7 +423,6 @@ public static ArrayList<Qualification> get_qualifications(){
 }
 
 //Gets an ArrayList of all assigned qualifications given a userID
-
 public static ArrayList<Qualification> getUserAssignedQuals(int userID) {
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();
 	try {		
@@ -390,9 +450,8 @@ public static ArrayList<Qualification> getUserAssignedQuals(int userID) {
 	return quals;
 }
 
-//Gets an ArrayList of all available qualifications for a user, passed in a userID
-//returns all unassigned qualifications
-
+/*Gets an ArrayList of all available qualifications for a user, passed in a userID
+returns all unassigned qualifications*/
 public static ArrayList<Qualification> getUserAvailQuals(int userID) {
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();
 	try {		
@@ -418,10 +477,9 @@ public static ArrayList<Qualification> getUserAvailQuals(int userID) {
 	return quals;
 }
 
-//removes a row from the qualification_assignments table to unassign a qualifications.
-//can remove more than one at a time by building a string of qualID's to match
-//example (1,2,5) or (1)
-
+/*removes a row from the qualification_assignments table to unassign a qualifications.
+can remove more than one at a time by building a string of qualID's to match
+example (1,2,5) or (1)*/
 public static void UnassignQuals(int lastClickeduserID, ArrayList<Qualification> assignedQuals, int[] selectedIndices) {
 	StringBuilder s = new StringBuilder();
 	s.append('(');
@@ -449,7 +507,6 @@ public static void UnassignQuals(int lastClickeduserID, ArrayList<Qualification>
 }
 
 //Adds a row to the qualification_assignments table to assign a qualification to a user.
-
 public static void assignQuals(int lastClickeduserID, ArrayList<Qualification> availQuals, int[] selectedIndices) {
 	try {
 		for (int i = 0; i < selectedIndices.length; i++) {
@@ -469,6 +526,7 @@ public static void assignQuals(int lastClickeduserID, ArrayList<Qualification> a
 	
 }
 
+//
 public static ArrayList<Qualification> getQualifications() {
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();
 	try {		
@@ -492,11 +550,11 @@ public static ArrayList<Qualification> getQualifications() {
 	return quals;
 }
 
+//creates a qualification
 public static boolean createQual(String name, String desc, ArrayList<String> usernames) {
 	if (name.length() == 0 || desc.length() == 0) {
 		return false;
-	}
-	
+	}	
 	//Get userIDs of all users in the usernames array
 	ArrayList<Integer> userIDs = new ArrayList<Integer>();
 	for (int i = 0; i < usernames.size(); i++) {
@@ -506,10 +564,9 @@ public static boolean createQual(String name, String desc, ArrayList<String> use
 		{
 		    userIDs.add(getIdOfUser(m.group(1)));
 		}
-	}	
+	}
 	int id = get_new_id("qualifications");
 
-	
 	//add the qualification to the qualification table
 	try {
 		Statement statement = conn1.createStatement();
@@ -522,9 +579,7 @@ public static boolean createQual(String name, String desc, ArrayList<String> use
 		System.out.println("SQLState: " + e.getSQLState());
 		System.out.println("VendorError: " + e.getErrorCode());
 		return false;
-	}
-	
-	
+	}		
 	//add the qualification assignment to the table
 	for (int i = 0; i < userIDs.size(); i++) {
 		try {
@@ -541,9 +596,9 @@ public static boolean createQual(String name, String desc, ArrayList<String> use
 		}
 	}
 	return true;
-	
 }
 
+//
 public static boolean createTicket(String title, String message, int submittedBy) {
 	submittedBy = 123;
 	if (message.length() == 0 || submittedBy == 0) {
@@ -569,6 +624,7 @@ public static boolean createTicket(String title, String message, int submittedBy
 	return true;
 }
 
+//
 public static ArrayList<Ticket> getTickets() {
 	ArrayList<Ticket> tickets = new ArrayList<Ticket>();
 	
@@ -593,6 +649,7 @@ public static ArrayList<Ticket> getTickets() {
 	return tickets;
 }
 
+//
 public static Ticket getTicket(int ticketID) {
 	Ticket t = null;
 	
@@ -616,6 +673,4 @@ public static Ticket getTicket(int ticketID) {
 	
 	return t;
 }
-
-
 }

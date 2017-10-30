@@ -51,6 +51,7 @@
 				break;
 				case 'manage_user':
 					update_user($_POST['user_id'],$_POST['username'],$_POST['user_type'],$_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['phone'],$_POST['password'],$_POST['userID']);
+					update_user_quals($_POST['user_id'],$_POST['quals']);	
 					require 'default.php';
 				break;
 				case 'createproject':
@@ -59,6 +60,7 @@
 				break;
 				case 'createjob':
 					insert_job($_POST['job_name'],$_POST['job_desc'],get_root_of_tree($_POST['Parent'])->fetch_assoc()['jobID']);
+					add_job_qual($_POST['job_name'],$_POST['quals']);
 					require 'default.php';
 				break;
 				case 'update_user_info':
@@ -129,7 +131,14 @@
 				case 'view_tickets':
 					require 'tickets.php';
 				break;
+
+				case 'deleteuser':
+					echo "DELETED";
+					require 'default.php';
+				break;
+
 				default:
+					echo "in default";
 					require 'login.php';
 				break;
 			}

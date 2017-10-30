@@ -14,7 +14,7 @@
 	function data_set($servername, $username, $password, $database)
 	{
 		$GLOBALS['servername'] = $servername;
-		$GLOBALS['username'] = $username;
+		$GLOBALS['usernamea'] = $username;
 		$GLOBALS['password'] = $password;
 		$GLOBALS['database'] = $database;
 	}
@@ -22,7 +22,7 @@
 	//Opens a new database connection to the globally specified database and returns a MySQLI object.
 	function data_open()
 	{
-		return new mysqli($GLOBALS['servername'], $GLOBALS['username'], $GLOBALS['password'], $GLOBALS['database']);
+		return new mysqli($GLOBALS['servername'], $GLOBALS['usernamea'], $GLOBALS['password'], $GLOBALS['database']);
 	}
 
 	//Performs a query on the users table, and returns the userID and usertype of the user if username and password are valid, -1 if they are not.
@@ -97,7 +97,7 @@ SQL;
 	//added for job creation and project creation
 	function data_qual_List()
 	{
-		$sql = "SELECT qualname FROM qualifications";
+		$sql = "SELECT qualname, qualID FROM qualifications";
 		$conn = data_open();
 		$result = $conn->query($sql);
 		$conn->close();
@@ -152,22 +152,21 @@ SQL;
 		$conn->close();
 	
 		return $result;
+	
 	}
 
-	//function that returns a 2d array of users by qualifications
-	function users_by_qualifications()
+
+	//Function that gets qualifications for a user by id
+	function qualifications_for_user($userID)
 	{
-		//$sql = "SELECT firstname, lastname, qualname FROM users,qualifications, qualification assignment where users.userID = qualification_assignment && quala";
-		$sql = "SELECT firstname, lastname, qualname
-				FROM ((db309amc2.users
-				INNER join db309amc2.qualification_assignments on users.userID=qualification_assignments.userID)
-				INNER join db309amc2.qualifications on qualification_assignments.qualID=qualifications.qualID)
-				ORDER BY qualname ASC"; 
-		//Modify result to be formated 2d arrary
-		
-		return $sql;
-
+		$sql = "select qualID from qualification_assignments where userID={$userID};";
+		$conn=data_open();
+		$result=$conn->query($sql);
+		$conn->close();
+		return $result;
 	}
+
+
 
 
 	//function that gets company details for view group
@@ -273,5 +272,39 @@ SQL;
 		$conn = data_open();
 		$conn->query($sql);
 		$conn->close();
+
 	}
+
+	//Removes all qualifitcations for auser, then adds in new ones
+	function update_user_quals($userID,$qualList)
+	{
+		$sql="Delete from qualification_assignments where userID={$userID};";
+		$conn=data_open();
+		$conn->query($sql);
+
+		foreach($qualList as $qual)
+		{
+			$sqlb="insert into qualification_assignments values({$qual},{$userID});";
+			$conn->query($sqlb);
+		}	
+		$conn->close();
+	}
+
+	//Adds qualifications to job
+	function add_job_qual($jobName,$qualList)
+	{
+		$conn=data_open();
+		$getID="Select jobID from jobs where jobname=\"{$jobName}\";";
+		$jobID=$conn->query($getID)->fetch_assoc()['jobID'];
+		echo $jobID;
+		foreach($qualList as $qual)
+		{
+		
+			$sql="insert into job_requirements values({$jobID},{$qual});";
+			$conn->query($sql);
+		}
+		$conn->close();
+	}
+
+
 ?>

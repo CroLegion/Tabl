@@ -70,6 +70,7 @@ import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.BevelBorder;
 import javax.swing.SpringLayout;
 import javax.swing.JTextArea;
+
 import java.awt.SystemColor;
 import java.awt.Component;
 
@@ -195,11 +196,13 @@ public class AdminManageUsers extends JFrame {
 	
 	//other or unassigned vars
 	String lastClickedUser;
+	DefaultListModel managerList = new DefaultListModel();
 	DefaultListModel userList = new DefaultListModel();
 	DefaultListModel userListAssignQual = new DefaultListModel();
 	DefaultListModel userListAvailQual = new DefaultListModel();
 	DefaultListModel openTickets = new DefaultListModel();
 	DefaultListModel closedTickets = new DefaultListModel();
+	DefaultListModel archivedUserList = new DefaultListModel();
 	int lastClickedIndex;
 	int lastClickeduserID;
 	int lastClickedUserType;
@@ -237,6 +240,7 @@ public class AdminManageUsers extends JFrame {
 	private final ButtonGroup buttonGroup_2 = new ButtonGroup();
 	private JButton btnTicketDetailsClose;
 	private JButton btnTicketDoneSave;
+	private JList listArchivedUsers;
 	
 	/**
 	 * Launch the application.
@@ -709,10 +713,10 @@ public class AdminManageUsers extends JFrame {
 														pnlDeleteUser.setBackground(new Color(245, 222, 179));
 														pnlDeleteUser.setLayout(null);
 														
-														btnDeleteUser = new JButton("DELETE USER");
+														btnDeleteUser = new JButton("ARCHIVE USER");
 														
 																btnDeleteUser.setFont(new Font("Tahoma", Font.BOLD, 10));
-																btnDeleteUser.setBounds(24, 27, 120, 39);
+																btnDeleteUser.setBounds(17, 27, 140, 39);
 																pnlDeleteUser.add(btnDeleteUser);
 																
 																JLabel lblUserType_1 = new JLabel("User Type");
@@ -922,7 +926,7 @@ public class AdminManageUsers extends JFrame {
 														pnlViewTickets.setLayout(gl_pnlViewTickets);
 														
 														JScrollPane scrollPane = new JScrollPane();
-														scrollPane.setBounds(0, 38, 157, 720);
+														scrollPane.setBounds(0, 23, 157, 314);
 														layeredPaneAdminComponents.add(scrollPane);
 														listUsers = new JList(userList);
 														
@@ -955,7 +959,7 @@ public class AdminManageUsers extends JFrame {
 																												
 																												pnlTicketDetails = new JPanel();
 																												pnlTicketDetails.setBorder(new TitledBorder(null, "Ticket Details", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-																												layeredPaneAdminComponents.setLayer(pnlTicketDetails, 20);
+																												layeredPaneAdminComponents.setLayer(pnlTicketDetails, 0);
 																												pnlTicketDetails.setBounds(180, 38, 746, 720);
 																												layeredPaneAdminComponents.add(pnlTicketDetails);
 																												pnlTicketDetails.setLayout(null);
@@ -1028,6 +1032,25 @@ public class AdminManageUsers extends JFrame {
 																												
 																												btnTicketDoneSave.setBounds(280, 520, 89, 23);
 																												pnlTicketDetails.add(btnTicketDoneSave);
+																												
+																												JPanel pnlArchivedUsers = new JPanel();
+																												pnlArchivedUsers.setBackground(Color.LIGHT_GRAY);
+																												pnlArchivedUsers.setBounds(0, 337, 157, 28);
+																												layeredPaneAdminComponents.add(pnlArchivedUsers);
+																												pnlArchivedUsers.setLayout(null);
+																												
+																												JLabel lblNewLabel_6 = new JLabel("ARCHIVED USERS");
+																												lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 11));
+																												lblNewLabel_6.setBounds(24, 5, 107, 20);
+																												pnlArchivedUsers.add(lblNewLabel_6);
+																												
+																												JScrollPane scrollPane_5 = new JScrollPane();
+																												scrollPane_5.setBounds(0, 365, 157, 393);
+																												layeredPaneAdminComponents.add(scrollPane_5);
+																												
+																												listArchivedUsers = new JList(archivedUserList);
+																												listArchivedUsers.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+																												scrollPane_5.setViewportView(listArchivedUsers);
 																												pnlAdmin.setLayout(gl_pnlAdmin);
 		
 		layeredPaneLogin = new JLayeredPane();
@@ -1369,12 +1392,13 @@ public class AdminManageUsers extends JFrame {
 														txtAreaJobDescription = new JTextArea();
 														scrlPaneJobDescription.setViewportView(txtAreaJobDescription);
 														
-														listAssignableManagers = new JList();
+														listAssignableManagers = new JList(managerList);
+														listAssignableManagers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 														scrlPaneAssignableManagers.setViewportView(listAssignableManagers);
 														
 														JLabel lblJobName = new JLabel("Name of the Job:");
 														
-														listRequiredQuals = new JList();
+														listRequiredQuals = new JList(listedQualList);
 														scrlPaneRequiredQuals.setViewportView(listRequiredQuals);
 														
 														listAvailableUsers = new JList(userList);
@@ -1399,7 +1423,7 @@ public class AdminManageUsers extends JFrame {
 														
 														JLabel lblNewLabel_9 = new JLabel("Description:");
 														
-														JLabel lblNewLabel_10 = new JLabel("Assigned Manager:");
+														JLabel lblNewLabel_10 = new JLabel("Assignable Manager:");
 														
 														JLabel lblRequiredQualifications = new JLabel("Required Qualifications:");
 														
@@ -1604,15 +1628,15 @@ public class AdminManageUsers extends JFrame {
 	
 	//This method contains all of the code for creating events
 	private void createEvents() {
-		//called when the 'X' button of the GUI in the top right is clicked
-		//Closes the SQL connection conn1
+		/*called when the 'X' button of the GUI in the top right is clicked
+		Closes the SQL connection conn1*/
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				jdbc.closeSQLConnection();
 			}
 		});
-		
+		//
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -1650,7 +1674,7 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
-		
+		//
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				layeredPane.setLayer(layeredPaneLogin, 10);
@@ -1663,7 +1687,7 @@ public class AdminManageUsers extends JFrame {
 				passwordLogin.setText("");
 			}
 		});
-		
+		//
 		btnViewTickets.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				loadTickets();
@@ -1674,7 +1698,6 @@ public class AdminManageUsers extends JFrame {
 				}
 			}
 		});
-
 		//assigns users to a project
 		btnAssign.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1701,13 +1724,13 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateTask.setVisible(false);
 			}
 		});	
-		//assign users to task
+		//assign users to job
 		buttonAssignUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub			
 			}
 		});
-		//removes users from task
+		//removes users from job
 		buttonRemoveUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub				
@@ -1718,8 +1741,6 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
 				pnlCreateTask.setVisible(false);
-				pnlCreateUser.setVisible(false);
-				pnlCreateQualification.setVisible(false);
 				pnlCreateProject.setVisible(true);
 				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);	
 				createQualificationsList();
@@ -1737,8 +1758,6 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
 				pnlCreateProject.setVisible(false);
-				pnlCreateQualification.setVisible(false);
-				pnlCreateUser.setVisible(false);
 				pnlCreateTask.setVisible(true);
 				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);
 				
@@ -1750,16 +1769,16 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateTask.setVisible(false);
 			}
 		});
-		//open create new job tab
+		//open create new job tab TODO
 		btn_create_job.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Qualification q=null;
 				pnlCreateProject.setVisible(false);
 				pnlCreateTask.setVisible(false);
-				pnlCreateUser.setVisible(false);
-				pnlCreateQualification.setVisible(false);
-				pnlCreateJob.setVisible(true);
-				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);	
-				
+				pnlCreateJob.setVisible(true);	
+				createManagersList();
+				createAllUsersList();
+				createQualificationsList();
 			}
 		});
 		//closes create job tab
@@ -1767,11 +1786,17 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
 			}
-		});
-		//creates a new job w/ info
+		});	
+		//creates a new job w/ info, assigns a manager to it,
 		btnCreateJob.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO
+				int Id= jdbc.getMaxJobID()+1;
+				Job job =new Job(Id, txtJobName.getText(), 2);
+				job.setJobdesc(txtAreaJobDescription.getText());				
+				jdbc.add_project(job);
+				layeredPaneManagerWorker.setVisible(true);	
+				JOptionPane.showMessageDialog(null, "job Created!");
+				pnlCreateJob.setVisible(false);
 			}
 		});
 		//moves the create user panel to the front to allow the user to enter the new user info
@@ -1787,7 +1812,7 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
-		
+		//
 		btn_add_qualifications.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
@@ -1800,7 +1825,7 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
-		
+		//
 		btnCancelAddQualifcation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
@@ -1810,16 +1835,27 @@ public class AdminManageUsers extends JFrame {
 				pnlUserEditInfo.setVisible(true);
 			}
 		});
-		
+		//
 		btn_settings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		
+		//
 		btnChangePassword.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {				
 			}
 		});
+		//Display user information that was clicked on the left.
+		listRequiredQuals.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                  String q = (String) listRequiredQuals.getSelectedValue();
+                  Qualification qual= jdbc.getQualwithString(q);
+                  createAllUsersList(qual);
+                }
+            }
+        });
 		//Display user information that was clicked on the left.
 		listUsers.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -1828,7 +1864,32 @@ public class AdminManageUsers extends JFrame {
                   pnlUserEditInfo.setVisible(true);
                   displayUserInfo(listUsers.getSelectedValue().toString());
                   //saves the index of the array that was clicked on
+                  btnDeleteUser.setText("ARCHIVE USER");
                   lastClickedIndex = listUsers.getSelectedIndex();
+                  int id = jdbc.getIdOfUser(textUsername.getText());
+                  //saved the userID of the user that is displayed
+                  lastClickeduserID = id;
+                  if (rdbtnAdminDetails.isSelected()) {
+                	  lastClickedUserType = 1;
+                  } else if (rdbtnManagerDetails.isSelected()) {
+                	  lastClickedUserType = 2;
+                  } else {
+                	  lastClickedUserType = 3;
+                  }
+                }
+            }
+        });
+		
+		//Display user information that was clicked on the left.
+		listArchivedUsers.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                  pnlUserEditInfo.setVisible(true);
+                  displayUserInfo(listArchivedUsers.getSelectedValue().toString());
+                  //saves the index of the array that was clicked on
+                  lastClickedIndex = listArchivedUsers.getSelectedIndex();
+                  btnDeleteUser.setText("UNARCHIVE USER");
                   int id = jdbc.getIdOfUser(textUsername.getText());
                   //saved the userID of the user that is displayed
                   lastClickeduserID = id;
@@ -1855,9 +1916,9 @@ public class AdminManageUsers extends JFrame {
 				updateUserList();
 			}
 		});
-		//Called when the -> button is clicked to add some qualifications to a user
-		//all edits are done with the jdbc function assignQuals()
-		//parameters are the userId, the ArrayList of available qualifications and the selected indices of the qualification list
+		/*Called when the -> button is clicked to add some qualifications to a user
+		all edits are done with the jdbc function assignQuals()
+		parameters are the userId, the ArrayList of available qualifications and the selected indices of the qualification list*/
 		assignQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				//parameters are the userId, the ArrayList of available qualifications and the selected indices of the qualification list
@@ -1865,8 +1926,8 @@ public class AdminManageUsers extends JFrame {
 				createQualLists(lastClickeduserID);
 			}
 		});
-		//Called when the <- button is clicked to remove some qualifications from a user
-		//all edits are done with the jdbc function UnassignQuals()
+		/*Called when the <- button is clicked to remove some qualifications from a user
+		all edits are done with the jdbc function UnassignQuals()*/
 		unassignQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//parameters are the userId, the ArrayList of assigned qualifications and the selected indices of the qualification list
@@ -1911,6 +1972,7 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
+		//
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateUser.setVisible(false);
@@ -1919,10 +1981,15 @@ public class AdminManageUsers extends JFrame {
 		//TODO make it so they turn into an 'archived' user instead of complete deletion.
 		btnDeleteUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				jdbc.deleteUser(lastClickeduserID);
+				boolean b = true;
+				if (btnDeleteUser.getText() == "ARCHIVE USER") {
+					b = false;
+				} 
+				jdbc.archiveUser(lastClickeduserID, b);
+				createUserList();
 			}
 		});
-		
+		//
 		btnCreateQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ArrayList<String> usernames = new ArrayList<String>();
@@ -1941,7 +2008,7 @@ public class AdminManageUsers extends JFrame {
 				}
 			}
 		});
-		
+		//
 		btnAssignUserQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int[] selected = listCreateQualAvailUsers.getSelectedIndices();
@@ -1952,7 +2019,7 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
-		
+		//
 		btnUnassignUserQual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int[] selected = listCreateQualAssignedUsers.getSelectedIndices();
@@ -1962,7 +2029,7 @@ public class AdminManageUsers extends JFrame {
 				}
 			}
 		});
-		
+		//
 		btnCreateTicket.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (pnlCreateTicket.isVisible()) {
@@ -1975,7 +2042,7 @@ public class AdminManageUsers extends JFrame {
 				}
 			}
 		});
-		
+		//
 		btnSendTicket.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (jdbc.createTicket(txtNewTicketTitle.getText(), txtNewTicketDesc.getText(), currentSessionUserID)) {
@@ -1989,7 +2056,6 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
-		
 		//Displays the closed ticket information
 		listClosedTickets.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -2000,7 +2066,6 @@ public class AdminManageUsers extends JFrame {
                 }
             }
         });
-		
 		//Displays the open ticket information
 		listOpenTickets.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -2011,13 +2076,13 @@ public class AdminManageUsers extends JFrame {
                 }
             }
         });
-		
+		//
 		btnTicketDetailsClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				pnlTicketDetails.setVisible(false);
 			}
 		});
-		
+		//
 		btnTicketDoneSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -2025,13 +2090,19 @@ public class AdminManageUsers extends JFrame {
 		});
 	}
 
-	//Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
-	//This string is then added to the userList that is displayed on the left panel
+	/*Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
+	This string is then added to the userList that is displayed on the left panel*/
 	private void createUserList() {
+		archivedUserList.clear();
 		userList.clear();
 		ArrayList<User> users = jdbc.get_users();
 		for (int i = 0; i < users.size(); i++) {
-			userList.addElement(String.format("%s, %s [%s]", users.get(i).get_lastname(), users.get(i).get_firstname(), users.get(i).get_username()));
+			if (users.get(i).active()) {
+				userList.addElement(String.format("%s, %s [%s]", users.get(i).get_lastname(), users.get(i).get_firstname(), users.get(i).get_username()));
+			} else {
+				archivedUserList.addElement(String.format("%s, %s [%s]", users.get(i).get_lastname(), users.get(i).get_firstname(), users.get(i).get_username()));
+			}
+			
 		}
 	}
 	
@@ -2043,11 +2114,9 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 	
-
-	//This function takes the string from the userList and uses a regular expression to get the username between the []
-	//then it gets the user from the database, and displays that information in the view user panel
-	//it also calls the createQualList method that gets both assigned and available qualifications 
-
+	/*This function takes the string from the userList and uses a regular expression to get the username between the []
+	then it gets the user from the database, and displays that information in the view user panel
+	it also calls the createQualList method that gets both assigned and available qualifications*/ 
 	private void displayUserInfo(String name) {
 		String username = null;
 		Pattern p = Pattern.compile("\\[(.*?)\\]");
@@ -2073,20 +2142,38 @@ public class AdminManageUsers extends JFrame {
 		createQualLists(u.get_userID());
 	}
 	
-
-	//This function is used when a user is updated because their firstname, lastname, or username could have changed
-	//meaning they need to be displayed correctly on the left side panel
-	//it gets the new information from the server and then users the lastClickedIndex to update the string at that spot
-
+	/*This function is used when a user is updated because their firstname, lastname, or username could have changed
+	meaning they need to be displayed correctly on the left side panel
+	it gets the new information from the server and then users the lastClickedIndex to update the string at that spot*/
 	private void updateUserList() {
 		User u = jdbc.get_user(lastClickedUser);
 		String s = String.format("%s, %s [%s]", u.get_lastname(), u.get_firstname(), u.get_username());
 		userList.setElementAt(s, lastClickedIndex);
 	}
 	
-	//pulls all users and fills the list
-	private void createUsersList(){
-		//TODO
+	//pulls all users with selected qualification
+	private void createAllUsersList(Qualification q){
+		userList.clear();
+		ArrayList<User> users = jdbc.getUsersWithQual(q);
+		for (int i = 0; i < users.size(); i++) {
+			userList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
+		}
+	}
+	//pulls all users 
+	private void createAllUsersList(){
+		userList.clear();
+		ArrayList<User> users = jdbc.get_users();
+		for (int i = 0; i < users.size(); i++) {
+			userList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
+		}
+	}	
+	//pulls all managers and fills the list
+	private void createManagersList(){
+		managerList.clear();
+		ArrayList<User> users = jdbc.get_Managers();
+		for (int i = 0; i < users.size(); i++) {
+			managerList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
+		}
 	}
 	
 	//pulls all qualifications and fills in the list
@@ -2098,9 +2185,8 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 
-	//Populates both the assigned and available qualification lists for a user after clicked on one
-	//Is also called each time a qualification is assigned or unassigned to update the lists.
-
+	/*Populates both the assigned and available qualification lists for a user after clicked on one
+	Is also called each time a qualification is assigned or unassigned to update the lists.*/
 	private void createQualLists(int userID) {
 		assignedQualList.clear();
 		availableQualList.clear();
@@ -2159,3 +2245,4 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 }
+

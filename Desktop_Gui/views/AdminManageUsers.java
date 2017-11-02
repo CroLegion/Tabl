@@ -304,7 +304,6 @@ public class AdminManageUsers extends JFrame {
 	}
 	
 	
-	
 	private void initLoginComponents() {
 		layeredPaneLogin = new JLayeredPane();
 		layeredPane.setLayer(layeredPaneLogin, 10);
@@ -357,6 +356,7 @@ public class AdminManageUsers extends JFrame {
 		pnl_login_components.add(btnLogin);
 		pnlLogin.add(layeredPaneLoginComponents);
 	}
+	
 	
 	private void initAdminComponents() {
 		
@@ -691,15 +691,15 @@ public class AdminManageUsers extends JFrame {
 		lblUserType_1.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
 		rdbtnAdminDetails = new JRadioButton("Admin");
-		rdbtnAdminDetails.setBounds(562, 129, 55, 23);
+		rdbtnAdminDetails.setBounds(562, 129, 109, 23);
 		buttonGroup_1.add(rdbtnAdminDetails);
 		
 		rdbtnManagerDetails = new JRadioButton("Manager");
-		rdbtnManagerDetails.setBounds(562, 170, 67, 23);
+		rdbtnManagerDetails.setBounds(562, 170, 120, 23);
 		buttonGroup_1.add(rdbtnManagerDetails);
 		
 		rdbtnWorkerDetails = new JRadioButton("Worker");
-		rdbtnWorkerDetails.setBounds(562, 211, 61, 23);
+		rdbtnWorkerDetails.setBounds(562, 211, 120, 23);
 		buttonGroup_1.add(rdbtnWorkerDetails);
 		pnlUserEditInfo.setLayout(null);
 		pnlUserEditInfo.add(lblFullName);
@@ -893,6 +893,7 @@ public class AdminManageUsers extends JFrame {
 		scrollPane_5.setViewportView(listArchivedUsers);
 		pnlAdmin.add(layeredPaneAdminComponents);
 	}
+	
 	
 	private void initManagerWorkerComponents() {
 		layeredPaneManagerWorker = new JLayeredPane();
@@ -1244,6 +1245,9 @@ public class AdminManageUsers extends JFrame {
 	
 	
 	private void createLoginEvents() {
+		
+		//Fires after the user clicks the login button.  If they typed in the wrong creds or they have been inactivated
+		//they will be given a proper pop up message notifying them
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -1251,7 +1255,9 @@ public class AdminManageUsers extends JFrame {
 				User u = jdbc.login(txtLoginUser.getText(), pass);
 				if (u == null) {
 					JOptionPane.showMessageDialog(null, "Incorrect Login Credentials");
-				} else {
+				} else if (!u.active()) {
+					JOptionPane.showMessageDialog(null, "Your account has been inactivated.  Contact your manager for help");
+			    } else {
 					if (u.get_usertype() == 1) {
 						//They are an Admin
 						layeredPane.setLayer(layeredPaneAdmin, 10);
@@ -1343,7 +1349,7 @@ public class AdminManageUsers extends JFrame {
 		listUsers.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
-                if (!arg0.getValueIsAdjusting()) {
+                if (!arg0.getValueIsAdjusting() && !listUsers.isSelectionEmpty()) {
                   pnlViewTickets.setVisible(false);
                   pnlCreateQualification.setVisible(false);
                   pnlUserEditInfo.setVisible(true);
@@ -1369,7 +1375,7 @@ public class AdminManageUsers extends JFrame {
 		listArchivedUsers.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
-                if (!arg0.getValueIsAdjusting()) {
+                if (!arg0.getValueIsAdjusting() && !listArchivedUsers.isSelectionEmpty()) {
                   pnlUserEditInfo.setVisible(true);
                   displayUserInfo(listArchivedUsers.getSelectedValue().toString());
                   //saves the index of the array that was clicked on
@@ -1394,9 +1400,16 @@ public class AdminManageUsers extends JFrame {
 				int id = jdbc.getIdOfUser(textUsername.getText());
 				lastClickeduserID = id;
 				try {
-					jdbc.updateUser(id, lastClickedUserType, textFirstName.getText(), textLastName.getText(), textUsername.getText(), textEmail.getText(), textPhone.getText());
+					 if (rdbtnAdminDetails.isSelected()) {
+	                	  lastClickedUserType = 1;
+	                  } else if (rdbtnManagerDetails.isSelected()) {
+	                	  lastClickedUserType = 2;
+	                  } else {
+	                	  lastClickedUserType = 3;
+	                  }
+					  jdbc.updateUser(id, lastClickedUserType, textFirstName.getText(), textLastName.getText(), textUsername.getText(), textEmail.getText(), textPhone.getText());
 				} catch (SQLException e) {
-					e.printStackTrace();
+					  e.printStackTrace();
 				}
 				updateUserList();
 			}
@@ -1520,7 +1533,7 @@ public class AdminManageUsers extends JFrame {
 		listClosedTickets.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
-                if (!arg0.getValueIsAdjusting()) {
+                if (!arg0.getValueIsAdjusting() && !listClosedTickets.isSelectionEmpty()) {
                 	pnlTicketDetails.setVisible(true);
                 	displayTicketDetails(listClosedTickets.getSelectedValue().toString());
                 }
@@ -1530,7 +1543,7 @@ public class AdminManageUsers extends JFrame {
 		listOpenTickets.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
-                if (!arg0.getValueIsAdjusting()) {
+                if (!arg0.getValueIsAdjusting() && !listOpenTickets.isSelectionEmpty()) {
                 	pnlTicketDetails.setVisible(true);
                 	displayTicketDetails(listOpenTickets.getSelectedValue().toString());
                 }
@@ -1540,6 +1553,7 @@ public class AdminManageUsers extends JFrame {
 		btnTicketDetailsClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				pnlTicketDetails.setVisible(false);
+				loadTickets();
 			}
 		});
 		//
@@ -1547,6 +1561,7 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				jdbc.updateTicket(currentOpenTicketId, rdbtnTicketDoneYes.isSelected());
 				pnlTicketDetails.setVisible(false);
+				loadTickets();
 			}
 		});
 	}
@@ -1716,6 +1731,14 @@ public class AdminManageUsers extends JFrame {
 	/*Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
 	This string is then added to the userList that is displayed on the left panel*/
 	private void createUserList() {
+		if (!userList.isEmpty() && !listUsers.isSelectionEmpty()) {
+			listUsers.clearSelection();
+		}
+		
+		if (!archivedUserList.isEmpty() && !listArchivedUsers.isSelectionEmpty()) {
+			listArchivedUsers.clearSelection();
+		}
+		
 		archivedUserList.clear();
 		userList.clear();
 		ArrayList<User> users = jdbc.get_users();
@@ -1826,6 +1849,8 @@ public class AdminManageUsers extends JFrame {
 		
 	}
 	
+	//Loads all tickets into the openTickets list and the closedTickets list for the user to be able to click on a ticket
+	//to view its details and either mark it done or not done.
 	private void loadTickets() {
 		openTickets.clear();
 		closedTickets.clear();

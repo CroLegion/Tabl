@@ -74,11 +74,14 @@ HTML;
 		while($curQual=$assignedQual->fetch_assoc()["qualID"])
 		{
 			$workerBoxes=$workerBoxes."<label>".get_qual_by_id($curQual)->fetch_assoc()["qualname"]."</label>";
-			$usersWithQual=get_users_by_qualid($curQual);
+			$usersWithQual=get_active_users_by_qualid($curQual);
+			$workerBoxes=$workerBoxes."<br>";
 			while($curUser=$usersWithQual->fetch_assoc())
 			{
-				
+				$workerBoxes=$workerBoxes."<Input type=\"checkbox\" name=\"users[]\" value=\"".$curUser["userID"]."\">";
+				$workerBoxes=$workerBoxes.$curUser["firstname"]." ".$curUser["lastname"]."<br>";	
 			}
+			$workerBoxes=$workerBoxes."<br><br>";
 	
 		}
 

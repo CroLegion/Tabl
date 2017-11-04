@@ -327,9 +327,9 @@ SQL;
 	}
 
 	//Gets users with quallification by id
-	function get_users_by_qualid($id)
+	function get_active_users_by_qualid($id)
 	{
-		$sql="select * from qualification_assignments join users on qualification_assignments.userID=users.userID and qualID={$id};";
+		$sql="select * from qualification_assignments join users on qualification_assignments.userID=users.userID and qualID={$id} and isActive=1;";
 		$conn=data_open();
 		$result=$conn->query($sql);
 		$conn->close();
@@ -360,4 +360,7 @@ SQL;
 		}	
 		$conn->close();
 	}
+
+	//Gets a list of users that are on a job
+	function 
 ?>

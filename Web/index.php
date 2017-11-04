@@ -50,7 +50,7 @@
 					require 'select_user.php';
 				break;
 				case 'manage_user':
-					update_user($_POST['user_id'],$_POST['username'],$_POST['user_type'],$_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['phone'],$_POST['password'],$_POST['userID']);
+					update_user($_POST['user_id'],$_POST['username'],$_POST['user_type'],$_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['phone'],$_POST['password'],$_POST['userID'],$_POST['activeState']);
 					update_user_quals($_POST['user_id'],$_POST['quals']);	
 					require 'default.php';
 				break;

@@ -265,9 +265,9 @@ SQL;
 	}
 
 	//Modify a user in the database
-	function update_user($newID,$username,$usertype,$firstname,$lastname,$email,$phone,$passhash,$oldID)
+	function update_user($newID,$username,$usertype,$firstname,$lastname,$email,$phone,$passhash,$oldID,$active)
 	{
-		$sql="UPDATE db309amc2.users SET userID={$newID}, username =\"{$username}\", usertype=\"{$usertype}\", firstname=\"{$firstname}\", lastname=\"{$lastname}\", email=\"{$email}\", phone=\"{$phone}\",passhash=\"{$passhash}\" WHERE userID={$oldID};"; 
+		$sql="UPDATE db309amc2.users SET userID={$newID}, username =\"{$username}\", usertype=\"{$usertype}\", firstname=\"{$firstname}\", lastname=\"{$lastname}\", email=\"{$email}\", phone=\"{$phone}\",passhash=\"{$passhash}\",isActive=\"{$active}\" WHERE userID={$oldID};"; 
 		
 		$conn = data_open();
 		$conn->query($sql);

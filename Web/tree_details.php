@@ -79,6 +79,11 @@ HTML;
 			while($curUser=$usersWithQual->fetch_assoc())
 			{
 				$workerBoxes=$workerBoxes."<Input type=\"checkbox\" name=\"users[]\" value=\"".$curUser["userID"]."\">";
+
+				//Add in code for checking if assigned, also add in database code for getting
+				//list of assigned workers, as well as code for removing and adding in workers based on one
+				//that are checked here.  
+
 				$workerBoxes=$workerBoxes.$curUser["firstname"]." ".$curUser["lastname"]."<br>";	
 			}
 			$workerBoxes=$workerBoxes."<br><br>";

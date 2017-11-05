@@ -127,13 +127,13 @@ public static void deleteUser(int userID) {
 	}
 }
 
-//adds a manager to a job TODO
+//adds a manager to a job 
 public static void add_Manager(User user, int jobID) {
 	try {
 		Statement statement = conn1.createStatement();
-	
-			System.out.printf("");
-			String sql = "INSERT INTO db309amc2.manager_assignments ";
+			System.out.printf("%d %d \n", user.get_userID(), jobID);
+			String sql = "INSERT INTO db309amc2.manager_assignments " +
+				"VALUES ("+jobID+","+user.get_userID()+");";
   			statement.executeUpdate(sql);		
 		// Close all statements
 		statement.close();
@@ -162,6 +162,24 @@ public static void add_project(Job jobs){
 	}
 }
 
+//adds required qualifications to job x
+public static void add_requiredQuals(int id, java.util.List list){
+	try {
+		Statement statement = conn1.createStatement();
+		//System.out.printf("%d %d \n", list.toString(), id);
+			for(int i=0; i<list.size(); i++){
+				String sql = "INSERT INTO db309amc2.job_requirements " +
+				"VALUES ("+id+","+ getQualwithString(list.get(i).toString()).getQualID() +");";  			
+				statement.executeUpdate(sql);	
+			}		
+		// Close all statements
+		statement.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+}
 //adds a task to the database
 public static void add_task(Task tasks){
 	try {

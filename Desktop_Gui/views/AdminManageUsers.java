@@ -156,7 +156,8 @@ public class AdminManageUsers extends JFrame {
 	private JList listAssignedUsers;								
 	private JList listAvailableUsers;
 	private User manager;
-
+	java.util.List qualsArray;
+	
 	//Layered Pane login
 	private JButton btnLogin;
 	private JPasswordField passwordLogin;
@@ -1778,7 +1779,8 @@ public class AdminManageUsers extends JFrame {
 				Job job =new Job(Id, txtJobName.getText(), 2);
 				job.setJobdesc(txtAreaJobDescription.getText());				
 				jdbc.add_project(job);
-				jdbc.add
+				jdbc.add_Manager(manager, Id);
+				jdbc.add_requiredQuals(Id,qualsArray);
 				layeredPaneManagerWorker.setVisible(true);	
 				JOptionPane.showMessageDialog(null, "Job Created!");
 				pnlCreateJob.setVisible(false);
@@ -1830,14 +1832,13 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {				
 			}
 		});
-		//Display user information that was clicked on the left.
+		//creates a list of qualifications that job x requires
 		listRequiredQuals.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
-                  String q = (String) listRequiredQuals.getSelectedValue();
-                  Qualification qual= jdbc.getQualwithString(q);
-                  createAllUsersList(qual);
+                	qualsArray = listRequiredQuals.getSelectedValuesList(); 
+                	System.out.println(qualsArray.get(0).toString());
                 }
             }
         });

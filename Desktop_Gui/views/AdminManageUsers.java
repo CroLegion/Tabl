@@ -155,6 +155,7 @@ public class AdminManageUsers extends JFrame {
 	private JList listRequiredQuals;
 	private JList listAssignedUsers;								
 	private JList listAvailableUsers;
+	private User manager;
 
 	//Layered Pane login
 	private JButton btnLogin;
@@ -1777,6 +1778,7 @@ public class AdminManageUsers extends JFrame {
 				Job job =new Job(Id, txtJobName.getText(), 2);
 				job.setJobdesc(txtAreaJobDescription.getText());				
 				jdbc.add_project(job);
+				jdbc.add
 				layeredPaneManagerWorker.setVisible(true);	
 				JOptionPane.showMessageDialog(null, "Job Created!");
 				pnlCreateJob.setVisible(false);
@@ -1858,6 +1860,19 @@ public class AdminManageUsers extends JFrame {
                   } else {
                 	  lastClickedUserType = 3;
                   }
+                }
+            }
+        });
+		//Display user information that was clicked on the left.
+		listAssignableManagers.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                 String s = (String) listAssignableManagers.getSelectedValue();
+                 int x= s.indexOf(44);
+                 String last = s.substring(0, x);
+                 String first = s.substring(x+2, s.length());
+                 manager =jdbc.get_user(first, last);
                 }
             }
         });

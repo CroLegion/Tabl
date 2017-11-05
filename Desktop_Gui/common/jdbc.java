@@ -128,8 +128,20 @@ public static void deleteUser(int userID) {
 }
 
 //adds a manager to a job TODO
-public static void add_Manager(User user) {
+public static void add_Manager(User user, int jobID) {
+	try {
+		Statement statement = conn1.createStatement();
 	
+			System.out.printf("");
+			String sql = "INSERT INTO db309amc2.manager_assignments ";
+  			statement.executeUpdate(sql);		
+		// Close all statements
+		statement.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
 }
 
 //adds a project to the database
@@ -277,6 +289,29 @@ public static User get_user(String username) {
 	User u = null;
 	try {
 	String query = String.format("SELECT * FROM db309amc2.users WHERE username='%s'", username);
+	Statement stmt = null;
+	stmt = conn1.createStatement();
+	ResultSet rs = stmt.executeQuery(query);
+	while (rs.next()) {
+		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"));
+		u.setEmail(rs.getString("email"));
+		u.setPhone(rs.getString("phone"));
+	}
+	// Close all statements
+	stmt.close();
+
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return u;
+}
+//gets a single user given its whole name.
+public static User get_user(String first, String last) {
+	User u = null;
+	try {
+	String query = String.format("SELECT * FROM db309amc2.users WHERE firstname='%s' AND lastname='%s'", first, last);
 	Statement stmt = null;
 	stmt = conn1.createStatement();
 	ResultSet rs = stmt.executeQuery(query);

@@ -141,7 +141,7 @@ SQL;
 	//function that returns users with a qualification
 	function users_with_qualifications($qualification)
 	{
-		// will this work?
+	
 		$sql = "SELECT firstname, lastname
 				FROM ((db309amc2.users
 				INNER join db309amc2.qualification_assignments on users.userID=qualification_assignments.userID)
@@ -265,9 +265,9 @@ SQL;
 	}
 
 	//Modify a user in the database
-	function update_user($newID,$username,$usertype,$firstname,$lastname,$email,$phone,$passhash,$oldID)
+	function update_user($newID,$username,$usertype,$firstname,$lastname,$email,$phone,$passhash,$oldID,$active)
 	{
-		$sql="UPDATE db309amc2.users SET userID={$newID}, username =\"{$username}\", usertype=\"{$usertype}\", firstname=\"{$firstname}\", lastname=\"{$lastname}\", email=\"{$email}\", phone=\"{$phone}\",passhash=\"{$passhash}\" WHERE userID={$oldID};"; 
+		$sql="UPDATE db309amc2.users SET userID={$newID}, username =\"{$username}\", usertype=\"{$usertype}\", firstname=\"{$firstname}\", lastname=\"{$lastname}\", email=\"{$email}\", phone=\"{$phone}\",passhash=\"{$passhash}\",isActive=\"{$active}\" WHERE userID={$oldID};"; 
 		
 		$conn = data_open();
 		$conn->query($sql);
@@ -306,5 +306,85 @@ SQL;
 		$conn->close();
 	}
 
+	//Gets job related info by ID
+	function get_job($jobID)
+	{
+		$conn=data_open();
+		$sql="Select * from jobs where jobID={$jobID}";
+		$result=$conn->query($sql);
+		$conn->close();
+		return $result;
+	}
 
+	//Gets qualification requirements for a job
+	function get_job_reqs($id)
+	{
+		$sql="select * from job_requirements join qualifications on job_requirements.qualID=qualifications.qualID and job_requirements.jobID={$id};";
+		$conn=data_open();
+		$result=$conn->query($sql);
+		$conn->close();
+		return $result;
+	}
+
+	//Gets users with quallification by id
+	function get_active_users_by_qualid($id)
+	{
+		$sql="select * from qualification_assignments join users on qualification_assignments.userID=users.userID and qualID={$id} and isActive=1;";
+		$conn=data_open();
+		$result=$conn->query($sql);
+		$conn->close();
+		return $result;
+	}
+
+	//Gets qualification information from its ID
+	function get_qual_by_id($id)
+	{
+		$sql="select * from qualifications where qualID={$id};";
+		$conn=data_open();
+		$result=$conn->query($sql);
+		$conn->close();
+		return $result;
+	}
+
+	//Removes all qualification assignemnts, then assigns new ones
+	function update_job_reqs($jobID,$qualList)
+	{
+		$sql="Delete from job_requirements where jobID={$jobID};";
+		$conn=data_open();
+		$conn->query($sql);
+
+		foreach($qualList as $qual)
+		{
+			$sqlb="insert into job_requirements values({$jobID},{$qual});";
+			$conn->query($sqlb);
+		}	
+		$conn->close();
+	}
+
+	//Gets a list of users that are on a job
+	function get_workers_on_id($jobID)
+	{
+		$sql="Select * from job_assignments where jobID={$jobID};";
+
+		$conn=data_open();
+		$result=$conn->query($sql);
+		$conn->close();
+		return $result;
+
+	}	
+
+	//Removes all job assignemnts, then assigns new ones
+	function update_job_assignments($jobID,$userList)
+	{
+		$sql="Delete from job_assignments where jobID={$jobID};";
+		$conn=data_open();
+		$conn->query($sql);
+		
+		foreach($userList as $user)
+		{
+			$sqlb="insert into job_assignments values({$jobID},{$user});";
+			$conn->query($sqlb);
+		}	
+		$conn->close();
+	}
 ?>

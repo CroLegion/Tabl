@@ -11,7 +11,12 @@
 		while($num_children>0)
 		{
 			$curChild=$self->fetch_assoc();
-			$tree=$tree. "<li><a href=\"link\">".$curChild["jobname"]."</a>";
+			$tree=$tree. "<li><a href=\"link\">
+					<form action='tree_details.php' method='post'>
+					<input type='hidden' name='node' value={$curChild["jobID"]}>
+					<input type = submit value =\"{$curChild["jobname"]}\">
+					</form>
+				</a>";
 			$grandChildren=get_children($curChild["jobID"]);
 			if($grandChildren->num_rows>0)
 			{
@@ -46,8 +51,13 @@
 		$root=$rootQ->fetch_assoc();
 	}
 	$title=$root['jobname'];
-
-	$tree=$tree. "<ul> <li> <a href=\"link\">".$root["jobname"]."</a>";
+	
+	$tree=$tree. "<ul> <li> <a href=\"link\"> 
+		<form action='tree_details.php' method='post'>
+			<input type='hidden' name='node' value={$root["jobID"]}>
+			<input type = submit value =\"{$root["jobname"]}\">
+		</form>
+		</a>";
 	$rootChildren=get_children($root["jobID"]);
 	$tree=$tree. "<ul>";
 	$tree=$tree.process_children($rootChildren);

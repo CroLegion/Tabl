@@ -21,6 +21,11 @@
 	$passhash=$user['passhash'];
 	$usertype=$user['usertype'];
 	$userQuals=qualifications_for_user($userID);
+	$userStatus=$user['isActive'];
+
+	$active="<input type=\"checkbox\" name = \"activeState\" value=\"{$userStatus}\"";
+	if($userStatus==1){$active=$active."checked";}
+	$active=$active.">Active<br>";
 
 	$qualArray=[];
 	$index=0;
@@ -48,7 +53,7 @@
 	}
 	$quals=$quals."<br>";
 
-	$content =  <<< HTML
+	$content =  <<<HTML
 		<!DOCTYPE html>
 		<html>
 			<head>
@@ -101,19 +106,16 @@
 						<br><br>
 
 						$quals
-	
-						 
+						<br>
+
+						<input type='text' name='activeState' value="{$userStatus}">
+						<br> 
 
 
 						<input type='hidden' name='userID' value="{$_POST['userID']}">
 						<input type="hidden" name='action' value='manage_user'>
 						<input type='submit' value='Update'>
 					</fieldset>
-				</form>
-				<form action='index.php' method='post' id='deleteuser'>
-				<input type='hidden' name='delButton' value="{$userID}">
-				<input type='submit' value='Delete User'>
-				</form>
 			</body>
 		</html>
 HTML;

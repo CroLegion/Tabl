@@ -203,6 +203,8 @@ public class AdminManageUsers extends JFrame {
 	DefaultListModel openTickets = new DefaultListModel();
 	DefaultListModel closedTickets = new DefaultListModel();
 	DefaultListModel archivedUserList = new DefaultListModel();
+	DefaultListModel projectsList = new DefaultListModel();
+	DefaultListModel conversationsList = new DefaultListModel();
 	int lastClickedIndex;
 	int lastClickeduserID;
 	int lastClickedUserType;
@@ -242,6 +244,14 @@ public class AdminManageUsers extends JFrame {
 	private JButton btnTicketDetailsClose;
 	private JButton btnTicketDoneSave;
 	private JList listArchivedUsers;
+	private JPanel pnlMessages;
+	private JPanel pnlProjects;
+	private JLabel lblNewLabel_7;
+	private JLabel lblNewLabel_8;
+	private JScrollPane scrlConversations;
+	private JScrollPane scrlProjects;
+	private JList listProjects;
+	private JList listConversations;
 	
 	/**
 	 * Launch the application.
@@ -378,7 +388,7 @@ public class AdminManageUsers extends JFrame {
 		layeredPaneAdminComponents.setBounds(0, 0, 937, 760);
 		
 		Panel pnlUsers = new Panel();
-		layeredPaneAdminComponents.setLayer(pnlUsers, 1);
+		layeredPaneAdminComponents.setLayer(pnlUsers, 0);
 		pnlUsers.setEnabled(false);
 		pnlUsers.setBounds(0, 0, 157, 28);
 		layeredPaneAdminComponents.add(pnlUsers);
@@ -897,7 +907,7 @@ public class AdminManageUsers extends JFrame {
 	
 	private void initManagerWorkerComponents() {
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 0);
+		layeredPane.setLayer(layeredPaneManagerWorker, 20);
 		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneManagerWorker);
 		
@@ -1151,7 +1161,7 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateJob.add(btnCreateJob);
 		
 		btnCreateTicket = new JButton("Create Ticket");
-		btnCreateTicket.setBounds(762, 3, 97, 23);
+		btnCreateTicket.setBounds(762, 3, 136, 23);
 		
 		pnlCreateTicket = new JPanel();
 		pnlCreateTicket.setBorder(new TitledBorder(null, "Ticket Creator", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -1199,6 +1209,44 @@ public class AdminManageUsers extends JFrame {
 		pnlManagerWorker.add(btnCreateTicket);
 		pnlManagerWorker.add(layeredPaneManagerWorkerComponents);
 		
+		pnlMessages = new JPanel();
+		pnlMessages.setBackground(Color.LIGHT_GRAY);
+		pnlMessages.setBounds(0, 347, 181, 28);
+		pnlManagerWorker.add(pnlMessages);
+		pnlMessages.setLayout(null);
+		
+		lblNewLabel_7 = new JLabel("Conversations");
+		lblNewLabel_7.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_7.setBounds(28, 5, 143, 14);
+		pnlMessages.add(lblNewLabel_7);
+		
+		pnlProjects = new JPanel();
+		pnlProjects.setBackground(Color.LIGHT_GRAY);
+		pnlProjects.setBounds(0, 0, 181, 28);
+		pnlManagerWorker.add(pnlProjects);
+		pnlProjects.setLayout(null);
+		
+		lblNewLabel_8 = new JLabel("Projects");
+		lblNewLabel_8.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_8.setBounds(43, 5, 128, 14);
+		pnlProjects.add(lblNewLabel_8);
+		
+		scrlConversations = new JScrollPane();
+		scrlConversations.setBounds(2, 375, 179, 385);
+		pnlManagerWorker.add(scrlConversations);
+		
+		listConversations = new JList(conversationsList);
+		listConversations.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		scrlConversations.setViewportView(listConversations);
+		
+		scrlProjects = new JScrollPane();
+		scrlProjects.setBounds(0, 27, 181, 319);
+		pnlManagerWorker.add(scrlProjects);
+		
+		listProjects = new JList(projectsList);
+		listProjects.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		scrlProjects.setViewportView(listProjects);
+		
 		btnLogout = new JButton("LOGOUT");
 
 		btnLogout.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -1222,6 +1270,8 @@ public class AdminManageUsers extends JFrame {
 		layeredPane_1.add(lblPortal);
 		lblPortal.setVisible(false);
 		//create job end		
+		
+		loadProjects();
 	}
 	
 	
@@ -1571,8 +1621,7 @@ public class AdminManageUsers extends JFrame {
 		btnCreateNewProject.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int Id= jdbc.getMaxJobID()+1;
-				Job job =new Job(Id, txtProjectName.getText(), 1);
-				job.setJobdesc(textAreaProjectDescription.getText());				
+				Job job =new Job(Id, txtProjectName.getText(), 1, textAreaProjectDescription.getText(), (Integer) null);			
 				jdbc.add_project(job);
 				layeredPaneManagerWorker.setVisible(true);	
 				JOptionPane.showMessageDialog(null, "Project Created!");
@@ -1700,8 +1749,7 @@ public class AdminManageUsers extends JFrame {
 		btnCreateJob.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int Id= jdbc.getMaxJobID()+1;
-				Job job =new Job(Id, txtJobName.getText(), 2);
-				job.setJobdesc(txtAreaJobDescription.getText());				
+				Job job =new Job(Id, txtJobName.getText(), 2, txtAreaJobDescription.getText(), (Integer) null);				
 				jdbc.add_project(job);
 				layeredPaneManagerWorker.setVisible(true);	
 				JOptionPane.showMessageDialog(null, "job Created!");
@@ -1890,6 +1938,15 @@ public class AdminManageUsers extends JFrame {
 			rdbtnTicketDoneYes.setSelected(true);
 		} else {
 			rdbtnTicketDoneNo.setSelected(true);
+		}
+	}
+	
+	private void loadProjects() {
+		projectsList.clear();
+		
+		ArrayList<Job> projects = jdbc.getProjects();
+		for (Job j : projects) {
+			projectsList.addElement(j.jobname);
 		}
 	}
 }

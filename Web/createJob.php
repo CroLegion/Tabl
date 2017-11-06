@@ -27,7 +27,7 @@
 	}
 	$quals=$quals."<br>";
 
-	$content =  <<< HTML
+	$content =  <<<HTML
 		<!DOCTYPE html>
 		<html>
 			<head>

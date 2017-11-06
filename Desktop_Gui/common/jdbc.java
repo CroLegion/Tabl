@@ -49,7 +49,7 @@ public static User login(String username, String password) {
 	stmt = conn1.createStatement();
 	ResultSet rs = stmt.executeQuery(query);
 	while (rs.next()) {
-		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"));
+		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), rs.getBoolean("isActive"));
 		u.setEmail(rs.getString("email"));
 		u.setPhone(rs.getString("phone"));
 	}
@@ -113,10 +113,10 @@ public static void add_user(int usertype, String username, String firstname, Str
 }
 
 //removes a user from the database
-public static void deleteUser(int userID) {
+public static void archiveUser(int userID, boolean b) {
 	try {
 		Statement statement = conn1.createStatement();
-		String sql = String.format("DELETE FROM db309amc2.users WHERE userID=%d", userID);
+		String sql = String.format("UPDATE db309amc2.users SET isActive=%b WHERE userID=%d", b, userID);
 		statement.executeUpdate(sql);
 		// Close all statements and connections
 		statement.close();
@@ -213,7 +213,8 @@ public static ArrayList<User> get_Managers() {
    			String lastname = rs.getString("lastname");
    			String email = rs.getString("email");
    			String phone = rs.getString("phone");
-   			User u = new User(userID, usertype, username, firstname, lastname);
+   			boolean isActive = rs.getBoolean("isActive");
+   			User u = new User(userID, usertype, username, firstname, lastname, isActive);
    			u.setEmail(email);
    			u.setPhone(phone);
    			users.add(u);
@@ -245,7 +246,8 @@ public static ArrayList<User> get_users() {
    			String lastname = rs.getString("lastname");
    			String email = rs.getString("email");
    			String phone = rs.getString("phone");
-   			User u = new User(userID, usertype, username, firstname, lastname);
+   			boolean isActive = rs.getBoolean("isActive");
+   			User u = new User(userID, usertype, username, firstname, lastname, isActive);
    			u.setEmail(email);
    			u.setPhone(phone);
    			users.add(u);
@@ -311,7 +313,7 @@ public static User get_user(String username) {
 	stmt = conn1.createStatement();
 	ResultSet rs = stmt.executeQuery(query);
 	while (rs.next()) {
-		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"));
+		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), rs.getBoolean("isActive"));
 		u.setEmail(rs.getString("email"));
 		u.setPhone(rs.getString("phone"));
 	}
@@ -334,7 +336,7 @@ public static User get_user(String first, String last) {
 	stmt = conn1.createStatement();
 	ResultSet rs = stmt.executeQuery(query);
 	while (rs.next()) {
-		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"));
+		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), rs.getBoolean("isActive"));
 		u.setEmail(rs.getString("email"));
 		u.setPhone(rs.getString("phone"));
 	}
@@ -358,7 +360,7 @@ public static User get_user(int userID) {
 	stmt = conn1.createStatement();
 	ResultSet rs = stmt.executeQuery(query);
 	while (rs.next()) {
-		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"));
+		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), rs.getBoolean("isActive"));
 		u.setEmail(rs.getString("email"));
 		u.setPhone(rs.getString("phone"));
 	}
@@ -467,7 +469,7 @@ public static ArrayList<User> getUsersWithQual(Qualification q){
 		stmt = conn1.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		while (rs.next()) {
-			    User u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"));
+			    User u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), rs.getBoolean("isActive"));
 				users.add(u);
 				System.out.println(u);		
 		}
@@ -760,5 +762,23 @@ public static Ticket getTicket(int ticketID) {
 	
 	
 	return t;
+}
+
+public static void updateTicket(int id, boolean b) {
+	try {
+
+		Statement statement = conn1.createStatement();
+		String sql = String.format("UPDATE db309amc2.tickets SET isDone=%b WHERE ticketID=%d",b ,id);
+		statement.executeUpdate(sql);
+		
+
+		// Close all statements
+		statement.close();
+
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
 }
 }

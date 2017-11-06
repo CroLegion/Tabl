@@ -1,12 +1,12 @@
 package common;
 public class Job {
-   int jobID;
-   String jobname;
-   int jobtype;
-   String jobdesc;
-   String parentID=null;
+   public int jobID;
+   public String jobname;
+   public int jobtype;
+   public String jobdesc;
+   public String parentID;
 
-   public Job(int jobID, String jobname, int jobtype) {
+   public Job(int jobID, String jobname, int jobtype, String jobdesc, int parentID) {
    		this.jobID = jobID;
          this.jobname = jobname;
          this.jobtype = jobtype;

@@ -457,6 +457,28 @@ public static void get_projects() throws SQLException {
 	}
 }
 
+//returns a list of projects
+public static ArrayList<Job> getProjects() {
+	ArrayList<Job> projects = new ArrayList<Job>();
+		try {
+			String query = "SELECT * FROM db309amc2.jobs WHERE parentID IS NULL";
+			Statement stmt = null;
+			stmt = conn1.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			while (rs.next()) {
+				Job j = new Job(rs.getInt("jobID"), rs.getString("jobname"), rs.getInt("jobtype"), rs.getString("jobdesc"), rs.getInt("parentID"));
+				projects.add(j);
+		}
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return projects;
+}
+
 //returns a list of user w/ a qualification
 public static ArrayList<User> getUsersWithQual(Qualification q){
 	ArrayList<User> users = new ArrayList<User>();	

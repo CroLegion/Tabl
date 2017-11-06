@@ -362,5 +362,29 @@ SQL;
 	}
 
 	//Gets a list of users that are on a job
-	function 
+	function get_workers_on_id($jobID)
+	{
+		$sql="Select * from job_assignments where jobID={$jobID};";
+
+		$conn=data_open();
+		$result=$conn->query($sql);
+		$conn->close();
+		return $result;
+
+	}	
+
+	//Removes all job assignemnts, then assigns new ones
+	function update_job_assignments($jobID,$userList)
+	{
+		$sql="Delete from job_assignments where jobID={$jobID};";
+		$conn=data_open();
+		$conn->query($sql);
+		
+		foreach($userList as $user)
+		{
+			$sqlb="insert into job_assignments values({$jobID},{$user});";
+			$conn->query($sqlb);
+		}	
+		$conn->close();
+	}
 ?>

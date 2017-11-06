@@ -142,6 +142,7 @@
 				break;
 				case 'edit_job':
 					update_job_reqs($_POST['nodeID'],$_POST['quals']);
+					update_job_assignments($_POST['nodeID'],$_POST['users']);
 					require 'default.php';
 					
 				break;

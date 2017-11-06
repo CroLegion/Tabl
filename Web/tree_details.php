@@ -68,23 +68,33 @@ HTML;
 			if($even==2){$qualBoxes=$qualBoxes."<br>";$even=0;}
 			else{$even=$even+1;}
 		}
-
+		
 		$workerBoxes="";
+		$workerSQL=get_workers_on_id($node['jobID']);
+		$workerArray=[];
+		$index=0;
+		while($curWorker=$workerSQL->fetch_assoc()['userID'])
+		{
+			$workerArray[$index]=$curWorker;
+			$index=$index+1;
+		}
+
 		$assignedQual=get_job_reqs($node['jobID']);
 		while($curQual=$assignedQual->fetch_assoc()["qualID"])
 		{
-			$workerBoxes=$workerBoxes."<label>".get_qual_by_id($curQual)->fetch_assoc()["qualname"]."</label>";
+			$workerBoxes=$workerBoxes."<label>".get_qual_by_id($curQual)->fetch_assoc()["qualname"].":</label>";
 			$usersWithQual=get_active_users_by_qualid($curQual);
 			$workerBoxes=$workerBoxes."<br>";
 			while($curUser=$usersWithQual->fetch_assoc())
 			{
-				$workerBoxes=$workerBoxes."<Input type=\"checkbox\" name=\"users[]\" value=\"".$curUser["userID"]."\">";
+				$workerBoxes=$workerBoxes."<Input type=\"checkbox\" name=\"users[]\" value=\"".$curUser["userID"]."\"";
+				if(in_array($curUser['userID'],$workerArray))
+				{
+					$workerBoxes=$workerBoxes."checked";
+				}
+				
 
-				//Add in code for checking if assigned, also add in database code for getting
-				//list of assigned workers, as well as code for removing and adding in workers based on one
-				//that are checked here.  
-
-				$workerBoxes=$workerBoxes.$curUser["firstname"]." ".$curUser["lastname"]."<br>";	
+				$workerBoxes=$workerBoxes.">".$curUser["firstname"]." ".$curUser["lastname"]."<br>";	
 			}
 			$workerBoxes=$workerBoxes."<br><br>";
 	
@@ -108,13 +118,14 @@ HTML;
 							<textarea rows="4" cols="50" name="job_desc" form="edit_task">{$node['jobdesc']}</textarea>
 							</br></br>
 							<label>Qualifications:</label>
+							<br>
 							{$qualBoxes}
 							</br></br>
 							
 							{$workerBoxes}
-							</br></br>
+						
 
-							</br></br>
+							
 							<input type='hidden' name='nodeID' value="{$node['jobID']}">
 							<input type='hidden' name='action' value='edit_job'>
 							<input type='submit' value='Save'>
@@ -127,7 +138,7 @@ HTML;
 
 HTML;
 	}
-	$title="moo";
+	$title=$node['jobname']." Details";
 	require 'frame.php';
 	echo $frame;
 	

@@ -127,9 +127,21 @@ public static void deleteUser(int userID) {
 	}
 }
 
-//adds a manager to a job TODO
-public static void add_Manager(User user) {
-	
+//adds a manager to a job 
+public static void add_Manager(User user, int jobID) {
+	try {
+		Statement statement = conn1.createStatement();
+			System.out.printf("%d %d \n", user.get_userID(), jobID);
+			String sql = "INSERT INTO db309amc2.manager_assignments " +
+				"VALUES ("+jobID+","+user.get_userID()+");";
+  			statement.executeUpdate(sql);		
+		// Close all statements
+		statement.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
 }
 
 //adds a project to the database
@@ -150,6 +162,24 @@ public static void add_project(Job jobs){
 	}
 }
 
+//adds required qualifications to job x
+public static void add_requiredQuals(int id, java.util.List list){
+	try {
+		Statement statement = conn1.createStatement();
+		//System.out.printf("%d %d \n", list.toString(), id);
+			for(int i=0; i<list.size(); i++){
+				String sql = "INSERT INTO db309amc2.job_requirements " +
+				"VALUES ("+id+","+ getQualwithString(list.get(i).toString()).getQualID() +");";  			
+				statement.executeUpdate(sql);	
+			}		
+		// Close all statements
+		statement.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+}
 //adds a task to the database
 public static void add_task(Task tasks){
 	try {
@@ -277,6 +307,29 @@ public static User get_user(String username) {
 	User u = null;
 	try {
 	String query = String.format("SELECT * FROM db309amc2.users WHERE username='%s'", username);
+	Statement stmt = null;
+	stmt = conn1.createStatement();
+	ResultSet rs = stmt.executeQuery(query);
+	while (rs.next()) {
+		u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"));
+		u.setEmail(rs.getString("email"));
+		u.setPhone(rs.getString("phone"));
+	}
+	// Close all statements
+	stmt.close();
+
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return u;
+}
+//gets a single user given its whole name.
+public static User get_user(String first, String last) {
+	User u = null;
+	try {
+	String query = String.format("SELECT * FROM db309amc2.users WHERE firstname='%s' AND lastname='%s'", first, last);
 	Statement stmt = null;
 	stmt = conn1.createStatement();
 	ResultSet rs = stmt.executeQuery(query);

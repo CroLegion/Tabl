@@ -153,6 +153,8 @@ public class AdminManageUsers extends JFrame {
 	private JList listRequiredQuals;
 	private JList listAssignedUsers;								
 	private JList listAvailableUsers;
+	private User manager;
+	java.util.List qualsArray;
 
 	//Layered Pane login
 	private JButton btnLogin;
@@ -1701,31 +1703,39 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int Id= jdbc.getMaxJobID()+1;
 				Job job =new Job(Id, txtJobName.getText(), 2);
-				job.setJobdesc(txtAreaJobDescription.getText());				
+				job.setJobdesc(txtAreaJobDescription.getText());			
 				jdbc.add_project(job);
+				jdbc.add_Manager(manager, Id);
+				jdbc.add_requiredQuals(Id,qualsArray);
 				layeredPaneManagerWorker.setVisible(true);	
-				JOptionPane.showMessageDialog(null, "job Created!");
+				JOptionPane.showMessageDialog(null, "Job Created!");
 				pnlCreateJob.setVisible(false);
 			}
 		});
-
-
-
 		//Display user information that was clicked on the left.
 		listRequiredQuals.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
-                  String q = (String) listRequiredQuals.getSelectedValue();
-                  Qualification qual= jdbc.getQualwithString(q);
-                  createAllUsersList(qual);
+                	qualsArray = listRequiredQuals.getSelectedValuesList(); 
+                	System.out.println(qualsArray.get(0).toString());
                 }
             }
         });
+		//listens for selection of a singular manager and saves it
+		listAssignableManagers.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                 String s = (String) listAssignableManagers.getSelectedValue();
+                 int x= s.indexOf(44);
+                 String last = s.substring(0, x);
+                 String first = s.substring(x+2, s.length());
+                 manager =jdbc.get_user(first, last);
+                }
+            }
+		});
 	}
-	
-	
-	
 	
 	
 	/*Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"

@@ -131,9 +131,8 @@ public static void archiveUser(int userID, boolean b) {
 public static void add_Manager(User user, int jobID) {
 	try {
 		Statement statement = conn1.createStatement();
-			System.out.printf("%d %d \n", user.get_userID(), jobID);
-			String sql = "INSERT INTO db309amc2.manager_assignments " +
-				"VALUES ("+jobID+","+user.get_userID()+");";
+
+			String sql = "INSERT INTO db309amc2.manager_assignments VALUES ("+jobID+","+user.get_userID()+");";
   			statement.executeUpdate(sql);		
 		// Close all statements
 		statement.close();

@@ -387,4 +387,34 @@ SQL;
 		}	
 		$conn->close();
 	}
+
+	//Gets all conversations that a given userID is a member of
+	function get_convos($userID)
+	{
+		$sql = "SELECT * FROM conversations JOIN conversation_assignments ON conversations.conversationID = conversation_assignments.conversationID WHERE memberID = $userID";
+		$conn=data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+		return $result;
+	}
+
+	//Gets all messages in the specified conversation thread
+	function get_thread($conversationID)
+	{
+		// $sql = "SELECT * FROM messages WHERE msgdest = $conversationID";
+		$sql = "SELECT * FROM messages JOIN users ON messages.msgsender = users.userID WHERE msgdest = $conversationID";
+		$conn=data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+		return $result;
+	}
+
+	//Sends a message to the specified message thread
+	function add_message($sender, $destination, $content)
+	{
+		$sql = "INSERT INTO messages (msgsender, msgdest, msgcontent) VALUES ($sender, $destination, '$content')";
+		$conn=data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+	}
 ?>

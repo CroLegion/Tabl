@@ -7,7 +7,7 @@
 		</head>
 		<body onload='initialize();'>
 			<div class='header'>
-				<h1> $title </h1>
+				
 				<form action='index.php' method='post'>
 					<input type='hidden' name='action' value='notifications'>
 					<input type='submit' value='Notifications' class='topButton'>
@@ -16,6 +16,7 @@
 					<input type='hidden' name='action' value='settings'>
 					<input type='submit' value='Settings' class='topButton'>
 				</form>
+				<h1 class='pagetitle'> $title </h1>
 			</div>
 			<div class='page'>
 				<div class='navbar'> $navbar </div>

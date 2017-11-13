@@ -44,6 +44,7 @@ import common.User;
 import common.Job;
 import common.Qualification;
 import common.Ticket;
+import common.Task;
 
 import javax.swing.JLabel;
 
@@ -124,6 +125,10 @@ public class AdminManageUsers extends JFrame {
 	private JList listQualifications;
 	DefaultListModel listedQualList = new DefaultListModel();
 	ArrayList<Qualification> listedQuals = new ArrayList<Qualification>();
+	DefaultListModel listedUsersAvailList = new DefaultListModel();
+	ArrayList<Qualification> listedUsersAvail = new ArrayList<Qualification>();
+	DefaultListModel listedUsersAddList = new DefaultListModel();
+	ArrayList<Qualification> listedUsersAdd = new ArrayList<Qualification>();
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
 	private JButton btnCreateNewProject;	
@@ -984,7 +989,7 @@ public class AdminManageUsers extends JFrame {
 		//create user end				
 		//create project start		
 		pnlCreateProject = new JPanel();
-		layeredPaneManagerWorkerComponents.setLayer(pnlCreateProject, 0);
+		layeredPaneManagerWorkerComponents.setLayer(pnlCreateProject, 10);
 		pnlCreateProject.setBounds(0, 0, 746, 720);
 		layeredPaneManagerWorkerComponents.add(pnlCreateProject);
 		pnlCreateProject.setVisible(false);
@@ -1018,7 +1023,7 @@ public class AdminManageUsers extends JFrame {
 		textAreaProjectDescription = new JTextArea();
 		scrlPaneProjectDescription.setViewportView(textAreaProjectDescription);
 		
-		listUsersAvailable = new JList();
+		listUsersAvailable = new JList(userList);
 		scrlPaneUsersAvailable.setViewportView(listUsersAvailable);
 		
 		listQualifications = new JList(listedQualList);
@@ -1066,7 +1071,7 @@ public class AdminManageUsers extends JFrame {
 		//edit user info end
 		//create job start				
 		pnlCreateJob = new JPanel();
-		layeredPaneManagerWorkerComponents.setLayer(pnlCreateJob, 10);
+		layeredPaneManagerWorkerComponents.setLayer(pnlCreateJob, 0);
 		pnlCreateJob.setBounds(0, 0, 746, 720);
 		layeredPaneManagerWorkerComponents.add(pnlCreateJob);
 		pnlCreateJob.setVisible(false);
@@ -1680,8 +1685,11 @@ public class AdminManageUsers extends JFrame {
 		//creates a new Task with given inputs
 		btnCreateNewTask.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub		
+				Task task = new Task(textTaskName.getText(), txtAreaDescription.getText(), txtAreaReason.getText(), 1, jdbc.getMaxTaskID()+1);
+				jdbc.add_task(task);
+				JOptionPane.showMessageDialog(null, "Task Created!");
 				pnlCreateTask.setVisible(false);
+
 			}
 		});	
 		//assign users to job
@@ -1704,7 +1712,7 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateProject.setVisible(true);
 				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);	
 				createQualificationsList();
-				
+				createAllUsersList();
 			}
 		});
 		//closes create new project tab
@@ -1751,7 +1759,7 @@ public class AdminManageUsers extends JFrame {
 		btnCreateJob.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int Id= jdbc.getMaxJobID()+1;
-				Job job =new Job(Id, txtJobName.getText(), 2, txtAreaJobDescription.getText(), (Integer) null);				
+				Job job =new Job(Id, txtJobName.getText(), 2, txtAreaJobDescription.getText(), 0);				
 				jdbc.add_project(job);
 				jdbc.add_Manager(manager, Id);
 				jdbc.add_requiredQuals(Id,qualsArray);
@@ -1782,6 +1790,21 @@ public class AdminManageUsers extends JFrame {
                  manager =jdbc.get_user(first, last);
                 }
             }
+		});
+		//listens for selection of a singular qualification in project and returns users
+		listQualifications.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				if (!arg0.getValueIsAdjusting()) {
+					String s = (String) listAssignableManagers.getSelectedValue();
+					Qualification q = new Qualification(0, s, "");
+					userList.clear();
+					ArrayList<User> users = jdbc.getUsersWithQual(q);
+					for (int i = 0; i < users.size(); i++) {
+						userList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
+					}
+				}
+			}
 		});
 	}
 	
@@ -1888,7 +1911,6 @@ public class AdminManageUsers extends JFrame {
 			listedQualList.addElement(q.getQualName());
 		}
 	}
-
 	/*Populates both the assigned and available qualification lists for a user after clicked on one
 	Is also called each time a qualification is assigned or unassigned to update the lists.*/
 	private void createQualLists(int userID) {

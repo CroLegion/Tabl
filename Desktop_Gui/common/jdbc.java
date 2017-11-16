@@ -326,6 +326,7 @@ public static User get_user(String username) {
 	}
 	return u;
 }
+
 //gets a single user given its whole name.
 public static User get_user(String first, String last) {
 	User u = null;

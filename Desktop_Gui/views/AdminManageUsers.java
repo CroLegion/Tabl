@@ -296,7 +296,10 @@ public class AdminManageUsers extends JFrame {
 		createManagerWorkerEvents();
 	}
 
-
+	/**
+	 * Initialize all the main components for the gui including the logout button,
+	 * and setting the icon
+	 */
 	private void initMainComponents() {
 		setBackground(Color.RED);
 		setTitle("TABL");
@@ -320,7 +323,9 @@ public class AdminManageUsers extends JFrame {
 
 	}
 	
-	
+	/*
+	 * Initialize all of the gui components on the login page
+	 */
 	private void initLoginComponents() {
 		layeredPaneLogin = new JLayeredPane();
 		layeredPane.setLayer(layeredPaneLogin, 10);
@@ -374,7 +379,10 @@ public class AdminManageUsers extends JFrame {
 		pnlLogin.add(layeredPaneLoginComponents);
 	}
 	
-	
+	/*
+	 * Initialize all of the components for the Admin view of the gui
+	 * Also populates the user list and gets the qualifications of each user to be ready to display
+	 */
 	private void initAdminComponents() {
 		
 		createUserList();
@@ -912,6 +920,9 @@ public class AdminManageUsers extends JFrame {
 	}
 	
 	
+	/*
+	 * Initializes all of the gui components for the Manager/Worker view
+	 */
 	private void initManagerWorkerComponents() {
 		layeredPaneManagerWorker = new JLayeredPane();
 		layeredPane.setLayer(layeredPaneManagerWorker, 0);
@@ -1300,7 +1311,9 @@ public class AdminManageUsers extends JFrame {
 	}
 
 	
-	
+	/*
+	 * creates the listener events for the Login Components
+	 */
 	private void createLoginEvents() {
 		
 		//Fires after the user clicks the login button.  If they typed in the wrong creds or they have been inactivated
@@ -1359,6 +1372,9 @@ public class AdminManageUsers extends JFrame {
 		});
 	}
 	
+	/*
+	 * creates the listener events for the Admin Components
+	 */
 	private void createAdminEvents() {
 		//moves the create user panel to the front to allow the user to enter the new user info
 		btn_create_new_user.addActionListener(new ActionListener() {
@@ -1623,6 +1639,9 @@ public class AdminManageUsers extends JFrame {
 		});
 	}
 	
+	/*
+	 * creates the listener events for the Manager/Worker Components
+	 */
 	private void createManagerWorkerEvents() {
 		//creates a new project 
 		btnCreateNewProject.addActionListener(new ActionListener() {
@@ -1833,6 +1852,9 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 	
+	/*
+	 * gets a list of user's qualifications from the database and then loads then into the correct list.
+	 */
 	private void createUserListQual() {
 		userListAvailQual.clear();
 		ArrayList<User> users = jdbc.get_users();
@@ -1953,6 +1975,9 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 	
+	/*
+	 * Displays all of the details for a ticket once it has been clicked.
+	 */
 	private void displayTicketDetails(String s) {
 		int i = 0;
 		while (i < s.length() && !Character.isDigit(s.charAt(i))) i++;
@@ -1973,6 +1998,9 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 	
+	/*
+	 * Pulls a list of all projects into the Manager/Worker view
+	 */
 	private void loadProjects() {
 		projectsList.clear();
 		

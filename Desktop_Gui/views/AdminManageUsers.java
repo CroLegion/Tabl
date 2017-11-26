@@ -44,6 +44,7 @@ import common.User;
 import common.Job;
 import common.Qualification;
 import common.Ticket;
+import common.Task;
 
 import javax.swing.JLabel;
 
@@ -124,6 +125,10 @@ public class AdminManageUsers extends JFrame {
 	private JList listQualifications;
 	DefaultListModel listedQualList = new DefaultListModel();
 	ArrayList<Qualification> listedQuals = new ArrayList<Qualification>();
+	DefaultListModel listedUsersAvailList = new DefaultListModel();
+	ArrayList<Qualification> listedUsersAvail = new ArrayList<Qualification>();
+	DefaultListModel listedUsersAddList = new DefaultListModel();
+	ArrayList<Qualification> listedUsersAdd = new ArrayList<Qualification>();
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
 	private JButton btnCreateNewProject;	
@@ -153,6 +158,8 @@ public class AdminManageUsers extends JFrame {
 	private JList listRequiredQuals;
 	private JList listAssignedUsers;								
 	private JList listAvailableUsers;
+	private User manager;
+	java.util.List qualsArray;
 
 	//Layered Pane login
 	private JButton btnLogin;
@@ -289,7 +296,10 @@ public class AdminManageUsers extends JFrame {
 		createManagerWorkerEvents();
 	}
 
-
+	/**
+	 * Initialize all the main components for the gui including the logout button,
+	 * and setting the icon
+	 */
 	private void initMainComponents() {
 		setBackground(Color.RED);
 		setTitle("TABL");
@@ -313,7 +323,9 @@ public class AdminManageUsers extends JFrame {
 
 	}
 	
-	
+	/*
+	 * Initialize all of the gui components on the login page
+	 */
 	private void initLoginComponents() {
 		layeredPaneLogin = new JLayeredPane();
 		layeredPane.setLayer(layeredPaneLogin, 10);
@@ -367,7 +379,10 @@ public class AdminManageUsers extends JFrame {
 		pnlLogin.add(layeredPaneLoginComponents);
 	}
 	
-	
+	/*
+	 * Initialize all of the components for the Admin view of the gui
+	 * Also populates the user list and gets the qualifications of each user to be ready to display
+	 */
 	private void initAdminComponents() {
 		
 		createUserList();
@@ -905,9 +920,12 @@ public class AdminManageUsers extends JFrame {
 	}
 	
 	
+	/*
+	 * Initializes all of the gui components for the Manager/Worker view
+	 */
 	private void initManagerWorkerComponents() {
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 20);
+		layeredPane.setLayer(layeredPaneManagerWorker, 0);
 		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneManagerWorker);
 		
@@ -982,7 +1000,7 @@ public class AdminManageUsers extends JFrame {
 		//create user end				
 		//create project start		
 		pnlCreateProject = new JPanel();
-		layeredPaneManagerWorkerComponents.setLayer(pnlCreateProject, 0);
+		layeredPaneManagerWorkerComponents.setLayer(pnlCreateProject, 10);
 		pnlCreateProject.setBounds(0, 0, 746, 720);
 		layeredPaneManagerWorkerComponents.add(pnlCreateProject);
 		pnlCreateProject.setVisible(false);
@@ -1016,7 +1034,7 @@ public class AdminManageUsers extends JFrame {
 		textAreaProjectDescription = new JTextArea();
 		scrlPaneProjectDescription.setViewportView(textAreaProjectDescription);
 		
-		listUsersAvailable = new JList();
+		listUsersAvailable = new JList(userList);
 		scrlPaneUsersAvailable.setViewportView(listUsersAvailable);
 		
 		listQualifications = new JList(listedQualList);
@@ -1064,7 +1082,7 @@ public class AdminManageUsers extends JFrame {
 		//edit user info end
 		//create job start				
 		pnlCreateJob = new JPanel();
-		layeredPaneManagerWorkerComponents.setLayer(pnlCreateJob, 10);
+		layeredPaneManagerWorkerComponents.setLayer(pnlCreateJob, 0);
 		pnlCreateJob.setBounds(0, 0, 746, 720);
 		layeredPaneManagerWorkerComponents.add(pnlCreateJob);
 		pnlCreateJob.setVisible(false);
@@ -1293,7 +1311,9 @@ public class AdminManageUsers extends JFrame {
 	}
 
 	
-	
+	/*
+	 * creates the listener events for the Login Components
+	 */
 	private void createLoginEvents() {
 		
 		//Fires after the user clicks the login button.  If they typed in the wrong creds or they have been inactivated
@@ -1352,6 +1372,9 @@ public class AdminManageUsers extends JFrame {
 		});
 	}
 	
+	/*
+	 * creates the listener events for the Admin Components
+	 */
 	private void createAdminEvents() {
 		//moves the create user panel to the front to allow the user to enter the new user info
 		btn_create_new_user.addActionListener(new ActionListener() {
@@ -1616,6 +1639,9 @@ public class AdminManageUsers extends JFrame {
 		});
 	}
 	
+	/*
+	 * creates the listener events for the Manager/Worker Components
+	 */
 	private void createManagerWorkerEvents() {
 		//creates a new project 
 		btnCreateNewProject.addActionListener(new ActionListener() {
@@ -1678,8 +1704,11 @@ public class AdminManageUsers extends JFrame {
 		//creates a new Task with given inputs
 		btnCreateNewTask.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub		
+				Task task = new Task(textTaskName.getText(), txtAreaDescription.getText(), txtAreaReason.getText(), 1, jdbc.getMaxTaskID()+1);
+				jdbc.add_task(task);
+				JOptionPane.showMessageDialog(null, "Task Created!");
 				pnlCreateTask.setVisible(false);
+
 			}
 		});	
 		//assign users to job
@@ -1702,7 +1731,7 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateProject.setVisible(true);
 				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);	
 				createQualificationsList();
-				
+				createAllUsersList();
 			}
 		});
 		//closes create new project tab
@@ -1749,31 +1778,54 @@ public class AdminManageUsers extends JFrame {
 		btnCreateJob.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int Id= jdbc.getMaxJobID()+1;
-				Job job =new Job(Id, txtJobName.getText(), 2, txtAreaJobDescription.getText(), (Integer) null);				
+				Job job =new Job(Id, txtJobName.getText(), 2, txtAreaJobDescription.getText(), 0);				
 				jdbc.add_project(job);
+				jdbc.add_Manager(manager, Id);
+				jdbc.add_requiredQuals(Id,qualsArray);
 				layeredPaneManagerWorker.setVisible(true);	
-				JOptionPane.showMessageDialog(null, "job Created!");
+				JOptionPane.showMessageDialog(null, "Job Created!");
 				pnlCreateJob.setVisible(false);
 			}
 		});
-
-
-
 		//Display user information that was clicked on the left.
 		listRequiredQuals.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
-                  String q = (String) listRequiredQuals.getSelectedValue();
-                  Qualification qual= jdbc.getQualwithString(q);
-                  createAllUsersList(qual);
+                	qualsArray = listRequiredQuals.getSelectedValuesList(); 
+                	System.out.println(qualsArray.get(0).toString());
                 }
             }
         });
+		//listens for selection of a singular manager and saves it
+		listAssignableManagers.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                 String s = (String) listAssignableManagers.getSelectedValue();
+                 int x= s.indexOf(44);
+                 String last = s.substring(0, x);
+                 String first = s.substring(x+2, s.length());
+                 manager =jdbc.get_user(first, last);
+                }
+            }
+		});
+		//listens for selection of a singular qualification in project and returns users
+		listQualifications.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				if (!arg0.getValueIsAdjusting()) {
+					String s = (String) listAssignableManagers.getSelectedValue();
+					Qualification q = new Qualification(0, s, "");
+					userList.clear();
+					ArrayList<User> users = jdbc.getUsersWithQual(q);
+					for (int i = 0; i < users.size(); i++) {
+						userList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
+					}
+				}
+			}
+		});
 	}
-	
-	
-	
 	
 	
 	/*Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
@@ -1800,6 +1852,9 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 	
+	/*
+	 * gets a list of user's qualifications from the database and then loads then into the correct list.
+	 */
 	private void createUserListQual() {
 		userListAvailQual.clear();
 		ArrayList<User> users = jdbc.get_users();
@@ -1878,7 +1933,6 @@ public class AdminManageUsers extends JFrame {
 			listedQualList.addElement(q.getQualName());
 		}
 	}
-
 	/*Populates both the assigned and available qualification lists for a user after clicked on one
 	Is also called each time a qualification is assigned or unassigned to update the lists.*/
 	private void createQualLists(int userID) {
@@ -1921,6 +1975,9 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 	
+	/*
+	 * Displays all of the details for a ticket once it has been clicked.
+	 */
 	private void displayTicketDetails(String s) {
 		int i = 0;
 		while (i < s.length() && !Character.isDigit(s.charAt(i))) i++;
@@ -1941,6 +1998,9 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 	
+	/*
+	 * Pulls a list of all projects into the Manager/Worker view
+	 */
 	private void loadProjects() {
 		projectsList.clear();
 		

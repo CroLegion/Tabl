@@ -45,7 +45,10 @@ HTML;
 	//Generate Messages section
 	$messages = <<< HTML
 		<h3> Messages </h3>
-		<p> No active Conversations </p>
+		<form action='index.php' method='post'>
+			<input type='hidden' name='action' value='view_messages'>
+			<input type='submit' value='Messages' class='navbutton'>
+		</form>
 HTML;
 
 	//If user is an admin, generate Admin section

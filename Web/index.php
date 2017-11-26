@@ -146,6 +146,21 @@
 					require 'default.php';
 					
 				break;
+
+				case 'view_messages':
+					require 'messages.php';
+				break;
+
+				case 'view_convo':
+					$_SESSION['current_convo'] = $_POST['convo_id'];
+					require 'messages.php';
+				break;
+
+				case 'send_message':
+					add_message($_POST['msg_sender'], $_POST['msg_dest'], $_POST['msg_content']);
+					require 'messages.php';
+				break;
+
 				default:
 					echo "in default";
 					require 'login.php';

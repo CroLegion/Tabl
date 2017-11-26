@@ -3,6 +3,8 @@ package views;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
+import javafx.print.JobSettings;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -144,6 +146,11 @@ public class AdminManageUsers extends JFrame {
 	private JTextArea txtAreaReason;	
 	private JTextArea txtAreaDescription;
 	private JButton btn_create_task;
+	private JScrollPane scrlPaneSuperJob;
+	DefaultListModel superJobsList = new DefaultListModel();
+	ArrayList<Job> superJobs = new ArrayList<Job>();
+	private JList listSuperJobs = new JList(superJobsList);
+	private String superJobString;
 	
 	//job creation tab
 	private JPanel pnlCreateJob;
@@ -925,7 +932,7 @@ public class AdminManageUsers extends JFrame {
 	 */
 	private void initManagerWorkerComponents() {
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 0);
+		layeredPane.setLayer(layeredPaneManagerWorker, 11);
 		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneManagerWorker);
 		
@@ -948,7 +955,7 @@ public class AdminManageUsers extends JFrame {
 		//create project end
 		//Create task start			
 		pnlCreateTask = new JPanel();
-		layeredPaneManagerWorkerComponents.setLayer(pnlCreateTask, 0);
+		layeredPaneManagerWorkerComponents.setLayer(pnlCreateTask, 11);
 		pnlCreateTask.setBounds(0, 0, 746, 720);
 		layeredPaneManagerWorkerComponents.add(pnlCreateTask);
 		pnlCreateTask.setVisible(false);
@@ -957,13 +964,13 @@ public class AdminManageUsers extends JFrame {
 		lblTaskName.setBounds(163, 124, 114, 14);
 		
 		JLabel lblTaskDescription = new JLabel("Description of the Task:");
-		lblTaskDescription.setBounds(137, 277, 140, 14);
+		lblTaskDescription.setBounds(137, 288, 140, 14);
 		
 		JLabel lblTaskReason = new JLabel("Reason why it should be added:");
 		lblTaskReason.setBounds(97, 422, 180, 14);
 		
 		JScrollPane scrlPaneDescription = new JScrollPane();
-		scrlPaneDescription.setBounds(366, 271, 216, 78);
+		scrlPaneDescription.setBounds(366, 288, 216, 78);
 		
 		JScrollPane scrlPaneReason = new JScrollPane();
 		scrlPaneReason.setBounds(366, 422, 215, 105);
@@ -997,6 +1004,17 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateTask.add(scrlPaneReason);
 		pnlCreateTask.add(btnCancelTask);
 		pnlCreateTask.add(btnCreateNewTask);
+		
+		JLabel lblWhereItShould = new JLabel("Where it should fall under:");
+		lblWhereItShould.setBounds(123, 198, 171, 14);
+		pnlCreateTask.add(lblWhereItShould);
+		
+		scrlPaneSuperJob = new JScrollPane();
+		scrlPaneSuperJob.setBounds(366, 198, 180, 78);
+		pnlCreateTask.add(scrlPaneSuperJob);
+		//TODO
+		listSuperJobs = new JList(superJobsList);
+		scrlPaneSuperJob.setViewportView(listSuperJobs);
 		//create user end				
 		//create project start		
 		pnlCreateProject = new JPanel();
@@ -1600,8 +1618,7 @@ public class AdminManageUsers extends JFrame {
 				}
 			}
 		});
-		
-		
+	
 		//Displays the closed ticket information
 		listClosedTickets.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -1704,9 +1721,12 @@ public class AdminManageUsers extends JFrame {
 		//creates a new Task with given inputs
 		btnCreateNewTask.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Task task = new Task(textTaskName.getText(), txtAreaDescription.getText(), txtAreaReason.getText(), 1, jdbc.getMaxTaskID()+1);
+				Task task = new Task(textTaskName.getText(), txtAreaDescription.getText(), txtAreaReason.getText(), jdbc.getTaskID(superJobString), jdbc.getMaxTaskID()+1);
 				jdbc.add_task(task);
 				JOptionPane.showMessageDialog(null, "Task Created!");
+				textTaskName.setText("");
+				txtAreaReason.setText("");
+				txtAreaDescription.setText("");
 				pnlCreateTask.setVisible(false);
 
 			}
@@ -1747,7 +1767,7 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateProject.setVisible(false);
 				pnlCreateTask.setVisible(true);
 				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);
-				
+				loadJobs();
 			}
 		});
 		//closes create new task tab
@@ -1822,6 +1842,16 @@ public class AdminManageUsers extends JFrame {
 					for (int i = 0; i < users.size(); i++) {
 						userList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
 					}
+				}
+			}
+		});
+		//listens for selection of a singular job in tasks and saves it
+		listSuperJobs.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				if (!arg0.getValueIsAdjusting()) {
+					superJobString = (String) listSuperJobs.getSelectedValue();
+					System.out.println(superJobString);
 				}
 			}
 		});
@@ -1973,6 +2003,15 @@ public class AdminManageUsers extends JFrame {
 				openTickets.addElement(s);
 			}
 		}
+	}
+	
+	private void loadJobs(){
+		superJobsList.clear();
+		superJobs=jdbc.getProjectsAndJobs();
+		for(Job j: superJobs){
+			superJobsList.addElement(j.jobname);
+		}
+		
 	}
 	
 	/*

@@ -847,4 +847,70 @@ public static void updateTicket(int id, boolean b) {
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
 }
+
+public static HashMap<String, Integer> getConversations(int userID) {
+	HashMap<String, Integer> map = new HashMap<String, Integer>();
+	ArrayList<Integer> ids = new ArrayList<Integer>();
+	
+	try {		
+		String query = String.format("SELECT * FROM db309amc2.conversation_assignments WHERE memberID=%d", userID);
+		Statement stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			ids.add(rs.getInt("conversationID"));
+		}
+		
+		for(Integer i : ids) {
+			query = String.format("SELECT * FROM db309amc2.conversations WHERE conversationID=%d", i);
+			ResultSet rs1 = stmt.executeQuery(query);
+			while (rs1.next()) {
+				map.put(rs1.getString("conversationName"),rs1.getInt("conversationID"));
+			}
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	return map;
+}
+
+public static ArrayList<String> getConversationMessages(int conversationID, int userID) {
+	ArrayList<String> messages = new ArrayList<String>();
+	
+	try {		
+		String query = String.format("SELECT * FROM db309amc2.messages WHERE msgdest=%d", conversationID);
+		Statement stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			String s;
+			String otherPerson = null;
+			if (rs.getInt("msgsender") != userID && otherPerson == null) {
+				User p = get_user(rs.getInt("msgsender"));
+				otherPerson = String.format("%s, %s", p.get_lastname(), p.get_firstname());
+			}
+			if (rs.getInt("msgsender") == userID) {
+				s = String.format("Me:   %s", rs.getString("msgcontent"));
+			} else {
+				s = String.format("%s:   %s", otherPerson, rs.getString("msgcontent"));
+			}
+			
+			messages.add(s);
+		}
+		
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	return messages;
+}
 }

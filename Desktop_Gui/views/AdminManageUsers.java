@@ -3,6 +3,8 @@ package views;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
+import javafx.print.JobSettings;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -18,6 +20,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
@@ -144,6 +147,11 @@ public class AdminManageUsers extends JFrame {
 	private JTextArea txtAreaReason;	
 	private JTextArea txtAreaDescription;
 	private JButton btn_create_task;
+	private JScrollPane scrlPaneSuperJob;
+	DefaultListModel superJobsList = new DefaultListModel();
+	ArrayList<Job> superJobs = new ArrayList<Job>();
+	private JList listSuperJobs = new JList(superJobsList);
+	private String superJobString;
 	
 	//job creation tab
 	private JPanel pnlCreateJob;
@@ -212,10 +220,12 @@ public class AdminManageUsers extends JFrame {
 	DefaultListModel archivedUserList = new DefaultListModel();
 	DefaultListModel projectsList = new DefaultListModel();
 	DefaultListModel conversationsList = new DefaultListModel();
+	DefaultListModel conversationMessagesList = new DefaultListModel();
 	int lastClickedIndex;
 	int lastClickeduserID;
 	int lastClickedUserType;
 	int currentOpenTicketId;
+	HashMap<String, Integer> conversationMap;
 	private JButton btn_settings;
 	private JButton btnLogout;
 	private JPanel pnlCreateQualification;
@@ -259,6 +269,11 @@ public class AdminManageUsers extends JFrame {
 	private JScrollPane scrlProjects;
 	private JList listProjects;
 	private JList listConversations;
+	private JPanel pnlConversationDetails;
+	private JTextField txtNewMessage;
+	private JButton btnSendMessage;
+	private JList listConversationMessages;
+	private JLabel lblConversationTitle;
 	
 	/**
 	 * Launch the application.
@@ -925,7 +940,7 @@ public class AdminManageUsers extends JFrame {
 	 */
 	private void initManagerWorkerComponents() {
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 0);
+		layeredPane.setLayer(layeredPaneManagerWorker, 11);
 		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneManagerWorker);
 		
@@ -948,7 +963,7 @@ public class AdminManageUsers extends JFrame {
 		//create project end
 		//Create task start			
 		pnlCreateTask = new JPanel();
-		layeredPaneManagerWorkerComponents.setLayer(pnlCreateTask, 0);
+		layeredPaneManagerWorkerComponents.setLayer(pnlCreateTask, 11);
 		pnlCreateTask.setBounds(0, 0, 746, 720);
 		layeredPaneManagerWorkerComponents.add(pnlCreateTask);
 		pnlCreateTask.setVisible(false);
@@ -957,13 +972,13 @@ public class AdminManageUsers extends JFrame {
 		lblTaskName.setBounds(163, 124, 114, 14);
 		
 		JLabel lblTaskDescription = new JLabel("Description of the Task:");
-		lblTaskDescription.setBounds(137, 277, 140, 14);
+		lblTaskDescription.setBounds(137, 288, 140, 14);
 		
 		JLabel lblTaskReason = new JLabel("Reason why it should be added:");
 		lblTaskReason.setBounds(97, 422, 180, 14);
 		
 		JScrollPane scrlPaneDescription = new JScrollPane();
-		scrlPaneDescription.setBounds(366, 271, 216, 78);
+		scrlPaneDescription.setBounds(366, 288, 216, 78);
 		
 		JScrollPane scrlPaneReason = new JScrollPane();
 		scrlPaneReason.setBounds(366, 422, 215, 105);
@@ -997,6 +1012,17 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateTask.add(scrlPaneReason);
 		pnlCreateTask.add(btnCancelTask);
 		pnlCreateTask.add(btnCreateNewTask);
+		
+		JLabel lblWhereItShould = new JLabel("Where it should fall under:");
+		lblWhereItShould.setBounds(123, 198, 171, 14);
+		pnlCreateTask.add(lblWhereItShould);
+		
+		scrlPaneSuperJob = new JScrollPane();
+		scrlPaneSuperJob.setBounds(366, 198, 180, 78);
+		pnlCreateTask.add(scrlPaneSuperJob);
+		//TODO
+		listSuperJobs = new JList(superJobsList);
+		scrlPaneSuperJob.setViewportView(listSuperJobs);
 		//create user end				
 		//create project start		
 		pnlCreateProject = new JPanel();
@@ -1227,6 +1253,34 @@ public class AdminManageUsers extends JFrame {
 		pnlManagerWorker.add(btnCreateTicket);
 		pnlManagerWorker.add(layeredPaneManagerWorkerComponents);
 		
+		pnlConversationDetails = new JPanel();
+		layeredPaneManagerWorkerComponents.setLayer(pnlConversationDetails, 30);
+		pnlConversationDetails.setBounds(0, 0, 746, 720);
+		layeredPaneManagerWorkerComponents.add(pnlConversationDetails);
+		pnlConversationDetails.setLayout(null);
+		
+		lblConversationTitle = new JLabel("Conversation");
+		lblConversationTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblConversationTitle.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblConversationTitle.setBounds(24, 11, 695, 40);
+		pnlConversationDetails.add(lblConversationTitle);
+		
+		txtNewMessage = new JTextField();
+		txtNewMessage.setBounds(110, 526, 488, 20);
+		pnlConversationDetails.add(txtNewMessage);
+		txtNewMessage.setColumns(10);
+		
+		btnSendMessage = new JButton("Send");
+		btnSendMessage.setBounds(608, 525, 89, 23);
+		pnlConversationDetails.add(btnSendMessage);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(110, 62, 584, 452);
+		pnlConversationDetails.add(scrollPane);
+		
+		listConversationMessages = new JList(conversationMessagesList);
+		scrollPane.setViewportView(listConversationMessages);
+		
 		pnlMessages = new JPanel();
 		pnlMessages.setBackground(Color.LIGHT_GRAY);
 		pnlMessages.setBounds(0, 347, 181, 28);
@@ -1290,6 +1344,7 @@ public class AdminManageUsers extends JFrame {
 		//create job end		
 		
 		loadProjects();
+		loadConversations();
 	}
 	
 	
@@ -1600,8 +1655,7 @@ public class AdminManageUsers extends JFrame {
 				}
 			}
 		});
-		
-		
+	
 		//Displays the closed ticket information
 		listClosedTickets.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -1704,9 +1758,12 @@ public class AdminManageUsers extends JFrame {
 		//creates a new Task with given inputs
 		btnCreateNewTask.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Task task = new Task(textTaskName.getText(), txtAreaDescription.getText(), txtAreaReason.getText(), 1, jdbc.getMaxTaskID()+1);
+				Task task = new Task(textTaskName.getText(), txtAreaDescription.getText(), txtAreaReason.getText(), jdbc.getTaskID(superJobString), jdbc.getMaxTaskID()+1);
 				jdbc.add_task(task);
 				JOptionPane.showMessageDialog(null, "Task Created!");
+				textTaskName.setText("");
+				txtAreaReason.setText("");
+				txtAreaDescription.setText("");
 				pnlCreateTask.setVisible(false);
 
 			}
@@ -1747,7 +1804,7 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateProject.setVisible(false);
 				pnlCreateTask.setVisible(true);
 				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);
-				
+				loadJobs();
 			}
 		});
 		//closes create new task tab
@@ -1825,7 +1882,30 @@ public class AdminManageUsers extends JFrame {
 				}
 			}
 		});
+		//listens for selection of a singular job in tasks and saves it
+		listSuperJobs.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				if (!arg0.getValueIsAdjusting()) {
+					superJobString = (String) listSuperJobs.getSelectedValue();
+					System.out.println(superJobString);
+				}
+			}
+		});
+		
+		listConversations.addListSelectionListener(new ListSelectionListener() {
+	        @Override
+	        public void valueChanged(ListSelectionEvent arg0) {
+	            if (!arg0.getValueIsAdjusting()) {
+	            	System.out.println(listConversations.getSelectedValue().toString());
+	            	loadConversationMessages(conversationMap.get(listConversations.getSelectedValue().toString()));
+	            	lblConversationTitle.setText(listConversations.getSelectedValue().toString());
+	            }
+	        }
+	    });
 	}
+	
+
 	
 	
 	/*Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
@@ -1975,6 +2055,15 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 	
+	private void loadJobs(){
+		superJobsList.clear();
+		superJobs=jdbc.getProjectsAndJobs();
+		for(Job j: superJobs){
+			superJobsList.addElement(j.jobname);
+		}
+		
+	}
+	
 	/*
 	 * Displays all of the details for a ticket once it has been clicked.
 	 */
@@ -2007,6 +2096,28 @@ public class AdminManageUsers extends JFrame {
 		ArrayList<Job> projects = jdbc.getProjects();
 		for (Job j : projects) {
 			projectsList.addElement(j.jobname);
+		}
+	}
+	
+	private void loadConversations() {
+		currentSessionUserID = 1112;
+		conversationMap = jdbc.getConversations(currentSessionUserID);
+		Object[] names = conversationMap.keySet().toArray();
+		
+		conversationsList.clear();
+		for (int i = 0; i < conversationMap.size(); i++) {
+			conversationsList.addElement(names[i].toString());
+			
+		}
+	}
+	
+	private void loadConversationMessages(int conversationID) {
+		ArrayList<String> messages = jdbc.getConversationMessages(conversationID, currentSessionUserID);
+		
+		conversationMessagesList.clear();
+		
+		for (String s : messages) {
+			conversationMessagesList.addElement(s);
 		}
 	}
 }

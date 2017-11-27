@@ -417,4 +417,25 @@ SQL;
 		$result = $conn->query($sql);
 		$conn->close();
 	}
+
+	//Gets basic ticket information
+	function get_tickets()
+	{
+		$sql = "SELECT * from tickets";
+		$conn=data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+		return $result;
+	}
+		
+	//Gets info for one ticket by ID
+	function get_ticket_by_ID($id)
+	{
+		$sql = "Select * from tickets where ticketID=$id";
+		$conn=data_open();
+		$result = $conn->query($sql);
+		$conn->close();
+		return $result;
+	}
+	
 ?>

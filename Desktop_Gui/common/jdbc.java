@@ -282,6 +282,7 @@ public static int getMaxJobID(){
 	return ID;
 	
 }
+
 //Returns from server the task job id as an int
 public static int getMaxTaskID(){
 	int ID=0;
@@ -299,6 +300,27 @@ public static int getMaxTaskID(){
 		System.out.println("SQLState: " + e.getSQLState());
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
+	return ID;
+	
+}
+
+//Returns from server the job id as an int given its name
+public static int getTaskID(String s){
+	int ID=0;
+	try {
+		String query = String.format("SELECT * FROM db309amc2.jobs WHERE jobname='%s'", s);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {ID = rs.getInt("jobID");}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}System.out.println(ID);
 	return ID;
 	
 }
@@ -463,6 +485,28 @@ public static ArrayList<Job> getProjects() {
 	ArrayList<Job> projects = new ArrayList<Job>();
 		try {
 			String query = "SELECT * FROM db309amc2.jobs WHERE parentID IS NULL";
+			Statement stmt = null;
+			stmt = conn1.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			while (rs.next()) {
+				Job j = new Job(rs.getInt("jobID"), rs.getString("jobname"), rs.getInt("jobtype"), rs.getString("jobdesc"), rs.getInt("parentID"));
+				projects.add(j);
+		}
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return projects;
+}
+
+//returns a list of projects and jobs
+public static ArrayList<Job> getProjectsAndJobs() {
+	ArrayList<Job> projects = new ArrayList<Job>();
+		try {
+			String query = "SELECT * FROM db309amc2.jobs";
 			Statement stmt = null;
 			stmt = conn1.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
@@ -802,5 +846,71 @@ public static void updateTicket(int id, boolean b) {
 		System.out.println("SQLState: " + e.getSQLState());
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
+}
+
+public static HashMap<String, Integer> getConversations(int userID) {
+	HashMap<String, Integer> map = new HashMap<String, Integer>();
+	ArrayList<Integer> ids = new ArrayList<Integer>();
+	
+	try {		
+		String query = String.format("SELECT * FROM db309amc2.conversation_assignments WHERE memberID=%d", userID);
+		Statement stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			ids.add(rs.getInt("conversationID"));
+		}
+		
+		for(Integer i : ids) {
+			query = String.format("SELECT * FROM db309amc2.conversations WHERE conversationID=%d", i);
+			ResultSet rs1 = stmt.executeQuery(query);
+			while (rs1.next()) {
+				map.put(rs1.getString("conversationName"),rs1.getInt("conversationID"));
+			}
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	return map;
+}
+
+public static ArrayList<String> getConversationMessages(int conversationID, int userID) {
+	ArrayList<String> messages = new ArrayList<String>();
+	
+	try {		
+		String query = String.format("SELECT * FROM db309amc2.messages WHERE msgdest=%d", conversationID);
+		Statement stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			String s;
+			String otherPerson = null;
+			if (rs.getInt("msgsender") != userID && otherPerson == null) {
+				User p = get_user(rs.getInt("msgsender"));
+				otherPerson = String.format("%s, %s", p.get_lastname(), p.get_firstname());
+			}
+			if (rs.getInt("msgsender") == userID) {
+				s = String.format("Me:   %s", rs.getString("msgcontent"));
+			} else {
+				s = String.format("%s:   %s", otherPerson, rs.getString("msgcontent"));
+			}
+			
+			messages.add(s);
+		}
+		
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	return messages;
 }
 }

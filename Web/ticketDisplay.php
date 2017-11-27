@@ -16,6 +16,20 @@
 
 	$title=$ticket["title"];
 
+	$ticketID=$ticket["ticketID"];
+	$message=$ticket["message"];
+	$submittedBy=data_specificUser($ticket["submittedBy"])->fetch_assoc();
+	$submittedBy=$submittedBy["firstname"]." ".$submittedBy["lastname"];
+	if($ticket["isDone"])
+	{
+		$isDone="Complete";
+	}
+	else{
+		$isDone="Active";
+	}
+
+	$date=$ticket["submittedDate"];
+	
 	$content =  <<<HTML
 		<!DOCTYPE html>
 		<html>
@@ -27,7 +41,15 @@
 				<form action='index.php' method='post' id="manage_user">
 					<fieldset>
 						<legend>Ticket Details</legend>
-
+						<label>Ticket Number: $ticketID</label>
+						<br><br>
+						<label>Submitted By: $submittedBy</label>
+						<br><br>
+						<label>Status: $isDone</label>
+						<br><br>
+						<label>Submission Date: $date</label>
+						<br><br>
+						<label>Message: <br>$message</label>
 					</fieldset>
 			</body>
 		</html>

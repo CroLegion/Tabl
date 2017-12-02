@@ -1,6 +1,9 @@
 package common;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +76,7 @@ public static int get_new_id(String tableName) {
 	map.put("tickets", "ticketID");
 	map.put("qualifications", "qualID");
 	map.put("tasks", "taskID");
+	map.put("messages", "msgID");
 	int randomNum = 0;
 	
 	while(true) {
@@ -949,5 +953,24 @@ public static ArrayList<String> getConversationMessages(int conversationID, int 
 	}
 	
 	return messages;
+}
+
+public static void sendMessage(String text, int senderID, int receivingID) {
+	int newID = get_new_id("messages");
+	
+	String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+	System.out.println(time);
+	try {
+		Statement statement = conn1.createStatement();
+		String sql = String.format("INSERT INTO db309amc2.messages VALUES(%d, %s, '%s', %d, %d, '"+time+"')", newID, null, text, senderID, receivingID);
+		statement.executeUpdate(sql);
+		// Close all statements and connections
+		statement.close();
+		
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
 }
 }

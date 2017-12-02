@@ -61,6 +61,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.JTextField;
 import javax.swing.JSeparator;
 
@@ -80,6 +81,7 @@ import javax.swing.JTextArea;
 
 import java.awt.SystemColor;
 import java.awt.Component;
+import javax.swing.JTree;
 
 public class AdminManageUsers extends JFrame {
 	private int currentSessionUserID;
@@ -232,6 +234,7 @@ public class AdminManageUsers extends JFrame {
 	int lastClickeduserID;
 	int lastClickedUserType;
 	int currentOpenTicketId;
+	int currentOpenConversation;
 	HashMap<String, Integer> conversationMap;
 	private JButton btn_settings;
 	private JButton btnLogout;
@@ -273,14 +276,18 @@ public class AdminManageUsers extends JFrame {
 	private JLabel lblNewLabel_7;
 	private JLabel lblNewLabel_8;
 	private JScrollPane scrlConversations;
-	private JScrollPane scrlProjects;
-	private JList listProjects;
 	private JList listConversations;
 	private JPanel pnlConversationDetails;
 	private JTextField txtNewMessage;
 	private JButton btnSendMessage;
 	private JList listConversationMessages;
 	private JLabel lblConversationTitle;
+	private JPanel pnlProjectViewer;
+	private JLabel lblProjectName;
+	private JLabel lblProjectNameDisplay;
+	private JTree tree;
+	private JPanel pnlProjectTree;
+	private JButton btnNewButton;
 	
 	/**
 	 * Launch the application.
@@ -412,7 +419,7 @@ public class AdminManageUsers extends JFrame {
 		
 		layeredPaneAdmin = new JLayeredPane();
 		layeredPaneAdmin.setBackground(new Color(100, 149, 237));
-		layeredPane.setLayer(layeredPaneAdmin, 20);
+		layeredPane.setLayer(layeredPaneAdmin, 0);
 		layeredPaneAdmin.setBounds(0, 0, 896, 600);
 		layeredPane.add(layeredPaneAdmin);
 		
@@ -948,7 +955,7 @@ public class AdminManageUsers extends JFrame {
 	 */
 	private void initManagerWorkerComponents() {
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 0);
+		layeredPane.setLayer(layeredPaneManagerWorker, 20);
 		layeredPaneManagerWorker.setBounds(0, 0, 896, 606);
 		layeredPane.add(layeredPaneManagerWorker);
 		
@@ -1304,7 +1311,7 @@ public class AdminManageUsers extends JFrame {
 		pnlManagerWorker.add(layeredPaneManagerWorkerComponents);
 		
 		pnlConversationDetails = new JPanel();
-		layeredPaneManagerWorkerComponents.setLayer(pnlConversationDetails, 0);
+		layeredPaneManagerWorkerComponents.setLayer(pnlConversationDetails, 40);
 		pnlConversationDetails.setBounds(0, 0, 717, 567);
 		layeredPaneManagerWorkerComponents.add(pnlConversationDetails);
 		pnlConversationDetails.setLayout(null);
@@ -1321,6 +1328,7 @@ public class AdminManageUsers extends JFrame {
 		txtNewMessage.setColumns(10);
 		
 		btnSendMessage = new JButton("Send");
+
 		btnSendMessage.setBounds(608, 525, 89, 23);
 		pnlConversationDetails.add(btnSendMessage);
 		
@@ -1331,9 +1339,30 @@ public class AdminManageUsers extends JFrame {
 		listConversationMessages = new JList(conversationMessagesList);
 		scrollPane.setViewportView(listConversationMessages);
 		
+		btnNewButton = new JButton("Refresh");
+
+		btnNewButton.setBounds(597, 36, 89, 23);
+		pnlConversationDetails.add(btnNewButton);
+		
+		pnlProjectViewer = new JPanel();
+		layeredPaneManagerWorkerComponents.setLayer(pnlProjectViewer, 20);
+		pnlProjectViewer.setBounds(0, 0, 717, 567);
+		layeredPaneManagerWorkerComponents.add(pnlProjectViewer);
+		pnlProjectViewer.setLayout(null);
+		
+		lblProjectName = new JLabel("Project Name: ");
+		lblProjectName.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblProjectName.setBounds(157, 0, 126, 32);
+		pnlProjectViewer.add(lblProjectName);
+		
+		lblProjectNameDisplay = new JLabel("");
+		lblProjectNameDisplay.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblProjectNameDisplay.setBounds(293, 0, 384, 32);
+		pnlProjectViewer.add(lblProjectNameDisplay);
+		
 		pnlMessages = new JPanel();
 		pnlMessages.setBackground(Color.LIGHT_GRAY);
-		pnlMessages.setBounds(0, 260, 181, 28);
+		pnlMessages.setBounds(0, 363, 181, 28);
 		pnlManagerWorker.add(pnlMessages);
 		pnlMessages.setLayout(null);
 		
@@ -1354,20 +1383,19 @@ public class AdminManageUsers extends JFrame {
 		pnlProjects.add(lblNewLabel_8);
 		
 		scrlConversations = new JScrollPane();
-		scrlConversations.setBounds(0, 289, 179, 318);
+		scrlConversations.setBounds(0, 390, 179, 217);
 		pnlManagerWorker.add(scrlConversations);
 		
 		listConversations = new JList(conversationsList);
 		listConversations.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		scrlConversations.setViewportView(listConversations);
 		
-		scrlProjects = new JScrollPane();
-		scrlProjects.setBounds(0, 27, 181, 234);
-		pnlManagerWorker.add(scrlProjects);
+		pnlProjectTree = new JPanel();
+		pnlProjectTree.setBounds(0, 27, 181, 336);
+		pnlManagerWorker.add(pnlProjectTree);
+		pnlProjectTree.setLayout(null);
 		
-		listProjects = new JList(projectsList);
-		listProjects.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		scrlProjects.setViewportView(listProjects);
+		
 		
 		btnLogout = new JButton("LOGOUT");
 
@@ -1983,6 +2011,18 @@ public class AdminManageUsers extends JFrame {
 	            }
 	        }
 	    });
+		
+		btnSendMessage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				jdbc.sendMessage(txtNewMessage.getText().toString(), currentSessionUserID, currentOpenConversation);
+				loadConversationMessages(currentOpenConversation);
+			}
+		});
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				loadConversationMessages(currentOpenConversation);
+			}
+		});
 	}
 	
 	/*Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
@@ -2161,12 +2201,16 @@ public class AdminManageUsers extends JFrame {
 	 * Pulls a list of all projects into the Manager/Worker view
 	 */
 	private void loadProjects() {
-		projectsList.clear();
-		
-		ArrayList<Job> projects = jdbc.getProjects();
-		for (Job j : projects) {
-			projectsList.addElement(j.jobname);
+		DefaultMutableTreeNode projects = new DefaultMutableTreeNode("Company Projects");
+
+		ArrayList<Job> projectsList = jdbc.getProjects();
+		for (Job j : projectsList) {
+			DefaultMutableTreeNode job = new DefaultMutableTreeNode(j.jobname);
+			projects.add(job);
 		}
+		tree = new JTree(projects);
+		tree.setBounds(0, 0, 181, 325);
+		pnlProjectTree.add(tree);
 	}
 	
 	private void loadConversations() {
@@ -2183,6 +2227,7 @@ public class AdminManageUsers extends JFrame {
 	
 	private void loadConversationMessages(int conversationID) {
 		ArrayList<String> messages = jdbc.getConversationMessages(conversationID, currentSessionUserID);
+		currentOpenConversation = conversationID;
 		
 		conversationMessagesList.clear();
 		
@@ -2190,5 +2235,6 @@ public class AdminManageUsers extends JFrame {
 			conversationMessagesList.addElement(s);
 		}
 	}
+	
 }
 

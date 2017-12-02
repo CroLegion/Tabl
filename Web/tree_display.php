@@ -64,10 +64,19 @@
 	$tree=$tree. "</ul>";
 	$tree=$tree. "</li></ul>";
 
+	$desc=$root["jobdesc"];
+
+	$Report = <<<HTML
+		<head>$title</head>
+		<p>$desc</p>
+HTML;
+
 	require 'navbar.php';
+
+	
 	$content = <<< HTML
 		<head><link rel="stylesheet" href="styles.css"></head>
-
+		$Report
 		<div class="tree">
 		$tree
 		</div>

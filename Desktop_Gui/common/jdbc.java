@@ -2,6 +2,7 @@ package common;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
@@ -179,6 +180,7 @@ public static void add_requiredQuals(int id, java.util.List list){
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
 }
+
 //adds a task to the database
 public static void add_task(Task tasks){
 	try {
@@ -196,6 +198,7 @@ public static void add_task(Task tasks){
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
 }
+
 //returns a list of all managers
 public static ArrayList<User> get_Managers() {
 	ArrayList<User> users = new ArrayList<User>();
@@ -525,17 +528,17 @@ public static ArrayList<Job> getProjectsAndJobs() {
 }
 
 //returns a list of user w/ a qualification
-public static ArrayList<User> getUsersWithQual(Qualification q){
+public static ArrayList<User> getUsersWithQual(String s){
 	ArrayList<User> users = new ArrayList<User>();	
 	try{
 		String query = String.format("SELECT users.userID, usertype, username, firstname, lastname FROM ((db309amc2.users "
 		        + "INNER join db309amc2.qualification_assignments on users.userID=qualification_assignments.userID)"
-				+ "INNER join db309amc2.qualifications on qualification_assignments.qualID=qualifications.qualID) WHERE qualifications.qualID=%d", q.getQualID());
+				+ "INNER join db309amc2.qualifications on qualification_assignments.qualID=qualifications.qualID) WHERE qualifications.qualname='%s'", s);
 		Statement stmt = null;
 		stmt = conn1.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		while (rs.next()) {
-			    User u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), rs.getBoolean("isActive"));
+			    User u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), true);
 				users.add(u);
 				System.out.println(u);		
 		}
@@ -551,6 +554,40 @@ public static ArrayList<User> getUsersWithQual(Qualification q){
 	return users;
 }
 
+//returns a list of user w/ a qualification  TODO
+public static ArrayList<User> getUsersWithQual(List l){
+	String s = l.toString();
+	s=s.substring(1, s.length()-1);
+	s="'"+s+"'";
+	s=s.replace(",", "' AND ");
+	s=s.replace("  ", " '");
+
+
+	System.out.println(s);
+	ArrayList<User> users = new ArrayList<User>();	
+	try{
+		String query = String.format("SELECT users.userID, usertype, username, firstname, lastname FROM ((db309amc2.users "
+		        + "INNER join db309amc2.qualification_assignments on users.userID=qualification_assignments.userID)"
+				+ "INNER join db309amc2.qualifications on qualification_assignments.qualID=qualifications.qualID) WHERE qualifications.qualname=%s", s);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			    User u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), true);
+				users.add(u);
+				System.out.println(u);		
+		}
+		
+		// Close all statements
+		stmt.close();
+
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return users;
+}
 //returns a list of qualifications
 public static ArrayList<Qualification> get_qualifications(){
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();	

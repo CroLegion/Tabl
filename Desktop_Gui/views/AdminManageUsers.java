@@ -319,7 +319,7 @@ public class AdminManageUsers extends JFrame {
 		setBackground(Color.RED);
 		setTitle("TABL");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 974, 842);
+		setBounds(100, 100, 925, 685);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(100, 149, 237));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -330,7 +330,7 @@ public class AdminManageUsers extends JFrame {
 		
 		
 		layeredPane = new JLayeredPane();
-		layeredPane.setBounds(10, 40, 941, 757);
+		layeredPane.setBounds(10, 40, 899, 606);
 		contentPane.add(layeredPane);
 		
 		setForeground(Color.BLACK);
@@ -344,17 +344,17 @@ public class AdminManageUsers extends JFrame {
 	private void initLoginComponents() {
 		layeredPaneLogin = new JLayeredPane();
 		layeredPane.setLayer(layeredPaneLogin, 10);
-		layeredPaneLogin.setBounds(0, 0, 941, 760);
+		layeredPaneLogin.setBounds(0, 0, 896, 606);
 		layeredPane.add(layeredPaneLogin);
 		
 		pnlLogin = new JPanel();
 		layeredPaneLogin.setLayer(pnlLogin, 10);
-		pnlLogin.setBounds(0, 0, 941, 760);
+		pnlLogin.setBounds(0, 0, 896, 611);
 		layeredPaneLogin.add(pnlLogin);
 		pnlLogin.setLayout(null);
 		
 		layeredPaneLoginComponents = new JLayeredPane();
-		layeredPaneLoginComponents.setBounds(0, 0, 941, 760);
+		layeredPaneLoginComponents.setBounds(0, 0, 896, 600);
 		
 		pnl_login_components = new JPanel();
 		pnl_login_components.setBorder(new TitledBorder(null, "Login", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -405,17 +405,17 @@ public class AdminManageUsers extends JFrame {
 		
 		layeredPaneAdmin = new JLayeredPane();
 		layeredPaneAdmin.setBackground(new Color(100, 149, 237));
-		layeredPane.setLayer(layeredPaneAdmin, 0);
-		layeredPaneAdmin.setBounds(0, 0, 941, 760);
+		layeredPane.setLayer(layeredPaneAdmin, 11);
+		layeredPaneAdmin.setBounds(0, 0, 896, 600);
 		layeredPane.add(layeredPaneAdmin);
 		
 		pnlAdmin = new JPanel();
 		layeredPaneAdmin.setLayer(pnlAdmin, 0);
-		pnlAdmin.setBounds(0, 0, 947, 760);
+		pnlAdmin.setBounds(0, 0, 895, 600);
 		layeredPaneAdmin.add(pnlAdmin);
 		
 		layeredPaneAdminComponents = new JLayeredPane();
-		layeredPaneAdminComponents.setBounds(0, 0, 937, 760);
+		layeredPaneAdminComponents.setBounds(0, 0, 897, 606);
 		
 		Panel pnlUsers = new Panel();
 		layeredPaneAdminComponents.setLayer(pnlUsers, 0);
@@ -431,72 +431,73 @@ public class AdminManageUsers extends JFrame {
 		pnlUsers.add(lblUsers);
 		
 		pnlCreateQualification = new JPanel();
-		pnlCreateQualification.setBounds(180, 38, 746, 720);
+		layeredPaneAdminComponents.setLayer(pnlCreateQualification, 0);
+		pnlCreateQualification.setBounds(180, 38, 715, 565);
 		layeredPaneAdminComponents.add(pnlCreateQualification);
 		pnlCreateQualification.setVisible(false);
 		
 		JLabel lblCreateQualification = new JLabel("Create New Qualification");
-		lblCreateQualification.setBounds(246, 11, 262, 51);
+		lblCreateQualification.setBounds(246, 11, 262, 35);
 		lblCreateQualification.setFont(new Font("Tahoma", Font.BOLD, 20));
 		
 		lblTitle = new JLabel("Title:");
-		lblTitle.setBounds(111, 131, 56, 20);
+		lblTitle.setBounds(125, 62, 56, 20);
 		lblTitle.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
 		JLabel lblDescription = new JLabel("Description:");
-		lblDescription.setBounds(61, 193, 120, 14);
+		lblDescription.setBounds(61, 105, 120, 20);
 		lblDescription.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
 		JLabel lblAssignToUsers = new JLabel("Assign to Users");
-		lblAssignToUsers.setBounds(247, 298, 147, 14);
+		lblAssignToUsers.setBounds(250, 195, 147, 14);
 		lblAssignToUsers.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
 		JLabel lblAvailable_1 = new JLabel("Available");
-		lblAvailable_1.setBounds(121, 314, 60, 14);
+		lblAvailable_1.setBounds(121, 231, 60, 14);
 		lblAvailable_1.setFont(new Font("Tahoma", Font.BOLD, 11));
 		
 		JLabel lblAssigned_1 = new JLabel("Assigned");
-		lblAssigned_1.setBounds(462, 314, 67, 14);
+		lblAssigned_1.setBounds(459, 231, 67, 14);
 		lblAssigned_1.setFont(new Font("Tahoma", Font.BOLD, 11));
 		
 		txtNewQualificationName = new JTextField();
-		txtNewQualificationName.setBounds(240, 133, 154, 20);
+		txtNewQualificationName.setBounds(246, 64, 381, 20);
 		txtNewQualificationName.setColumns(10);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(240, 194, 387, 79);
+		scrollPane_1.setBounds(240, 105, 387, 79);
 		
 		txtNewQualificationDesc = new JTextArea();
 		scrollPane_1.setViewportView(txtNewQualificationDesc);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(80, 339, 154, 287);
+		scrollPane_2.setBounds(77, 256, 154, 287);
 		listCreateQualAvailUsers = new JList(userListAvailQual);
 		scrollPane_2.setViewportView(listCreateQualAvailUsers);
 		
 		JScrollPane scrollPane_3 = new JScrollPane();
-		scrollPane_3.setBounds(406, 339, 154, 287);
+		scrollPane_3.setBounds(400, 256, 154, 287);
 		
 		listCreateQualAssignedUsers = new JList(userListAssignQual);
 		scrollPane_3.setViewportView(listCreateQualAssignedUsers);
 		
 		btnAssignUserQual = new JButton("->");
-		btnAssignUserQual.setBounds(271, 445, 89, 23);
+		btnAssignUserQual.setBounds(271, 329, 89, 23);
 		
 		btnAssignUserQual.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
 		btnUnassignUserQual = new JButton("<-");
-		btnUnassignUserQual.setBounds(271, 519, 89, 23);
+		btnUnassignUserQual.setBounds(271, 385, 89, 23);
 				
 		btnUnassignUserQual.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
 		btnCreateQual = new JButton("CREATE");
-		btnCreateQual.setBounds(271, 668, 123, 41);
+		btnCreateQual.setBounds(250, 435, 123, 41);
 						
 		btnCreateQual.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
 		btnCancelAddQualifcation = new JButton("Cancel");
-		btnCancelAddQualifcation.setBounds(400, 668, 100, 30);
+		btnCancelAddQualifcation.setBounds(260, 500, 100, 30);
 
 		btnCancelAddQualifcation.setFont(new Font("Tahoma", Font.BOLD, 16));
 		pnlCreateQualification.setLayout(null);
@@ -517,7 +518,7 @@ public class AdminManageUsers extends JFrame {
 		
 		pnlCreateUser = new JPanel();
 		layeredPaneAdminComponents.setLayer(pnlCreateUser, 0);
-		pnlCreateUser.setBounds(180, 38, 746, 720);
+		pnlCreateUser.setBounds(180, 38, 715, 565);
 		layeredPaneAdminComponents.add(pnlCreateUser);
 		pnlCreateUser.setVisible(false);
 		pnlCreateUser.setBackground(UIManager.getColor("Button.background"));
@@ -626,48 +627,48 @@ public class AdminManageUsers extends JFrame {
 		//edit user info start				
 		pnlUserEditInfo = new JPanel();
 		layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 0);
-		pnlUserEditInfo.setBounds(180, 38, 746, 720);
+		pnlUserEditInfo.setBounds(180, 38, 715, 565);
 		layeredPaneAdminComponents.add(pnlUserEditInfo);
 		pnlUserEditInfo.setBorder(new TitledBorder(null, "User Edit/Info", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		JLabel lblFullName = new JLabel("Full Name");
-		lblFullName.setBounds(264, 16, 127, 45);
+		lblFullName.setBounds(264, 0, 127, 45);
 		lblFullName.setFont(new Font("Tahoma", Font.BOLD, 20));
 		
 		JLabel lblFirstName = new JLabel("First Name:");
-		lblFirstName.setBounds(85, 89, 79, 17);
+		lblFirstName.setBounds(86, 53, 79, 17);
 		lblFirstName.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		textFirstName = new JTextField();
-		textFirstName.setBounds(214, 91, 330, 20);
+		textFirstName.setBounds(214, 56, 330, 20);
 		textFirstName.setColumns(10);
 		textLastName = new JTextField();
-		textLastName.setBounds(214, 134, 330, 20);
+		textLastName.setBounds(214, 87, 330, 20);
 		textLastName.setColumns(10);
 		textUsername = new JTextField();
-		textUsername.setBounds(214, 179, 330, 20);
+		textUsername.setBounds(214, 130, 330, 20);
 		textUsername.setColumns(10);
 		textEmail = new JTextField();
-		textEmail.setBounds(214, 229, 330, 20);
+		textEmail.setBounds(214, 177, 330, 20);
 		textEmail.setColumns(10);
 		textPhone = new JTextField();
-		textPhone.setBounds(214, 283, 330, 20);
+		textPhone.setBounds(214, 217, 330, 20);
 		textPhone.setColumns(10);
 		
 		JSeparator separator = new JSeparator();
-		separator.setBounds(22, 376, 699, 2);
+		separator.setBounds(16, 279, 699, 2);
 		separator.setBackground(Color.BLACK);
 		separator.setForeground(Color.BLACK);
 		JScrollPane scrlPaneAssignedQuals = new JScrollPane();
-		scrlPaneAssignedQuals.setBounds(275, 438, 174, 271);
+		scrlPaneAssignedQuals.setBounds(264, 320, 174, 234);
 		
 		unassignQual = new JButton("<-");
-		unassignQual.setBounds(206, 581, 64, 29);
+		unassignQual.setBounds(190, 416, 64, 29);
 		
 		unassignQual.setToolTipText("Click to remove assigned Qualifications");
 		unassignQual.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
 		assignQual = new JButton("->");
-		assignQual.setBounds(206, 523, 64, 29);
+		assignQual.setBounds(190, 361, 64, 29);
 		
 		assignQual.setToolTipText("Click to move selected Qualifications to Assigned");
 		assignQual.setFont(new Font("Tahoma", Font.BOLD, 16));
@@ -678,44 +679,44 @@ public class AdminManageUsers extends JFrame {
 		scrlPaneAssignedQuals.setViewportView(listAssignedQuals);
 														
 		JLabel lblLastName = new JLabel("Last Name:");
-		lblLastName.setBounds(86, 134, 78, 17);
+		lblLastName.setBounds(86, 91, 78, 17);
 		lblLastName.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		JLabel lblUsername = new JLabel("Username:");
-		lblUsername.setBounds(90, 182, 74, 17);
+		lblUsername.setBounds(90, 130, 74, 17);
 		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		JLabel lblEmailAddress = new JLabel("Email Address:");
-		lblEmailAddress.setBounds(63, 232, 101, 17);
+		lblEmailAddress.setBounds(63, 177, 101, 17);
 		lblEmailAddress.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		JLabel lblPhoneNumber = new JLabel("Phone Number:");
-		lblPhoneNumber.setBounds(55, 286, 109, 17);
+		lblPhoneNumber.setBounds(56, 217, 109, 17);
 		lblPhoneNumber.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		JLabel lblAvailable = new JLabel("Available");
-		lblAvailable.setBounds(67, 410, 60, 17);
+		lblAvailable.setBounds(65, 292, 60, 17);
 		lblAvailable.setFont(new Font("Tahoma", Font.BOLD, 14));
 		JLabel lblAssigned = new JLabel("Assigned");
-		lblAssigned.setBounds(318, 410, 86, 17);
+		lblAssigned.setBounds(304, 292, 86, 17);
 		lblAssigned.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		btnChangePassword = new JButton("Change Password");
-		btnChangePassword.setBounds(328, 331, 142, 34);
+		btnChangePassword.setBounds(318, 248, 120, 20);
 		
 		btnSaveChanges = new JButton("Save Changes");
-		btnSaveChanges.setBounds(164, 331, 127, 34);
+		btnSaveChanges.setBounds(162, 248, 109, 20);
 		
 		btnSaveChanges.setToolTipText("Save Changes to Database");
 		
 		JScrollPane scrlPaneAvailableQuals = new JScrollPane();
-		scrlPaneAvailableQuals.setBounds(22, 438, 174, 271);
+		scrlPaneAvailableQuals.setBounds(16, 320, 174, 234);
 		
 		listAvailableQuals = new JList(availableQualList);
 		scrlPaneAvailableQuals.setViewportView(listAvailableQuals);
 		
 		pnlDeleteUser = new JPanel();
-		pnlDeleteUser.setBounds(531, 620, 166, 89);
+		pnlDeleteUser.setBounds(496, 361, 166, 89);
 		pnlDeleteUser.setBorder(new TitledBorder(null, "WARNING AREA", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		pnlDeleteUser.setBackground(new Color(245, 222, 179));
 		pnlDeleteUser.setLayout(null);
@@ -727,19 +728,19 @@ public class AdminManageUsers extends JFrame {
 		pnlDeleteUser.add(btnDeleteUser);
 		
 		JLabel lblUserType_1 = new JLabel("User Type");
-		lblUserType_1.setBounds(562, 89, 82, 20);
+		lblUserType_1.setBounds(565, 14, 82, 20);
 		lblUserType_1.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
 		rdbtnAdminDetails = new JRadioButton("Admin");
-		rdbtnAdminDetails.setBounds(562, 129, 109, 23);
+		rdbtnAdminDetails.setBounds(562, 41, 109, 23);
 		buttonGroup_1.add(rdbtnAdminDetails);
 		
 		rdbtnManagerDetails = new JRadioButton("Manager");
-		rdbtnManagerDetails.setBounds(562, 170, 120, 23);
+		rdbtnManagerDetails.setBounds(562, 67, 120, 23);
 		buttonGroup_1.add(rdbtnManagerDetails);
 		
 		rdbtnWorkerDetails = new JRadioButton("Worker");
-		rdbtnWorkerDetails.setBounds(562, 211, 120, 23);
+		rdbtnWorkerDetails.setBounds(562, 90, 120, 23);
 		buttonGroup_1.add(rdbtnWorkerDetails);
 		pnlUserEditInfo.setLayout(null);
 		pnlUserEditInfo.add(lblFullName);
@@ -770,12 +771,12 @@ public class AdminManageUsers extends JFrame {
 														
 		pnlViewTickets = new JPanel();
 		layeredPaneAdminComponents.setLayer(pnlViewTickets, 0);
-		pnlViewTickets.setBounds(180, 38, 746, 720);
+		pnlViewTickets.setBounds(180, 38, 715, 565);
 		layeredPaneAdminComponents.add(pnlViewTickets);
 		pnlViewTickets.setVisible(false);
 		
 		pnlOpenTicketsLbl = new JPanel();
-		pnlOpenTicketsLbl.setBounds(0, 0, 746, 26);
+		pnlOpenTicketsLbl.setBounds(0, 0, 715, 26);
 		pnlOpenTicketsLbl.setBackground(UIManager.getColor("Button.shadow"));
 		pnlOpenTicketsLbl.setLayout(null);
 		
@@ -785,7 +786,7 @@ public class AdminManageUsers extends JFrame {
 		pnlOpenTicketsLbl.add(lblOpenTickets);
 		
 		pnlClosedTicketsLbl = new JPanel();
-		pnlClosedTicketsLbl.setBounds(0, 329, 746, 26);
+		pnlClosedTicketsLbl.setBounds(0, 329, 715, 26);
 		pnlClosedTicketsLbl.setBackground(SystemColor.controlShadow);
 		pnlClosedTicketsLbl.setLayout(null);
 		
@@ -795,10 +796,10 @@ public class AdminManageUsers extends JFrame {
 		pnlClosedTicketsLbl.add(lblClosedTickets);
 		
 		scrlOpenTickets = new JScrollPane();
-		scrlOpenTickets.setBounds(0, 22, 746, 307);
+		scrlOpenTickets.setBounds(0, 22, 715, 307);
 		
 		scrlClosedTickets = new JScrollPane();
-		scrlClosedTickets.setBounds(0, 354, 746, 366);
+		scrlClosedTickets.setBounds(0, 354, 715, 211);
 		
 		listClosedTickets = new JList(closedTickets);
 		listClosedTickets.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -814,7 +815,7 @@ public class AdminManageUsers extends JFrame {
 		pnlViewTickets.add(scrlClosedTickets);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 23, 157, 314);
+		scrollPane.setBounds(0, 23, 157, 249);
 		layeredPaneAdminComponents.add(scrollPane);
 		listUsers = new JList(userList);
 		
@@ -839,7 +840,7 @@ public class AdminManageUsers extends JFrame {
 		pnlTicketDetails = new JPanel();
 		pnlTicketDetails.setBorder(new TitledBorder(null, "Ticket Details", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		layeredPaneAdminComponents.setLayer(pnlTicketDetails, 10);
-		pnlTicketDetails.setBounds(180, 38, 746, 720);
+		pnlTicketDetails.setBounds(180, 38, 715, 565);
 		layeredPaneAdminComponents.add(pnlTicketDetails);
 		pnlTicketDetails.setLayout(null);
 		pnlTicketDetails.setVisible(false);
@@ -872,19 +873,19 @@ public class AdminManageUsers extends JFrame {
 		
 		lblDone = new JLabel("Done?");
 		lblDone.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblDone.setBounds(297, 421, 87, 46);
+		lblDone.setBounds(291, 373, 87, 46);
 		pnlTicketDetails.add(lblDone);
 		
 		rdbtnTicketDoneYes = new JRadioButton("Yes");
 		buttonGroup_2.add(rdbtnTicketDoneYes);
 		rdbtnTicketDoneYes.setFont(new Font("Tahoma", Font.BOLD, 12));
-		rdbtnTicketDoneYes.setBounds(224, 474, 109, 23);
+		rdbtnTicketDoneYes.setBounds(221, 426, 109, 23);
 		pnlTicketDetails.add(rdbtnTicketDoneYes);
 		
 		rdbtnTicketDoneNo = new JRadioButton("No");
 		buttonGroup_2.add(rdbtnTicketDoneNo);
 		rdbtnTicketDoneNo.setFont(new Font("Tahoma", Font.BOLD, 12));
-		rdbtnTicketDoneNo.setBounds(369, 474, 109, 23);
+		rdbtnTicketDoneNo.setBounds(372, 426, 109, 23);
 		pnlTicketDetails.add(rdbtnTicketDoneNo);
 		
 		lblTicketDetailsTitle = new JLabel("");
@@ -893,7 +894,7 @@ public class AdminManageUsers extends JFrame {
 		
 		btnTicketDetailsClose = new JButton("Close");
 		
-		btnTicketDetailsClose.setBounds(647, 11, 89, 23);
+		btnTicketDetailsClose.setBounds(614, 11, 89, 23);
 		pnlTicketDetails.add(btnTicketDetailsClose);
 		
 		lblTicketDetailsMessage = new JLabel(" ");
@@ -910,12 +911,12 @@ public class AdminManageUsers extends JFrame {
 		
 		btnTicketDoneSave = new JButton("Save");
 		
-		btnTicketDoneSave.setBounds(280, 520, 89, 23);
+		btnTicketDoneSave.setBounds(278, 467, 89, 23);
 		pnlTicketDetails.add(btnTicketDoneSave);
 		
 		JPanel pnlArchivedUsers = new JPanel();
 		pnlArchivedUsers.setBackground(Color.LIGHT_GRAY);
-		pnlArchivedUsers.setBounds(0, 337, 157, 28);
+		pnlArchivedUsers.setBounds(0, 273, 157, 28);
 		layeredPaneAdminComponents.add(pnlArchivedUsers);
 		pnlArchivedUsers.setLayout(null);
 		
@@ -925,7 +926,7 @@ public class AdminManageUsers extends JFrame {
 		pnlArchivedUsers.add(lblNewLabel_6);
 		
 		JScrollPane scrollPane_5 = new JScrollPane();
-		scrollPane_5.setBounds(0, 365, 157, 393);
+		scrollPane_5.setBounds(0, 300, 157, 303);
 		layeredPaneAdminComponents.add(scrollPane_5);
 		
 		listArchivedUsers = new JList(archivedUserList);
@@ -940,13 +941,13 @@ public class AdminManageUsers extends JFrame {
 	 */
 	private void initManagerWorkerComponents() {
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 11);
-		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
+		layeredPane.setLayer(layeredPaneManagerWorker, 0);
+		layeredPaneManagerWorker.setBounds(0, 0, 896, 606);
 		layeredPane.add(layeredPaneManagerWorker);
 		
 		pnlManagerWorker = new JPanel();
 		layeredPaneManagerWorker.setLayer(pnlManagerWorker, 10);
-		pnlManagerWorker.setBounds(0, 0, 941, 760);
+		pnlManagerWorker.setBounds(0, 0, 899, 607);
 		layeredPaneManagerWorker.add(pnlManagerWorker);
 		
 		btn_create_project = new JButton("Create Project");
@@ -959,39 +960,39 @@ public class AdminManageUsers extends JFrame {
 		btn_create_job.setBounds(568, 0, 97, 28);
 		
 		layeredPaneManagerWorkerComponents = new JLayeredPane();
-		layeredPaneManagerWorkerComponents.setBounds(181, 41, 746, 719);
+		layeredPaneManagerWorkerComponents.setBounds(181, 41, 717, 566);
 		//create project end
 		//Create task start			
 		pnlCreateTask = new JPanel();
-		layeredPaneManagerWorkerComponents.setLayer(pnlCreateTask, 11);
-		pnlCreateTask.setBounds(0, 0, 746, 720);
+		layeredPaneManagerWorkerComponents.setLayer(pnlCreateTask, 0);
+		pnlCreateTask.setBounds(0, 0, 717, 567);
 		layeredPaneManagerWorkerComponents.add(pnlCreateTask);
 		pnlCreateTask.setVisible(false);
 		
 		JLabel lblTaskName = new JLabel("Name of the Task:");
-		lblTaskName.setBounds(163, 124, 114, 14);
+		lblTaskName.setBounds(163, 70, 114, 14);
 		
 		JLabel lblTaskDescription = new JLabel("Description of the Task:");
-		lblTaskDescription.setBounds(137, 288, 140, 14);
+		lblTaskDescription.setBounds(137, 213, 140, 14);
 		
 		JLabel lblTaskReason = new JLabel("Reason why it should be added:");
-		lblTaskReason.setBounds(97, 422, 180, 14);
+		lblTaskReason.setBounds(94, 327, 180, 14);
 		
 		JScrollPane scrlPaneDescription = new JScrollPane();
-		scrlPaneDescription.setBounds(366, 288, 216, 78);
+		scrlPaneDescription.setBounds(365, 213, 216, 78);
 		
 		JScrollPane scrlPaneReason = new JScrollPane();
-		scrlPaneReason.setBounds(366, 422, 215, 105);
+		scrlPaneReason.setBounds(366, 327, 215, 105);
 		
 		btnCreateNewTask = new JButton("Create new Task");
-		btnCreateNewTask.setBounds(508, 604, 140, 23);
+		btnCreateNewTask.setBounds(467, 510, 140, 23);
 		
 		textTaskName = new JTextField();
-		textTaskName.setBounds(366, 121, 86, 20);
+		textTaskName.setBounds(366, 67, 180, 20);
 		textTaskName.setColumns(10);
 		
 		btnCancelTask = new JButton("Cancel");
-		btnCancelTask.setBounds(398, 604, 86, 23);
+		btnCancelTask.setBounds(291, 510, 86, 23);
 		
 		txtAreaReason = new JTextArea();
 		scrlPaneReason.setViewportView(txtAreaReason);
@@ -1001,7 +1002,7 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateTask.setLayout(null);
 		
 		JLabel lblCreateTask = new JLabel("Create a new Task");
-		lblCreateTask.setBounds(301, 47, 146, 22);
+		lblCreateTask.setBounds(291, 22, 146, 22);
 		lblCreateTask.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		pnlCreateTask.add(lblCreateTask);
 		pnlCreateTask.add(lblTaskName);
@@ -1014,11 +1015,11 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateTask.add(btnCreateNewTask);
 		
 		JLabel lblWhereItShould = new JLabel("Where it should fall under:");
-		lblWhereItShould.setBounds(123, 198, 171, 14);
+		lblWhereItShould.setBounds(137, 114, 171, 14);
 		pnlCreateTask.add(lblWhereItShould);
 		
 		scrlPaneSuperJob = new JScrollPane();
-		scrlPaneSuperJob.setBounds(366, 198, 180, 78);
+		scrlPaneSuperJob.setBounds(366, 114, 180, 78);
 		pnlCreateTask.add(scrlPaneSuperJob);
 		//TODO
 		listSuperJobs = new JList(superJobsList);
@@ -1026,36 +1027,36 @@ public class AdminManageUsers extends JFrame {
 		//create user end				
 		//create project start		
 		pnlCreateProject = new JPanel();
-		layeredPaneManagerWorkerComponents.setLayer(pnlCreateProject, 10);
-		pnlCreateProject.setBounds(0, 0, 746, 720);
+		layeredPaneManagerWorkerComponents.setLayer(pnlCreateProject, 0);
+		pnlCreateProject.setBounds(0, 0, 717, 567);
 		layeredPaneManagerWorkerComponents.add(pnlCreateProject);
 		pnlCreateProject.setVisible(false);
 		
 		lblNewLabel = new JLabel("Project name:");
-		lblNewLabel.setBounds(149, 125, 86, 14);
+		lblNewLabel.setBounds(149, 66, 86, 14);
 		
 		lblNewLabel_1 = new JLabel("Description:");
-		lblNewLabel_1.setBounds(157, 192, 78, 14);
+		lblNewLabel_1.setBounds(157, 117, 78, 14);
 		
 		JScrollPane scrlPaneProjectDescription = new JScrollPane();
-		scrlPaneProjectDescription.setBounds(397, 186, 205, 81);
+		scrlPaneProjectDescription.setBounds(366, 117, 205, 81);
 		
 		JScrollPane scrlPaneQualifications = new JScrollPane();
-		scrlPaneQualifications.setBounds(111, 354, 154, 164);
+		scrlPaneQualifications.setBounds(107, 252, 154, 164);
 		
 		JScrollPane scrlPaneUsersAvailable = new JScrollPane();
-		scrlPaneUsersAvailable.setBounds(283, 354, 154, 164);
+		scrlPaneUsersAvailable.setBounds(283, 252, 154, 164);
 		
 		btnAssign = new JButton("->");
-		btnAssign.setBounds(455, 389, 45, 23);
+		btnAssign.setBounds(447, 282, 45, 23);
 		btnRemove = new JButton("<-");
-		btnRemove.setBounds(455, 444, 45, 23);
+		btnRemove.setBounds(447, 341, 45, 23);
 		
 		btnCreateNewProject = new JButton("Create new Project");
-		btnCreateNewProject.setBounds(508, 571, 154, 23);
+		btnCreateNewProject.setBounds(483, 485, 154, 23);
 		
 		btnCancelProject = new JButton("Cancel");
-		btnCancelProject.setBounds(380, 571, 82, 23);
+		btnCancelProject.setBounds(277, 485, 82, 23);
 		
 		textAreaProjectDescription = new JTextArea();
 		scrlPaneProjectDescription.setViewportView(textAreaProjectDescription);
@@ -1068,24 +1069,24 @@ public class AdminManageUsers extends JFrame {
 		scrlPaneQualifications.setViewportView(listQualifications);
 		
 		JLabel lblNewLabel_2 = new JLabel("Qualifications:");
-		lblNewLabel_2.setBounds(111, 322, 96, 14);
+		lblNewLabel_2.setBounds(110, 227, 96, 14);
 		
 		JLabel lblNewLabel_3 = new JLabel("Users to add:");
-		lblNewLabel_3.setBounds(283, 322, 76, 14);
+		lblNewLabel_3.setBounds(283, 227, 76, 14);
 		
 		JLabel lblNewLabel_4 = new JLabel("Users added:");
-		lblNewLabel_4.setBounds(532, 322, 86, 14);
+		lblNewLabel_4.setBounds(532, 227, 86, 14);
 		
 		JLabel lblCreateANew = new JLabel("Create a new Project");
 		lblCreateANew.setBounds(299, 29, 163, 22);
 		lblCreateANew.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		
 		txtProjectName = new JTextField();
-		txtProjectName.setBounds(397, 119, 86, 20);
+		txtProjectName.setBounds(367, 63, 187, 20);
 		txtProjectName.setColumns(10);
 		
 		JScrollPane scrlPaneUsersAdded = new JScrollPane();
-		scrlPaneUsersAdded.setBounds(532, 354, 154, 164);
+		scrlPaneUsersAdded.setBounds(520, 264, 154, 164);
 		
 		listUsersAdded = new JList();
 		scrlPaneUsersAdded.setViewportView(listUsersAdded);
@@ -1109,7 +1110,7 @@ public class AdminManageUsers extends JFrame {
 		//create job start				
 		pnlCreateJob = new JPanel();
 		layeredPaneManagerWorkerComponents.setLayer(pnlCreateJob, 0);
-		pnlCreateJob.setBounds(0, 0, 746, 720);
+		pnlCreateJob.setBounds(0, 0, 717, 567);
 		layeredPaneManagerWorkerComponents.add(pnlCreateJob);
 		pnlCreateJob.setVisible(false);
 		
@@ -1118,26 +1119,23 @@ public class AdminManageUsers extends JFrame {
 		lblCreateNewJob.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		
 		JScrollPane scrlPaneJobDescription = new JScrollPane();
-		scrlPaneJobDescription.setBounds(395, 166, 224, 69);
+		scrlPaneJobDescription.setBounds(395, 80, 224, 69);
 		
 		JScrollPane scrlPaneAssignableManagers = new JScrollPane();
-		scrlPaneAssignableManagers.setBounds(395, 241, 148, 109);
+		scrlPaneAssignableManagers.setBounds(395, 171, 234, 69);
 		
 		JScrollPane scrlPaneRequiredQuals = new JScrollPane();
-		scrlPaneRequiredQuals.setBounds(395, 356, 148, 138);
+		scrlPaneRequiredQuals.setBounds(395, 251, 145, 104);
 		
 		JScrollPane scrlPaneAvailableUsers = new JScrollPane();
-		scrlPaneAvailableUsers.setBounds(344, 527, 148, 138);
-		
-		txtAreaJobDescription = new JTextArea();
-		scrlPaneJobDescription.setViewportView(txtAreaJobDescription);
+		scrlPaneAvailableUsers.setBounds(319, 391, 148, 138);
 		
 		listAssignableManagers = new JList(managerList);
 		listAssignableManagers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrlPaneAssignableManagers.setViewportView(listAssignableManagers);
 		
 		JLabel lblJobName = new JLabel("Name of the Job:");
-		lblJobName.setBounds(150, 107, 114, 14);
+		lblJobName.setBounds(150, 52, 114, 14);
 		
 		listRequiredQuals = new JList(listedQualList);
 		scrlPaneRequiredQuals.setViewportView(listRequiredQuals);
@@ -1146,41 +1144,42 @@ public class AdminManageUsers extends JFrame {
 		scrlPaneAvailableUsers.setViewportView(listAvailableUsers);
 		
 		buttonAssignUsers = new JButton("->");
-		buttonAssignUsers.setBounds(498, 554, 45, 23);
+		buttonAssignUsers.setBounds(477, 433, 45, 23);
 		
 		buttonRemoveUsers = new JButton("<-");
-		buttonRemoveUsers.setBounds(498, 603, 45, 23);
+		buttonRemoveUsers.setBounds(477, 467, 45, 23);
 		
 		txtJobName = new JTextField();
-		txtJobName.setBounds(395, 107, 86, 20);
+		txtJobName.setBounds(395, 49, 86, 20);
 		txtJobName.setColumns(10);
 		
 		btnCreateJob = new JButton("Create Job");
-		btnCreateJob.setBounds(594, 683, 103, 23);
+		btnCreateJob.setBounds(561, 532, 103, 23);
 		
 		btnCancelJob  = new JButton("Cancel");
-		btnCancelJob.setBounds(498, 683, 86, 23);
+		btnCancelJob.setBounds(91, 532, 86, 23);
 		
 		JLabel lblAvailableUsers_1 = new JLabel("Available Users");
-		lblAvailableUsers_1.setBounds(344, 507, 100, 14);
+		lblAvailableUsers_1.setBounds(324, 366, 100, 14);
 		
 		JLabel lblAssignedUsers = new JLabel("Assigned Users");
-		lblAssignedUsers.setBounds(550, 507, 94, 14);
+		lblAssignedUsers.setBounds(533, 366, 94, 14);
 		
 		JLabel lblUsersList = new JLabel("User List:");
-		lblUsersList.setBounds(188, 529, 76, 14);
+		lblUsersList.setBounds(188, 393, 76, 14);
 		
 		JLabel lblNewLabel_9 = new JLabel("Description:");
-		lblNewLabel_9.setBounds(176, 166, 88, 14);
+		lblNewLabel_9.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_9.setBounds(141, 77, 123, 14);
 		
 		JLabel lblNewLabel_10 = new JLabel("Assignable Manager:");
-		lblNewLabel_10.setBounds(141, 241, 123, 14);
+		lblNewLabel_10.setBounds(155, 173, 123, 14);
 		
 		JLabel lblRequiredQualifications = new JLabel("Required Qualifications:");
-		lblRequiredQualifications.setBounds(119, 356, 145, 14);
+		lblRequiredQualifications.setBounds(150, 253, 145, 14);
 		
 		JScrollPane scrlPaneAssignedUsers = new JScrollPane();
-		scrlPaneAssignedUsers.setBounds(549, 527, 148, 130);
+		scrlPaneAssignedUsers.setBounds(533, 391, 148, 130);
 		
 		listAssignedUsers = new JList();
 		scrlPaneAssignedUsers.setViewportView(listAssignedUsers);
@@ -1190,6 +1189,9 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateJob.add(txtJobName);
 		pnlCreateJob.add(lblNewLabel_9);
 		pnlCreateJob.add(scrlPaneJobDescription);
+		
+		txtAreaJobDescription = new JTextArea();
+		scrlPaneJobDescription.setViewportView(txtAreaJobDescription);
 		pnlCreateJob.add(lblNewLabel_10);
 		pnlCreateJob.add(scrlPaneAssignableManagers);
 		pnlCreateJob.add(lblRequiredQualifications);
@@ -1210,7 +1212,7 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateTicket = new JPanel();
 		pnlCreateTicket.setBorder(new TitledBorder(null, "Ticket Creator", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		layeredPaneManagerWorkerComponents.setLayer(pnlCreateTicket, 0);
-		pnlCreateTicket.setBounds(0, 0, 746, 720);
+		pnlCreateTicket.setBounds(0, 0, 717, 567);
 		layeredPaneManagerWorkerComponents.add(pnlCreateTicket);
 		pnlCreateTicket.setLayout(null);
 		pnlCreateTicket.setVisible(false);
@@ -1254,8 +1256,8 @@ public class AdminManageUsers extends JFrame {
 		pnlManagerWorker.add(layeredPaneManagerWorkerComponents);
 		
 		pnlConversationDetails = new JPanel();
-		layeredPaneManagerWorkerComponents.setLayer(pnlConversationDetails, 30);
-		pnlConversationDetails.setBounds(0, 0, 746, 720);
+		layeredPaneManagerWorkerComponents.setLayer(pnlConversationDetails, 0);
+		pnlConversationDetails.setBounds(0, 0, 717, 567);
 		layeredPaneManagerWorkerComponents.add(pnlConversationDetails);
 		pnlConversationDetails.setLayout(null);
 		
@@ -1283,7 +1285,7 @@ public class AdminManageUsers extends JFrame {
 		
 		pnlMessages = new JPanel();
 		pnlMessages.setBackground(Color.LIGHT_GRAY);
-		pnlMessages.setBounds(0, 347, 181, 28);
+		pnlMessages.setBounds(0, 260, 181, 28);
 		pnlManagerWorker.add(pnlMessages);
 		pnlMessages.setLayout(null);
 		
@@ -1304,7 +1306,7 @@ public class AdminManageUsers extends JFrame {
 		pnlProjects.add(lblNewLabel_8);
 		
 		scrlConversations = new JScrollPane();
-		scrlConversations.setBounds(2, 375, 179, 385);
+		scrlConversations.setBounds(0, 289, 179, 318);
 		pnlManagerWorker.add(scrlConversations);
 		
 		listConversations = new JList(conversationsList);
@@ -1312,7 +1314,7 @@ public class AdminManageUsers extends JFrame {
 		scrlConversations.setViewportView(listConversations);
 		
 		scrlProjects = new JScrollPane();
-		scrlProjects.setBounds(0, 27, 181, 319);
+		scrlProjects.setBounds(0, 27, 181, 234);
 		pnlManagerWorker.add(scrlProjects);
 		
 		listProjects = new JList(projectsList);
@@ -1322,23 +1324,23 @@ public class AdminManageUsers extends JFrame {
 		btnLogout = new JButton("LOGOUT");
 
 		btnLogout.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btnLogout.setBounds(859, 11, 89, 23);
+		btnLogout.setBounds(800, 11, 89, 23);
 		contentPane.add(btnLogout);
 		btnLogout.setVisible(false);
 		
 		btn_settings = new JButton("Settings");
 		btn_settings.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btn_settings.setBounds(754, 8, 89, 28);
+		btn_settings.setBounds(701, 8, 89, 28);
 		contentPane.add(btn_settings);
 		btn_settings.setVisible(false);
 		
 		layeredPane_1 = new JLayeredPane();
-		layeredPane_1.setBounds(10, 8, 734, 25);
+		layeredPane_1.setBounds(10, 8, 678, 25);
 		contentPane.add(layeredPane_1);
 		
 		lblPortal = new JLabel("Admin Portal");
 		lblPortal.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblPortal.setBounds(0, 0, 734, 25);
+		lblPortal.setBounds(0, 0, 629, 25);
 		layeredPane_1.add(lblPortal);
 		lblPortal.setVisible(false);
 		//create job end		

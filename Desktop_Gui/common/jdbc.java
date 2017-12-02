@@ -128,6 +128,22 @@ public static void archiveUser(int userID, boolean b) {
 	}
 }
 
+//adds a single user to a job
+public static void addUserstoJob(String s, String t, int jobID) {
+	try {
+		Statement statement = conn1.createStatement();
+			User u=get_user(s, t);
+			String sql = "INSERT INTO db309amc2.job_assignments VALUES ("+jobID+","+u.get_userID()+");";
+  			statement.executeUpdate(sql);		
+		// Close all statements
+		statement.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+}
+
 //adds a manager to a job 
 public static void add_Manager(User user, int jobID) {
 	try {
@@ -163,15 +179,16 @@ public static void add_project(Job jobs){
 }
 
 //adds required qualifications to job x
-public static void add_requiredQuals(int id, java.util.List list){
+public static void add_requiredQuals(int id, String s){
 	try {
 		Statement statement = conn1.createStatement();
 		//System.out.printf("%d %d \n", list.toString(), id);
-			for(int i=0; i<list.size(); i++){
+			
 				String sql = "INSERT INTO db309amc2.job_requirements " +
-				"VALUES ("+id+","+ getQualwithString(list.get(i).toString()).getQualID() +");";  			
+				"VALUES ("+id+","+ getQualwithString(s).getQualID() +");";  			
 				statement.executeUpdate(sql);	
-			}		
+			System.out.println(id );
+			System.out.println(getQualwithString(s).getQualID());
 		// Close all statements
 		statement.close();
 	} catch (SQLException e) {
@@ -554,40 +571,6 @@ public static ArrayList<User> getUsersWithQual(String s){
 	return users;
 }
 
-//returns a list of user w/ a qualification  TODO
-public static ArrayList<User> getUsersWithQual(List l){
-	String s = l.toString();
-	s=s.substring(1, s.length()-1);
-	s="'"+s+"'";
-	s=s.replace(",", "' AND ");
-	s=s.replace("  ", " '");
-
-
-	System.out.println(s);
-	ArrayList<User> users = new ArrayList<User>();	
-	try{
-		String query = String.format("SELECT users.userID, usertype, username, firstname, lastname FROM ((db309amc2.users "
-		        + "INNER join db309amc2.qualification_assignments on users.userID=qualification_assignments.userID)"
-				+ "INNER join db309amc2.qualifications on qualification_assignments.qualID=qualifications.qualID) WHERE qualifications.qualname=%s", s);
-		Statement stmt = null;
-		stmt = conn1.createStatement();
-		ResultSet rs = stmt.executeQuery(query);
-		while (rs.next()) {
-			    User u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), true);
-				users.add(u);
-				System.out.println(u);		
-		}
-		
-		// Close all statements
-		stmt.close();
-
-	} catch (SQLException e) {
-		System.out.println("SQLException: " + e.getMessage());
-		System.out.println("SQLState: " + e.getSQLState());
-		System.out.println("VendorError: " + e.getErrorCode());
-	}
-	return users;
-}
 //returns a list of qualifications
 public static ArrayList<Qualification> get_qualifications(){
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();	

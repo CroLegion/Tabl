@@ -166,7 +166,7 @@ public class AdminManageUsers extends JFrame {
 	private JList listRequiredQuals;
 	private JList listAssignedUsers;								
 	private JList listAvailableUsers;
-	private List selectedQual;
+	private String selectedQual;
 	private User manager;
 	DefaultListModel assignedUsersList = new DefaultListModel();
 	ArrayList<User> assignedUsers = new ArrayList<User>();
@@ -1130,6 +1130,7 @@ public class AdminManageUsers extends JFrame {
 		lblJobName.setBounds(150, 107, 114, 14);
 		
 		listRequiredQuals = new JList(listedQualList);
+		listRequiredQuals.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrlPaneRequiredQuals.setViewportView(listRequiredQuals);
 		
 		listAvailableUsers = new JList(unassignedUsersList);
@@ -1832,10 +1833,20 @@ public class AdminManageUsers extends JFrame {
 		btnCreateJob.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int Id= jdbc.getMaxJobID()+1;
+				String s="";
+				String first;
+				String last;
 				Job job =new Job(Id, txtJobName.getText(), 2, txtAreaJobDescription.getText(), 0);				
-				jdbc.add_project(job);
-				jdbc.add_Manager(manager, Id);
-				jdbc.add_requiredQuals(Id,selectedQual);//TODO only works w/ one
+				jdbc.add_project(job);																	//creates project
+				jdbc.add_Manager(manager, Id);															//assigns managers to it
+				jdbc.add_requiredQuals(Id,selectedQual);												//assigns quals to it
+				for(int i=0; i<listAssignedUsers.getModel().getSize();i++){								//assigns users to it
+					s=(String)listAssignedUsers.getModel().getElementAt(i);
+					last=s.substring(0, s.indexOf(44));
+					first=s.substring(s.indexOf(44)+2, s.length());
+					System.out.println(s);
+					jdbc.addUserstoJob(first, last, Id);
+				}
 				layeredPaneManagerWorker.setVisible(true);	
 				JOptionPane.showMessageDialog(null, "Job Created!");
 				pnlCreateJob.setVisible(false);
@@ -1849,7 +1860,8 @@ public class AdminManageUsers extends JFrame {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
-                	 selectedQual = listRequiredQuals.getSelectedValuesList();
+                	 selectedQual = (String)listRequiredQuals.getSelectedValue();
+                	 
                 	 createAllUsersList(selectedQual);
                 }
             }
@@ -1962,9 +1974,9 @@ public class AdminManageUsers extends JFrame {
 		userList.setElementAt(s, lastClickedIndex);
 	}
 	//pulls all users with selected qualification
-	private void createAllUsersList(List l){
+	private void createAllUsersList(String s){
 		unassignedUsersList.clear();
-		ArrayList<User> users = jdbc.getUsersWithQual(l);
+		ArrayList<User> users = jdbc.getUsersWithQual(s);
 		for (int i = 0; i < users.size(); i++) {
 			unassignedUsersList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
 		}

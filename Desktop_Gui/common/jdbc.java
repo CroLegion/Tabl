@@ -973,4 +973,29 @@ public static void sendMessage(String text, int senderID, int receivingID) {
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
 }
+
+
+public static ArrayList<Task> getTasks() {
+	ArrayList<Task> tasks = new ArrayList<Task>();
+	
+	try {		
+		String query = "SELECT * FROM db309amc2.tasks";
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			Task t = new Task(rs.getString("taskname"), rs.getString("taskdesc"), rs.getString("taskreason"), rs.getInt("parentID"), rs.getInt("taskID"));
+			tasks.add(t);
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	return tasks;
+}
 }

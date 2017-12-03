@@ -61,7 +61,11 @@ import javax.swing.JInternalFrame;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 import javax.swing.JTextField;
 import javax.swing.JSeparator;
 
@@ -284,10 +288,13 @@ public class AdminManageUsers extends JFrame {
 	private JLabel lblConversationTitle;
 	private JPanel pnlProjectViewer;
 	private JLabel lblProjectName;
-	private JLabel lblProjectNameDisplay;
 	private JTree tree;
 	private JPanel pnlProjectTree;
-	private JButton btnNewButton;
+	private JButton btnRefresh;
+	private JPanel pnlJobViewer;
+	private JLabel lblProjectDescrption;
+	private JScrollPane scrollPane_6;
+	private JTextField textField;
 	
 	/**
 	 * Launch the application.
@@ -1262,7 +1269,7 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateJob.add(btnCreateJob);
 		
 		btnCreateTicket = new JButton("Create Ticket");
-		btnCreateTicket.setBounds(762, 3, 136, 23);
+		btnCreateTicket.setBounds(762, 3, 115, 23);
 		
 		pnlCreateTicket = new JPanel();
 		pnlCreateTicket.setBorder(new TitledBorder(null, "Ticket Creator", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -1311,7 +1318,7 @@ public class AdminManageUsers extends JFrame {
 		pnlManagerWorker.add(layeredPaneManagerWorkerComponents);
 		
 		pnlConversationDetails = new JPanel();
-		layeredPaneManagerWorkerComponents.setLayer(pnlConversationDetails, 40);
+		layeredPaneManagerWorkerComponents.setLayer(pnlConversationDetails, 0);
 		pnlConversationDetails.setBounds(0, 0, 717, 567);
 		layeredPaneManagerWorkerComponents.add(pnlConversationDetails);
 		pnlConversationDetails.setLayout(null);
@@ -1339,10 +1346,10 @@ public class AdminManageUsers extends JFrame {
 		listConversationMessages = new JList(conversationMessagesList);
 		scrollPane.setViewportView(listConversationMessages);
 		
-		btnNewButton = new JButton("Refresh");
+		btnRefresh = new JButton("Refresh");
 
-		btnNewButton.setBounds(597, 36, 89, 23);
-		pnlConversationDetails.add(btnNewButton);
+		btnRefresh.setBounds(597, 36, 89, 23);
+		pnlConversationDetails.add(btnRefresh);
 		
 		pnlProjectViewer = new JPanel();
 		layeredPaneManagerWorkerComponents.setLayer(pnlProjectViewer, 20);
@@ -1355,10 +1362,37 @@ public class AdminManageUsers extends JFrame {
 		lblProjectName.setBounds(157, 0, 126, 32);
 		pnlProjectViewer.add(lblProjectName);
 		
-		lblProjectNameDisplay = new JLabel("");
-		lblProjectNameDisplay.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblProjectNameDisplay.setBounds(293, 0, 384, 32);
-		pnlProjectViewer.add(lblProjectNameDisplay);
+		lblProjectDescrption = new JLabel("Project Description:");
+		lblProjectDescrption.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblProjectDescrption.setBounds(31, 35, 139, 32);
+		pnlProjectViewer.add(lblProjectDescrption);
+		
+		scrollPane_6 = new JScrollPane();
+		scrollPane_6.setBounds(180, 43, 503, 40);
+		pnlProjectViewer.add(scrollPane_6);
+		
+		JTextArea textProjectDesc = new JTextArea();
+		scrollPane_6.setViewportView(textProjectDesc);
+		
+		JLabel lblQualifications = new JLabel("Qualifications:");
+		lblQualifications.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblQualifications.setBounds(45, 103, 102, 14);
+		pnlProjectViewer.add(lblQualifications);
+		
+		JButton btnSaveChangesProject = new JButton("Save Changes");
+		btnSaveChangesProject.setBounds(307, 516, 115, 40);
+		pnlProjectViewer.add(btnSaveChangesProject);
+		
+		textField = new JTextField();
+		textField.setToolTipText("Click on a Project or Job to View Details");
+		textField.setBounds(283, 8, 400, 24);
+		pnlProjectViewer.add(textField);
+		textField.setColumns(10);
+		
+		pnlJobViewer = new JPanel();
+		pnlJobViewer.setBounds(0, 0, 717, 567);
+		layeredPaneManagerWorkerComponents.add(pnlJobViewer);
+		pnlJobViewer.setLayout(null);
 		
 		pnlMessages = new JPanel();
 		pnlMessages.setBackground(Color.LIGHT_GRAY);
@@ -1793,6 +1827,9 @@ public class AdminManageUsers extends JFrame {
 				} else {
 					pnlCreateTicket.setVisible(true);
 					pnlCreateJob.setVisible(false);
+					pnlConversationDetails.setVisible(false);
+					pnlProjectViewer.setVisible(false);
+					pnlJobViewer.setVisible(false);
 					pnlCreateTask.setVisible(false);
 					pnlCreateProject.setVisible(false);
 				}
@@ -1889,6 +1926,9 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
 				pnlCreateTask.setVisible(false);
+				pnlConversationDetails.setVisible(false);
+				pnlJobViewer.setVisible(false);
+				pnlProjectViewer.setVisible(false);
 				pnlCreateProject.setVisible(true);
 				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);	
 				createQualificationsList();
@@ -1905,7 +1945,10 @@ public class AdminManageUsers extends JFrame {
 		btn_create_task.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
+				pnlProjectViewer.setVisible(false);
 				pnlCreateProject.setVisible(false);
+				pnlConversationDetails.setVisible(false);
+				pnlJobViewer.setVisible(false);
 				pnlCreateTask.setVisible(true);
 				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);
 				loadJobs();
@@ -1923,6 +1966,9 @@ public class AdminManageUsers extends JFrame {
 				Qualification q=null;
 				pnlCreateProject.setVisible(false);
 				pnlCreateTask.setVisible(false);
+				pnlJobViewer.setVisible(false);
+				pnlProjectViewer.setVisible(false);
+				pnlConversationDetails.setVisible(false);
 				pnlCreateJob.setVisible(true);	
 				createManagersList();
 				createAllUsersList();
@@ -2005,6 +2051,12 @@ public class AdminManageUsers extends JFrame {
 	        @Override
 	        public void valueChanged(ListSelectionEvent arg0) {
 	            if (!arg0.getValueIsAdjusting()) {
+	            	pnlConversationDetails.setVisible(true);
+	            	pnlCreateProject.setVisible(false);
+	            	pnlCreateJob.setVisible(false);
+					pnlCreateTask.setVisible(false);
+					pnlJobViewer.setVisible(false);
+	            	pnlProjectViewer.setVisible(false);
 	            	System.out.println(listConversations.getSelectedValue().toString());
 	            	loadConversationMessages(conversationMap.get(listConversations.getSelectedValue().toString()));
 	            	lblConversationTitle.setText(listConversations.getSelectedValue().toString());
@@ -2018,10 +2070,17 @@ public class AdminManageUsers extends JFrame {
 				loadConversationMessages(currentOpenConversation);
 			}
 		});
-		btnNewButton.addActionListener(new ActionListener() {
+		btnRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				loadConversationMessages(currentOpenConversation);
 			}
+		});
+		tree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
+		    @Override
+		    public void valueChanged(TreeSelectionEvent e) {
+		        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+		        displaySelectedNode(selectedNode.getUserObject().toString());
+		    }
 		});
 	}
 	
@@ -2203,15 +2262,63 @@ public class AdminManageUsers extends JFrame {
 	private void loadProjects() {
 		DefaultMutableTreeNode projects = new DefaultMutableTreeNode("Company Projects");
 
-		ArrayList<Job> projectsList = jdbc.getProjects();
+		ArrayList<Job> projectsList = jdbc.getProjectsAndJobs();
 		for (Job j : projectsList) {
-			DefaultMutableTreeNode job = new DefaultMutableTreeNode(j.jobname);
-			projects.add(job);
+			if (!j.jobname.equals("") && j.jobtype == 1) {
+				DefaultMutableTreeNode job = new DefaultMutableTreeNode(j.jobname);
+				projects.add(job);
+			}
+
+			
 		}
 		tree = new JTree(projects);
+		
+		for (Job j : projectsList) {
+			if (!j.jobname.equals("") && j.jobtype == 2 && j.parentID != 0) {
+				DefaultMutableTreeNode parentNode = null;
+				DefaultMutableTreeNode job = new DefaultMutableTreeNode(j.jobname);
+				System.out.println(j.jobname);
+				String parentName;
+				for (Job i : projectsList) {
+					if (j.parentID == i.jobID) {
+						String prefix = i.jobname.substring(0, 1);
+						TreePath path = tree.getNextMatch(prefix, 0, Position.Bias.Forward);
+						parentNode = (DefaultMutableTreeNode) (path.getLastPathComponent());
+						parentNode.add(job);
+					}
+				}
+			}
+		}
 		tree.setBounds(0, 0, 181, 325);
+		//add(new JScrollPane(tree));
 		pnlProjectTree.add(tree);
+		//loadTasks();
 	}
+	
+	private void loadTasks() {
+		ArrayList<Task> tasksList = jdbc.getTasks();
+		ArrayList<Job> projectsList = jdbc.getProjectsAndJobs();
+		
+		
+		for (Task t : tasksList) {
+			DefaultMutableTreeNode parentNode = null;
+			DefaultMutableTreeNode job = new DefaultMutableTreeNode(t.name);
+			String parentName;
+			for (Job j : projectsList) {
+				if (t.parentID == j.jobID) {
+					String prefix = j.jobname.substring(0, 1);
+					
+					TreePath path = tree.getNextMatch(prefix, 0, Position.Bias.Forward);
+					System.out.println(t.name+" goes here: "+path);
+					parentNode = (DefaultMutableTreeNode) (path.getLastPathComponent());
+					parentNode.add(job);
+				}
+			}
+			
+		}
+	}
+	
+	
 	
 	private void loadConversations() {
 		currentSessionUserID = 1112;
@@ -2235,6 +2342,44 @@ public class AdminManageUsers extends JFrame {
 			conversationMessagesList.addElement(s);
 		}
 	}
+	private void displaySelectedNode(String nodeName) {
+		ArrayList<Job> projectsList = jdbc.getProjectsAndJobs();
+		ArrayList<Task> tasksList = jdbc.getTasks();
+		
+		for (Job j : projectsList) {
+			if (j.jobname.equals(nodeName)) {
+				//its a project
+				if (j.jobtype == 1) {
+					displayProjectDetails(j);
+				} else {
+					//it is a job
+					displayJobDetails(j);
+				}
+				
+			}
+		}
+		
+		
+	}
 	
+	private void displayJobDetails(Job j) {
+		clearAllManagerPanels();
+		pnlJobViewer.setVisible(true);
+	}
+	
+	private void displayProjectDetails(Job j) {
+		clearAllManagerPanels();
+		pnlProjectViewer.setVisible(true);
+	}
+	
+	
+	private void clearAllManagerPanels() {
+		pnlConversationDetails.setVisible(false);
+    	pnlCreateProject.setVisible(false);
+    	pnlCreateJob.setVisible(false);
+		pnlCreateTask.setVisible(false);
+    	pnlProjectViewer.setVisible(false);
+    	pnlJobViewer.setVisible(false);
+	}
 }
 

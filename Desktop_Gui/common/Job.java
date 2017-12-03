@@ -4,12 +4,14 @@ public class Job {
    public String jobname;
    public int jobtype;
    public String jobdesc;
-   public String parentID;
+   public int parentID;
 
    public Job(int jobID, String jobname, int jobtype, String jobdesc, int parentID) {
    		this.jobID = jobID;
          this.jobname = jobname;
          this.jobtype = jobtype;
+         this.jobdesc = jobdesc;
+         this.parentID = parentID;
    }
 
    public void setJobdesc(String e) {
@@ -18,7 +20,7 @@ public class Job {
 
 
 
-   public void setparentID(String s) {
+   public void setparentID(int s) {
 		parentID = s;
    }
 }

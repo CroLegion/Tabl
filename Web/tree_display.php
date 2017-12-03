@@ -6,7 +6,8 @@
 	function process_children($self)
 	{	
 		$tree="";
-		//$children=get_children($self["jobID"]);	
+		$table="<table><tr><th>Job Name</th><th>Description</th><tr>";
+			
 		$num_children=$self->num_rows;
 		while($num_children>0)
 		{
@@ -17,6 +18,7 @@
 					<input type = submit value =\"{$curChild["jobname"]}\">
 					</form>
 				</a>";
+			
 			$grandChildren=get_children($curChild["jobID"]);
 			if($grandChildren->num_rows>0)
 			{
@@ -31,6 +33,27 @@
 
 	}
 	
+	function process_table($self)
+	{	
+		$table="";
+			
+		$num_children=$self->num_rows;
+		while($num_children>0)
+		{
+			$curChild=$self->fetch_assoc();
+			$table=$table. "<tr><td>".$curChild["jobname"]."</td><td>".$curChild["jobdesc"]."</td></tr>";
+			
+			$grandChildren=get_children($curChild["jobID"]);
+			if($grandChildren->num_rows>0)
+			{
+				$table=$table.process_table($grandChildren);
+			}	
+			$num_children=$num_children-1;		
+		}
+		return $table;
+
+	}
+
 	//Define database parameters
 	$servername = "mysql.cs.iastate.edu";
 	$username = "dbu309amc2";
@@ -65,10 +88,15 @@
 	$tree=$tree. "</li></ul>";
 
 	$desc=$root["jobdesc"];
+	$table="<table><tr><th>Job Name</th><th>Completed</th></tr>";
+	$table=$table.process_table(get_children($root["jobID"]))."</table>";
 
 	$Report = <<<HTML
-		<head>$title</head>
+		<h1>$title</h1>
 		<p>$desc</p>
+
+		<h3>$title jobs</h3>
+		$table
 HTML;
 
 	require 'navbar.php';

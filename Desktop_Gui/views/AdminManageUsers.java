@@ -52,6 +52,7 @@ import common.Task;
 import javax.swing.JLabel;
 
 import com.jgoodies.forms.factories.DefaultComponentFactory;
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 
 import javax.swing.UIManager;
 import javax.swing.JInternalFrame;
@@ -77,6 +78,8 @@ import javax.swing.JTextArea;
 
 import java.awt.SystemColor;
 import java.awt.Component;
+
+import javax.swing.ListModel;
 
 public class AdminManageUsers extends JFrame {
 	private int currentSessionUserID;
@@ -166,7 +169,9 @@ public class AdminManageUsers extends JFrame {
 	private JList listRequiredQuals;
 	private JList listAssignedUsers;								
 	private JList listAvailableUsers;
+	private JList listofSuperJobsList;
 	private String selectedQual;
+	private String superjobsString;
 	private User manager;
 	DefaultListModel assignedUsersList = new DefaultListModel();
 	ArrayList<User> assignedUsers = new ArrayList<User>();
@@ -271,6 +276,7 @@ public class AdminManageUsers extends JFrame {
 	private JScrollPane scrlProjects;
 	private JList listProjects;
 	private JList listConversations;
+	private JScrollPane scrlPaneSuperJobs;
 	
 	/**
 	 * Launch the application.
@@ -1114,10 +1120,10 @@ public class AdminManageUsers extends JFrame {
 		lblCreateNewJob.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		
 		JScrollPane scrlPaneAssignableManagers = new JScrollPane();
-		scrlPaneAssignableManagers.setBounds(395, 241, 148, 109);
+		scrlPaneAssignableManagers.setBounds(344, 218, 148, 109);
 		
 		JScrollPane scrlPaneRequiredQuals = new JScrollPane();
-		scrlPaneRequiredQuals.setBounds(395, 356, 148, 138);
+		scrlPaneRequiredQuals.setBounds(549, 354, 148, 138);
 		
 		JScrollPane scrlPaneAvailableUsers = new JScrollPane();
 		scrlPaneAvailableUsers.setBounds(344, 527, 148, 138);
@@ -1150,10 +1156,10 @@ public class AdminManageUsers extends JFrame {
 		btnCancelJob.setBounds(498, 683, 86, 23);
 		
 		JLabel lblNewLabel_9 = new JLabel("Description:");
-		lblNewLabel_9.setBounds(176, 166, 88, 14);
+		lblNewLabel_9.setBounds(176, 132, 88, 14);
 		
 		JLabel lblNewLabel_10 = new JLabel("Assignable Manager:");
-		lblNewLabel_10.setBounds(141, 241, 123, 14);
+		lblNewLabel_10.setBounds(141, 220, 123, 14);
 		pnlCreateJob.setLayout(null);
 		pnlCreateJob.add(lblCreateNewJob);
 		pnlCreateJob.add(lblJobName);
@@ -1161,7 +1167,7 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateJob.add(lblNewLabel_10);
 		
 		JLabel lblRequiredQualifications = new JLabel("Required Qualifications:");
-		lblRequiredQualifications.setBounds(119, 356, 145, 14);
+		lblRequiredQualifications.setBounds(399, 356, 145, 14);
 		pnlCreateJob.add(lblRequiredQualifications);
 		
 		JLabel lblAvailableUsers_1 = new JLabel("Available Users");
@@ -1177,12 +1183,12 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateJob.add(lblUsersList);
 		
 		txtJobName = new JTextField();
-		txtJobName.setBounds(395, 107, 86, 20);
+		txtJobName.setBounds(344, 104, 86, 20);
 		txtJobName.setColumns(10);
 		pnlCreateJob.add(txtJobName);
 		
 		JScrollPane scrlPaneJobDescription = new JScrollPane();
-		scrlPaneJobDescription.setBounds(395, 166, 224, 69);
+		scrlPaneJobDescription.setBounds(344, 138, 224, 69);
 		
 		txtAreaJobDescription = new JTextArea();
 		scrlPaneJobDescription.setViewportView(txtAreaJobDescription);
@@ -1198,10 +1204,22 @@ public class AdminManageUsers extends JFrame {
 		listAssignedUsers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrlPaneAssignedUsers.setViewportView(listAssignedUsers);
 		pnlCreateJob.add(scrlPaneAssignedUsers);
+		
+		scrlPaneSuperJobs = new JScrollPane();
+		scrlPaneSuperJobs.setBounds(202, 356, 148, 109);
+		pnlCreateJob.add(scrlPaneSuperJobs);
+		
+		listofSuperJobsList = new JList(superJobsList);
+		listofSuperJobsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrlPaneSuperJobs.setViewportView(listofSuperJobsList);
 		pnlCreateJob.add(buttonAssignUsers);
 		pnlCreateJob.add(buttonRemoveUsers);
 		pnlCreateJob.add(btnCancelJob);
 		pnlCreateJob.add(btnCreateJob);
+		
+		JLabel lblWhereItFalls = new JLabel("Where it falls under:");
+		lblWhereItFalls.setBounds(67, 356, 100, 14);
+		pnlCreateJob.add(lblWhereItFalls);
 		
 		btnCreateTicket = new JButton("Create Ticket");
 		btnCreateTicket.setBounds(762, 3, 136, 23);
@@ -1819,6 +1837,7 @@ public class AdminManageUsers extends JFrame {
 				createManagersList();
 				createAllUsersList();
 				createQualificationsList();
+				loadJobs();
 			}
 		});
 		//closes create job tab
@@ -1836,11 +1855,15 @@ public class AdminManageUsers extends JFrame {
 				String s="";
 				String first;
 				String last;
-				Job job =new Job(Id, txtJobName.getText(), 2, txtAreaJobDescription.getText(), 0);				
-				jdbc.add_project(job);																	//creates project
-				jdbc.add_Manager(manager, Id);															//assigns managers to it
-				jdbc.add_requiredQuals(Id,selectedQual);												//assigns quals to it
-				for(int i=0; i<listAssignedUsers.getModel().getSize();i++){								//assigns users to it
+				int superjobID= jdbc.getIdOfJob(superjobsString);
+				String description = txtAreaJobDescription.getText();
+				Job job =new Job(Id, txtJobName.getText(), 2, description, superjobID);	//creates job
+				job.setJobdesc(description);
+				job.setparentID(superjobID);
+				jdbc.add_job(job);																		    //adds it to database
+				jdbc.add_Manager(manager, Id);																//assigns managers to it
+				jdbc.add_requiredQuals(Id,selectedQual);													//assigns quals to it
+				for(int i=0; i<listAssignedUsers.getModel().getSize();i++){									//assigns users to it
 					s=(String)listAssignedUsers.getModel().getElementAt(i);
 					last=s.substring(0, s.indexOf(44));
 					first=s.substring(s.indexOf(44)+2, s.length());
@@ -1894,12 +1917,23 @@ public class AdminManageUsers extends JFrame {
 			}
 		});
 		//listens for selection of a singular job in tasks and saves it
+		
 		listSuperJobs.addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
 				if (!arg0.getValueIsAdjusting()) {
 					superJobString = (String) listSuperJobs.getSelectedValue();
 					System.out.println(superJobString);
+				}
+			}
+		});
+		//listens for selection of a singular job in tasks and saves it for jobs
+		listofSuperJobsList.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				if (!arg0.getValueIsAdjusting()) {
+					superjobsString = (String) listofSuperJobsList.getSelectedValue();
+					System.out.println(superjobsString);
 				}
 			}
 		});

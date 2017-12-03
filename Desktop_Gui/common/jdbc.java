@@ -178,6 +178,24 @@ public static void add_project(Job jobs){
 	}
 }
 
+//adds a job to the database
+public static void add_job(Job jobs){
+	try {
+		Statement statement = conn1.createStatement();
+	
+			System.out.printf("%d %s %d %s %d \n", jobs.jobID, jobs.jobname, jobs.jobtype,  jobs.jobdesc, jobs.parentID);
+			String sql = "INSERT INTO db309amc2.jobs " +
+             "VALUES ("+jobs.jobID+",'"+jobs.jobname+"',"+jobs.jobtype+",'"+jobs.jobdesc+"',"+jobs.parentID+");";
+			statement.executeUpdate(sql);		
+		// Close all statements
+		statement.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+}
+
 //adds required qualifications to job x
 public static void add_requiredQuals(int id, String s){
 	try {
@@ -453,6 +471,25 @@ public static int getIdOfUser(String username) {
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
 	return userID;
+}
+
+//Gets the jobID of a job given its name
+public static int getIdOfJob(String jobname) {
+	int jobID = 0;
+	try {
+		String query = String.format("SELECT jobID FROM db309amc2.jobs WHERE jobname='%s'", jobname);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {jobID = rs.getInt("jobID");}
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return jobID;
 }
 
 //Gets the qualID of a qual given its name

@@ -326,6 +326,18 @@ SQL;
 		return $result;
 	}
 
+	//Gets tasks for jobid
+	function get_tasks($id)
+	{
+		$conn=data_open();
+		$sql="Select * from tasks where parentID={$id}";
+		$result=$conn->query($sql);
+		$conn->close();
+		return $result;
+	
+	}
+
+
 	//Gets users with quallification by id
 	function get_active_users_by_qualid($id)
 	{

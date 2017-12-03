@@ -165,9 +165,9 @@ public static void add_project(Job jobs){
 	try {
 		Statement statement = conn1.createStatement();
 	
-			System.out.printf("%d %s %d %s %s \n", jobs.jobID,jobs.jobname, jobs.jobtype,  jobs.jobdesc, jobs.parentID);
+			System.out.printf("%d %s %d %s %s this is a test\n", jobs.jobID, jobs.jobname, jobs.jobtype,  jobs.jobdesc, jobs.parentID);
 			String sql = "INSERT INTO db309amc2.jobs " +
-               "VALUES ("+jobs.jobID+",\""+jobs.jobname+"\","+jobs.jobtype+",\""+jobs.jobdesc+"\","+null+");";
+               "VALUES ("+jobs.jobID+",'"+jobs.jobname+"',"+jobs.jobtype+",'"+jobs.jobdesc+"',"+null+");";
   			statement.executeUpdate(sql);		
 		// Close all statements
 		statement.close();

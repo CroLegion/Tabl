@@ -135,6 +135,7 @@ public class AdminManageUsers extends JFrame {
 	ArrayList<Qualification> listedUsersAvail = new ArrayList<Qualification>();
 	DefaultListModel listedUsersAddList = new DefaultListModel();
 	ArrayList<Qualification> listedUsersAdd = new ArrayList<Qualification>();
+	private String projectQual;
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
 	private JButton btnCreateNewProject;	
@@ -1047,9 +1048,6 @@ public class AdminManageUsers extends JFrame {
 		
 		JScrollPane scrlPaneUsersAvailable = new JScrollPane();
 		scrlPaneUsersAvailable.setBounds(283, 354, 154, 164);
-		
-		btnAssign = new JButton("->");
-		btnAssign.setBounds(455, 389, 45, 23);
 		btnRemove = new JButton("<-");
 		btnRemove.setBounds(455, 444, 45, 23);
 		
@@ -1062,7 +1060,7 @@ public class AdminManageUsers extends JFrame {
 		textAreaProjectDescription = new JTextArea();
 		scrlPaneProjectDescription.setViewportView(textAreaProjectDescription);
 		
-		listUsersAvailable = new JList(userList);
+		listUsersAvailable = new JList(listedUsersAvailList);
 		scrlPaneUsersAvailable.setViewportView(listUsersAvailable);
 		
 		listQualifications = new JList(listedQualList);
@@ -1089,8 +1087,9 @@ public class AdminManageUsers extends JFrame {
 		JScrollPane scrlPaneUsersAdded = new JScrollPane();
 		scrlPaneUsersAdded.setBounds(532, 354, 154, 164);
 		
-		listUsersAdded = new JList();
+		listUsersAdded = new JList(listedUsersAddList);
 		scrlPaneUsersAdded.setViewportView(listUsersAdded);
+		
 		pnlCreateProject.setLayout(null);
 		pnlCreateProject.add(lblCreateANew);
 		pnlCreateProject.add(lblNewLabel);
@@ -1102,6 +1101,9 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateProject.add(lblNewLabel_4);
 		pnlCreateProject.add(scrlPaneQualifications);
 		pnlCreateProject.add(scrlPaneUsersAvailable);
+		
+		btnAssign = new JButton("->");
+		btnAssign.setBounds(455, 389, 45, 23);
 		pnlCreateProject.add(btnAssign);
 		pnlCreateProject.add(btnRemove);
 		pnlCreateProject.add(scrlPaneUsersAdded);
@@ -1110,7 +1112,7 @@ public class AdminManageUsers extends JFrame {
 		//edit user info end
 		//create job start				
 		pnlCreateJob = new JPanel();
-		layeredPaneManagerWorkerComponents.setLayer(pnlCreateJob, 11);
+		layeredPaneManagerWorkerComponents.setLayer(pnlCreateJob, 0);
 		pnlCreateJob.setBounds(0, 0, 746, 720);
 		layeredPaneManagerWorkerComponents.add(pnlCreateJob);
 		pnlCreateJob.setVisible(false);
@@ -1683,18 +1685,6 @@ public class AdminManageUsers extends JFrame {
 	 * creates the listener events for the Manager/Worker Components
 	 */
 	private void createManagerWorkerEvents() {
-		//creates a new project 
-		btnCreateNewProject.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int Id= jdbc.getMaxJobID()+1;
-				Job job =new Job(Id, txtProjectName.getText(), 1, textAreaProjectDescription.getText(), (Integer) null);			
-				jdbc.add_project(job);
-				layeredPaneManagerWorker.setVisible(true);	
-				JOptionPane.showMessageDialog(null, "Project Created!");
-				pnlCreateProject.setVisible(false);
-				
-			}
-		});
 		//
 		btnCreateTicket.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -1722,23 +1712,52 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
-		//assigns users to a project
+		//assigns users to a project		
 		btnAssign.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub				
+				Object x = listUsersAvailable.getSelectedValue();
+				listedUsersAddList.addElement(x);
+				listedUsersAvailList.removeElement(x);
 			}
 		});
 		//removes users from a project
 		btnRemove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub				
+				Object x = listUsersAdded.getSelectedValue();
+				listedUsersAvailList.addElement(x);
+				listedUsersAddList.removeElement(x);
 			}
 		});
 		//creates a new project with the given inputs
 		btnCreateNewProject.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub	
+				int Id= jdbc.getMaxJobID()+1;
+				String s="";
+				String first;
+				String last;
+				String description = textAreaProjectDescription.getText();
+				Job job =new Job(Id, txtProjectName.getText(), 2, description);	//creates job
+				job.setJobdesc(description);
+				jdbc.add_project(job);																		    //adds it to database
+				System.out.println(Id);
+				System.out.println(projectQual);
+				jdbc.add_requiredQuals(Id,projectQual);															//assigns quals to it
+				for(int i=0; i<listUsersAdded.getModel().getSize();i++){										//assigns users to it
+					s=(String)listUsersAdded.getModel().getElementAt(i);
+					last=s.substring(0, s.indexOf(44));
+					first=s.substring(s.indexOf(44)+2, s.length());
+					System.out.println(s);
+					jdbc.addUserstoJob(first, last, Id);
+				}
+				
+				
+				layeredPaneManagerWorker.setVisible(true);	
+				JOptionPane.showMessageDialog(null, "Project Created!");
+				listUsersAdded.setModel(new DefaultListModel());
 				pnlCreateProject.setVisible(false);
+				txtProjectName.setText("");
+				textAreaProjectDescription.setText("");
 			}
 		});
 		//creates a new Task with given inputs
@@ -1754,34 +1773,13 @@ public class AdminManageUsers extends JFrame {
 
 			}
 		});	
-	
-//		private JPanel pnlCreateJob;
-//		private JTextField txtJobName;
-//		private JButton btnCreateJob;
-//		private JButton btnCancelJob;	
-//		private JButton buttonAssignUsers; 								
-//		private JButton buttonRemoveUsers;
-//		private JButton btn_create_job;	
-//		private JTextArea txtAreaJobDescription;
-//		private JList listAssignableManagers;
-//		private JList listRequiredQuals;
-//		private JList listAssignedUsers;								
-//		private JList listAvailableUsers;
-//		private String selectedQual;
-//		private User manager;
-//		DefaultListModel assignedUsersList = new DefaultListModel();
-//		ArrayList<User> assignedUsers = new ArrayList<User>();
-//		DefaultListModel unassignedUsersList = new DefaultListModel();
-//		ArrayList<User> unassignedUser = new ArrayList<User>();
-		
 //		assign users to job		
 		buttonAssignUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub	
 				Object x = listAvailableUsers.getSelectedValue();
 				assignedUsersList.addElement(x);
-			    unassignedUsersList.removeElement(x);
-				
+			    unassignedUsersList.removeElement(x);			
 			}
 		});
 		//removes users from job
@@ -1791,7 +1789,6 @@ public class AdminManageUsers extends JFrame {
 				Object x = listAssignedUsers.getSelectedValue();
 				unassignedUsersList.addElement(x);
 			    assignedUsersList.removeElement(x);
-
 			}
 		});
 		//Open create new project tab
@@ -1827,7 +1824,7 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateTask.setVisible(false);
 			}
 		});
-		//open create new job tab TODO
+		//open create new job tab 
 		btn_create_job.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Qualification q=null;
@@ -1872,6 +1869,7 @@ public class AdminManageUsers extends JFrame {
 				}
 				layeredPaneManagerWorker.setVisible(true);	
 				JOptionPane.showMessageDialog(null, "Job Created!");
+				listAssignedUsers.setModel(new DefaultListModel());
 				pnlCreateJob.setVisible(false);
 				txtJobName.setText("");
 				txtAreaJobDescription.setText("");
@@ -1907,17 +1905,16 @@ public class AdminManageUsers extends JFrame {
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
 				if (!arg0.getValueIsAdjusting()) {
-					String s = (String) listAssignableManagers.getSelectedValue();
-					userList.clear();
-					ArrayList<User> users = jdbc.getUsersWithQual(s);
+					projectQual = (String) listQualifications.getSelectedValue();
+					listedUsersAvailList.clear();
+					ArrayList<User> users = jdbc.getUsersWithQual(projectQual);
 					for (int i = 0; i < users.size(); i++) {
-						userList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
+						listedUsersAvailList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
 					}
 				}
 			}
 		});
-		//listens for selection of a singular job in tasks and saves it
-		
+		//listens for selection of a singular job in tasks and saves it	
 		listSuperJobs.addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
@@ -2010,17 +2007,21 @@ public class AdminManageUsers extends JFrame {
 	//pulls all users with selected qualification
 	private void createAllUsersList(String s){
 		unassignedUsersList.clear();
+		listedUsersAddList.clear();
 		ArrayList<User> users = jdbc.getUsersWithQual(s);
 		for (int i = 0; i < users.size(); i++) {
 			unassignedUsersList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
+			listedUsersAvailList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
 		}
 	}
 	//pulls all users 
 	private void createAllUsersList(){
 		unassignedUsersList.clear();
+		listedUsersAvailList.clear();
 		ArrayList<User> users = jdbc.get_users();
 		for (int i = 0; i < users.size(); i++) {
 			unassignedUsersList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
+			listedUsersAvailList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
 		}
 	}	
 	//pulls all managers and fills the list

@@ -11,7 +11,12 @@ public class Job {
          this.jobname = jobname;
          this.jobtype = jobtype;
    }
-
+   
+   public Job(int jobID, String jobname, int jobtype, String jobdesc) {
+  		this.jobID = jobID;
+        this.jobname = jobname;
+        this.jobtype = jobtype;
+  }
    public void setJobdesc(String e) {
 		jobdesc = e;;
    }

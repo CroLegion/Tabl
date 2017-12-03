@@ -91,12 +91,25 @@
 	$table="<table><tr><th>Job Name</th><th>Completed</th></tr>";
 	$table=$table.process_table(get_children($root["jobID"]))."</table>";
 
+	$reqList="<ul>";
+	$reqs=get_job_reqs($root["jobID"]);
+	while($req=$reqs->fetch_assoc()["qualname"])
+	{
+		$reqList=$reqList."<li>".$req."</li>";
+	}
+	$reqList=$reqList."</ul>";
+
 	$Report = <<<HTML
 		<h1>$title</h1>
 		<p>$desc</p>
 
 		<h3>$title jobs</h3>
 		$table
+		<h3>Project Requirements</h3>
+		$reqList
+
+		<h3>Project Staff</h3>
+		
 HTML;
 
 	require 'navbar.php';

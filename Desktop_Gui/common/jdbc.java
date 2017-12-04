@@ -911,6 +911,7 @@ public static void updateTicket(int id, boolean b) {
 public static HashMap<String, Integer> getConversations(int userID) {
 	HashMap<String, Integer> map = new HashMap<String, Integer>();
 	ArrayList<Integer> ids = new ArrayList<Integer>();
+	System.out.println("this is the userID:"+userID);
 	
 	try {		
 		String query = String.format("SELECT * FROM db309amc2.conversation_assignments WHERE memberID=%d", userID);
@@ -919,6 +920,7 @@ public static HashMap<String, Integer> getConversations(int userID) {
 		while (rs.next()) {
 			ids.add(rs.getInt("conversationID"));
 		}
+		System.out.println(ids);
 		
 		for(Integer i : ids) {
 			query = String.format("SELECT * FROM db309amc2.conversations WHERE conversationID=%d", i);

@@ -497,7 +497,7 @@ public class AdminManageUsers extends JFrame {
 		
 		layeredPaneAdmin = new JLayeredPane();
 		layeredPaneAdmin.setBackground(new Color(100, 149, 237));
-		layeredPane.setLayer(layeredPaneAdmin, 20);
+		layeredPane.setLayer(layeredPaneAdmin, 0);
 		layeredPaneAdmin.setBounds(0, 0, 896, 600);
 		layeredPane.add(layeredPaneAdmin);
 		
@@ -1816,6 +1816,8 @@ public class AdminManageUsers extends JFrame {
 						
 					}
 					currentSessionUserID = u.get_userID();
+					loadConversations();
+					
 					btnLogout.setVisible(true);
 					lblPortal.setVisible(true);
 				}

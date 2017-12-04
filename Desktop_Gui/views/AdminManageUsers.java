@@ -293,6 +293,7 @@ public class AdminManageUsers extends JFrame {
 	private JList listConversations;
 	private JScrollPane scrlPaneSuperJobs;
 	private JPanel pnlArchivedUsers;
+	private JTextField txtReportPath;
 	
 	/**
 	 * Launch the application.
@@ -461,6 +462,15 @@ public class AdminManageUsers extends JFrame {
 		btnCreateReport = new JButton("Create Report");
 		btnCreateReport.setBounds(482, 647, 109, 23);
 		pnlReportGeneration.add(btnCreateReport);
+		
+		JLabel lblEnterPathFor = new JLabel("Enter path for reports to go to:");
+		lblEnterPathFor.setBounds(68, 272, 160, 14);
+		pnlReportGeneration.add(lblEnterPathFor);
+		
+		txtReportPath = new JTextField();
+		txtReportPath.setBounds(380, 269, 267, 20);
+		pnlReportGeneration.add(txtReportPath);
+		txtReportPath.setColumns(10);
 		
 		Panel pnlUsers = new Panel();
 		layeredPaneAdminComponents.setLayer(pnlUsers, 0);
@@ -1749,25 +1759,17 @@ public class AdminManageUsers extends JFrame {
 		btnCreateReport.addActionListener(new ActionListener() {	
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub	
 				File file = new File("C:/Users/The Stil/Documents/report.txt");
 				String s = "";
 				reportedjobs.add(jdbc.get_project(projectToGenerate)); //root
 				reportedjobs.addAll(jdbc.get_Branches(projectToGenerate));//branches
 				for (Job job : reportedjobs) {
-					s= s+job.jobname+" "+job.jobdesc+ '\r'+'\n';
+					s= s+job.jobname+"				"+job.jobdesc+ '\r'+'\n';
 					try {
 						writeFileLine(s, file);
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
-//					s=String.format("%-15s, %15s, %30s \n", job.jobname, " ",job.jobdesc);
-//					try {
-//						writeFileLine(s, file);
-//					} catch (IOException e1) {
-//						e1.printStackTrace();
-//					}
-//					s="";
 				}
 				
 			}

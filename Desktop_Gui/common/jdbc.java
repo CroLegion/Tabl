@@ -1437,4 +1437,22 @@ public static void updateJob(String name, String desc, int jobID) {
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
 }
+
+public static void changePassword(int userID, String pass) {
+	try {
+
+		Statement statement = conn1.createStatement();
+		String sql = String.format("UPDATE db309amc2.users SET passhash= '%s' WHERE userID=%d", pass,  userID);
+		statement.executeUpdate(sql);
+		
+
+		// Close all statements
+		statement.close();
+
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+}
 }

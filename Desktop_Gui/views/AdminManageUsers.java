@@ -255,7 +255,6 @@ public class AdminManageUsers extends JFrame {
 	int currentOpenConversation;
 	int currentUsertype;
 	HashMap<String, Integer> conversationMap;
-	private JButton btn_settings;
 	private JButton btnLogout;
 	private JPanel pnlCreateQualification;
 	private JPanel contentPane;	
@@ -361,6 +360,12 @@ public class AdminManageUsers extends JFrame {
 	boolean tasksTableInit = false;
 	private JLabel lblJobID2;
 	private JScrollPane scrollPane_14;
+	private JPanel pnlChangePassword;
+	private JLabel lblNew;
+	private JPasswordField passwordFieldNew;
+	private JPasswordField passwordFieldNewConfirm;
+	private JButton btnX;
+	private JButton btnSubmit;
 	
 	/**
 	 * Launch the application.
@@ -492,7 +497,7 @@ public class AdminManageUsers extends JFrame {
 		
 		layeredPaneAdmin = new JLayeredPane();
 		layeredPaneAdmin.setBackground(new Color(100, 149, 237));
-		layeredPane.setLayer(layeredPaneAdmin, 0);
+		layeredPane.setLayer(layeredPaneAdmin, 20);
 		layeredPaneAdmin.setBounds(0, 0, 896, 600);
 		layeredPane.add(layeredPaneAdmin);
 		
@@ -855,6 +860,40 @@ public class AdminManageUsers extends JFrame {
 		pnlUserEditInfo.add(rdbtnManagerDetails);
 		pnlUserEditInfo.add(rdbtnAdminDetails);
 		pnlUserEditInfo.add(lblUserType_1);
+		
+		pnlChangePassword = new JPanel();
+		pnlChangePassword.setBorder(new TitledBorder(null, "Change Password", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnlChangePassword.setBounds(554, 130, 151, 187);
+		pnlUserEditInfo.add(pnlChangePassword);
+		pnlChangePassword.setLayout(null);
+		
+		lblNew = new JLabel("NEW");
+		lblNew.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNew.setBounds(48, 41, 46, 14);
+		pnlChangePassword.add(lblNew);
+		
+		passwordFieldNew = new JPasswordField();
+		passwordFieldNew.setBounds(28, 66, 95, 20);
+		pnlChangePassword.add(passwordFieldNew);
+		
+		passwordFieldNewConfirm = new JPasswordField();
+		passwordFieldNewConfirm.setBounds(28, 114, 95, 20);
+		pnlChangePassword.add(passwordFieldNewConfirm);
+		
+		JLabel lblConfirm = new JLabel("Confirm");
+		lblConfirm.setHorizontalAlignment(SwingConstants.CENTER);
+		lblConfirm.setBounds(48, 89, 46, 14);
+		pnlChangePassword.add(lblConfirm);
+		
+		btnSubmit = new JButton("Submit");
+
+		btnSubmit.setBounds(10, 153, 79, 23);
+		pnlChangePassword.add(btnSubmit);
+		
+		btnX = new JButton("X");
+		
+		btnX.setBounds(83, 151, 58, 25);
+		pnlChangePassword.add(btnX);
 														
 		pnlViewTickets = new JPanel();
 		layeredPaneAdminComponents.setLayer(pnlViewTickets, 0);
@@ -1020,6 +1059,8 @@ public class AdminManageUsers extends JFrame {
 		listArchivedUsers.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		scrollPane_5.setViewportView(listArchivedUsers);
 		pnlAdmin.add(layeredPaneAdminComponents);
+		
+		pnlChangePassword.setVisible(false);
 	}
 	
 	
@@ -1634,6 +1675,7 @@ public class AdminManageUsers extends JFrame {
 		pnlJobViewerManager.add(btnUnassignJobEmp);
 		
 		btnSaveChangesJob = new JButton("Save Changes");
+		
 		btnSaveChangesJob.setBounds(291, 311, 131, 23);
 		pnlJobViewerManager.add(btnSaveChangesJob);
 		
@@ -1695,12 +1737,6 @@ public class AdminManageUsers extends JFrame {
 		contentPane.add(btnLogout);
 		btnLogout.setVisible(false);
 		
-		btn_settings = new JButton("Settings");
-		btn_settings.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btn_settings.setBounds(701, 8, 89, 28);
-		contentPane.add(btn_settings);
-		btn_settings.setVisible(false);
-		
 		layeredPane_1 = new JLayeredPane();
 		layeredPane_1.setBounds(10, 8, 678, 25);
 		contentPane.add(layeredPane_1);
@@ -1730,11 +1766,6 @@ public class AdminManageUsers extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				jdbc.closeSQLConnection();
-			}
-		});
-		
-		btn_settings.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
 
@@ -1787,7 +1818,6 @@ public class AdminManageUsers extends JFrame {
 					currentSessionUserID = u.get_userID();
 					btnLogout.setVisible(true);
 					lblPortal.setVisible(true);
-					btn_settings.setVisible(true);
 				}
 				
 			}
@@ -1800,7 +1830,6 @@ public class AdminManageUsers extends JFrame {
 				layeredPane.setLayer(layeredPaneManagerWorker, 0);
 				btnLogout.setVisible(false);
 				lblPortal.setVisible(false);
-				btn_settings.setVisible(false);
 				txtLoginUser.setText("");
 				passwordLogin.setText("");
 				
@@ -1853,7 +1882,16 @@ public class AdminManageUsers extends JFrame {
 		});
 		//
 		btnChangePassword.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {				
+			public void actionPerformed(ActionEvent arg0) {	
+				pnlChangePassword.setVisible(true);
+			}
+			
+		});
+		btnX.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlChangePassword.setVisible(false);
+				passwordFieldNew.setText("");
+				passwordFieldNewConfirm.setText("");
 			}
 		});
 		//Display user information that was clicked on the left.
@@ -2072,6 +2110,23 @@ public class AdminManageUsers extends JFrame {
 				jdbc.updateTicket(currentOpenTicketId, rdbtnTicketDoneYes.isSelected());
 				pnlTicketDetails.setVisible(false);
 				loadTickets();
+			}
+		});
+		btnSubmit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String pass = new String(passwordFieldNew.getPassword());
+				String pass1 = new String(passwordFieldNewConfirm.getPassword());
+				
+				if (pass.equals(pass1)) {
+					jdbc.changePassword(lastClickeduserID, pass);
+					passwordFieldNew.setText("");
+					passwordFieldNewConfirm.setText("");
+					pnlChangePassword.setVisible(false);
+					JOptionPane.showMessageDialog(null, "Password Changed!");
+				} else {
+					JOptionPane.showMessageDialog(null, "Entered Passwords do not match!");
+				}
+				
 			}
 		});
 	}
@@ -2357,7 +2412,6 @@ public class AdminManageUsers extends JFrame {
 				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 				selectedNode.setUserObject(textFieldProjectName.getText().toString());
 				jdbc.updateJob(textFieldProjectName.getText().toString(), textProjectDesc.getText().toString(), Integer.parseInt(lblJobID.getText()));
-				
 			}
 		});
 		
@@ -2390,6 +2444,14 @@ public class AdminManageUsers extends JFrame {
 				String name = listAssignJobEmp.getSelectedValue().toString();
 				jdbc.removeUserFromJob(name, Integer.parseInt(lblJobID2.getText()));
 				displaySelectedNode(name);
+			}
+		});
+		
+		btnSaveChangesJob.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+				selectedNode.setUserObject(textFieldJobName.getText().toString());
+				jdbc.updateJob(textFieldJobName.getText().toString(), textAreaJobDesc.getText().toString(), Integer.parseInt(lblJobID2.getText()));
 			}
 		});
 	}
@@ -2610,7 +2672,6 @@ public class AdminManageUsers extends JFrame {
 	
 	
 	private void loadConversations() {
-		currentSessionUserID = 1112;
 		conversationMap = jdbc.getConversations(currentSessionUserID);
 		Object[] names = conversationMap.keySet().toArray();
 		

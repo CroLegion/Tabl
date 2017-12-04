@@ -98,7 +98,10 @@
 		$reqList=$reqList."<li>".$req."</li>";
 	}
 	$reqList=$reqList."</ul>";
-
+	
+	$employees="<ul>";
+	$employees=$employees.get_assigned($root["jobID"]);
+	$employees=$employees."</ul>";
 	$Report = <<<HTML
 		<h1>$title</h1>
 		<p>$desc</p>
@@ -109,7 +112,7 @@
 		$reqList
 
 		<h3>Project Staff</h3>
-		
+		$employees
 HTML;
 
 	require 'navbar.php';
@@ -121,6 +124,7 @@ HTML;
 		<div class="tree">
 		$tree
 		</div>
+		</br></br></br></br></br>
 HTML;
 	require 'frame.php';
 

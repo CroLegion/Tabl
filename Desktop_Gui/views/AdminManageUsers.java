@@ -24,6 +24,7 @@ import java.util.HashMap;
 
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
@@ -63,6 +64,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -355,7 +357,10 @@ public class AdminManageUsers extends JFrame {
 	private JButton btnSaveChangesJob;
 	private JLabel lblTasks;
 	private JTable tasksTable;
+	private DefaultTableModel dataModel = new DefaultTableModel();
+	boolean tasksTableInit = false;
 	private JLabel lblJobID2;
+	private JScrollPane scrollPane_14;
 	
 	/**
 	 * Launch the application.
@@ -1023,7 +1028,7 @@ public class AdminManageUsers extends JFrame {
 	 */
 	private void initManagerWorkerComponents() {
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 20);
+		layeredPane.setLayer(layeredPaneManagerWorker, 0);
 		layeredPaneManagerWorker.setBounds(0, 0, 896, 606);
 		layeredPane.add(layeredPaneManagerWorker);
 		
@@ -1530,7 +1535,7 @@ public class AdminManageUsers extends JFrame {
 		lblJobID.setVisible(false);
 		
 		pnlJobViewerManager = new JPanel();
-		layeredPaneManagerWorkerComponents.setLayer(pnlJobViewerManager, 20);
+		layeredPaneManagerWorkerComponents.setLayer(pnlJobViewerManager, 0);
 		pnlJobViewerManager.setBounds(0, 0, 717, 567);
 		layeredPaneManagerWorkerComponents.add(pnlJobViewerManager);
 		pnlJobViewerManager.setLayout(null);
@@ -1612,6 +1617,7 @@ public class AdminManageUsers extends JFrame {
 		pnlJobViewerManager.add(lblAssigned_4);
 		
 		btnAssignJobQual = new JButton("->");
+
 		btnAssignJobQual.setBounds(135, 176, 57, 23);
 		pnlJobViewerManager.add(btnAssignJobQual);
 		
@@ -1628,7 +1634,7 @@ public class AdminManageUsers extends JFrame {
 		pnlJobViewerManager.add(btnUnassignJobEmp);
 		
 		btnSaveChangesJob = new JButton("Save Changes");
-		btnSaveChangesJob.setBounds(291, 311, 111, 23);
+		btnSaveChangesJob.setBounds(291, 311, 131, 23);
 		pnlJobViewerManager.add(btnSaveChangesJob);
 		
 		lblTasks = new JLabel("Tasks:");
@@ -1639,6 +1645,8 @@ public class AdminManageUsers extends JFrame {
 		lblJobID2 = new JLabel("New label");
 		lblJobID2.setBounds(37, 17, 46, 14);
 		pnlJobViewerManager.add(lblJobID2);
+		
+		
 		
 
 		lblJobID2.setVisible(false);
@@ -1704,6 +1712,12 @@ public class AdminManageUsers extends JFrame {
 		lblPortal.setVisible(false);
 		//create job end		
 		
+	    tasksTable = new JTable();
+	    tasksTable.setModel(dataModel);
+	    scrollPane_14 = new JScrollPane(tasksTable);
+		scrollPane_14.setBounds(35, 394, 672, 154);
+		pnlJobViewerManager.add(scrollPane_14);
+		
 		loadProjects();
 		loadConversations();
 	}
@@ -1759,11 +1773,15 @@ public class AdminManageUsers extends JFrame {
 						layeredPaneManagerWorker.setLayer(pnlManagerWorker, 10);
 						System.out.println("logged in as Manager");
 						lblPortal.setText("Manager Portal - "+u.get_firstname()+ " " + u.get_lastname());
+						clearAllManagerPanels();
 					} else {
 						//They are a Worker
 						layeredPane.setLayer(layeredPaneManagerWorker, 10);
+						layeredPane.setLayer(layeredPaneLogin, 0);
+						layeredPaneManagerWorker.setLayer(pnlManagerWorker, 10);
 						System.out.println("logged in as Worker");
 						lblPortal.setText("Worker Portal - "+u.get_firstname()+ " " + u.get_lastname());
+						clearAllManagerPanels();
 						
 					}
 					currentSessionUserID = u.get_userID();
@@ -1785,6 +1803,7 @@ public class AdminManageUsers extends JFrame {
 				btn_settings.setVisible(false);
 				txtLoginUser.setText("");
 				passwordLogin.setText("");
+				
 			}
 		});
 	}
@@ -2341,6 +2360,38 @@ public class AdminManageUsers extends JFrame {
 				
 			}
 		});
+		
+		btnAssignJobQual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = listAvailJobQual.getSelectedValue().toString();
+				jdbc.addQualToJob(name, Integer.parseInt(lblJobID2.getText()));
+				displaySelectedNode(name);
+			}
+		});
+		
+		btnUnassignJobQual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = listAssignJobQual.getSelectedValue().toString();
+				jdbc.removeQualFromJob(name, Integer.parseInt(lblJobID2.getText()));
+				displaySelectedNode(name);
+			}
+		});
+		
+		btnAssignJobEmp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = listAvailJobEmp.getSelectedValue().toString();
+				jdbc.addUserToJob(name, Integer.parseInt(lblJobID2.getText()));
+				displaySelectedNode(name);
+			}
+		});
+		
+		btnUnassignJobEmp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = listAssignJobEmp.getSelectedValue().toString();
+				jdbc.removeUserFromJob(name, Integer.parseInt(lblJobID2.getText()));
+				displaySelectedNode(name);
+			}
+		});
 	}
 	
 	/*Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
@@ -2550,33 +2601,11 @@ public class AdminManageUsers extends JFrame {
 			}
 		}
 		tree.setBounds(0, 0, 181, 325);
-		//add(new JScrollPane(tree));
 		pnlProjectTree.add(tree);
-		//loadTasks();
+
 	}
 	
-	private void loadTasks() {
-		ArrayList<Task> tasksList = jdbc.getTasks();
-		ArrayList<Job> projectsList = jdbc.getProjectsAndJobs();
-		
-		
-		for (Task t : tasksList) {
-			DefaultMutableTreeNode parentNode = null;
-			DefaultMutableTreeNode job = new DefaultMutableTreeNode(t.name);
-			String parentName;
-			for (Job j : projectsList) {
-				if (t.parentID == j.jobID) {
-					String prefix = j.jobname.substring(0, 1);
-					
-					TreePath path = tree.getNextMatch(prefix, 0, Position.Bias.Forward);
-					System.out.println(t.name+" goes here: "+path);
-					parentNode = (DefaultMutableTreeNode) (path.getLastPathComponent());
-					parentNode.add(job);
-				}
-			}
-			
-		}
-	}
+
 	
 	
 	
@@ -2625,7 +2654,11 @@ public class AdminManageUsers extends JFrame {
 	private void displayJobDetails(Job j) {
 		clearAllManagerPanels();
 		pnlJobViewerManager.setVisible(true);
-
+		if (tasksTableInit) {
+			dataModel.setRowCount(0);
+			
+		}
+		
 		
 		
 		lblJobID2.setText(String.format("%d", j.jobID));
@@ -2672,6 +2705,12 @@ public class AdminManageUsers extends JFrame {
 			availJobEmpList.addElement(s);
 		}
 		
+		loadTasks(j);
+		
+
+	}
+	
+	private void loadTasks(Job j) {
 		Vector<String> columnNames = new Vector<String>();
 	    columnNames.addElement("Task Name");
 	    columnNames.addElement("Task Description");
@@ -2688,14 +2727,12 @@ public class AdminManageUsers extends JFrame {
 		    row.addElement(t.desc);
 		    row.addElement(t.reason);
 		    rowData.addElement(row);
+		    dataModel.addRow(row);
 	    }
 	    
-	    
-		tasksTable = new JTable(rowData, columnNames);
-		tasksTable.setBounds(38, 397, 650, 144);
-		pnlJobViewerManager.add(tasksTable);
-		tasksTable.setRowSelectionAllowed(false);
-		tasksTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	
+	    dataModel.setColumnIdentifiers(columnNames);
+	    tasksTableInit = true;
 	}
 	
 	private void displayProjectDetails(Job j) {

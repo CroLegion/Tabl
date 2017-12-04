@@ -161,6 +161,10 @@
 					require 'messages.php';
 				break;
 
+				case 'send_report':
+					require 'mail.php';
+				break;
+
 				default:
 					echo "in default";
 					require 'login.php';

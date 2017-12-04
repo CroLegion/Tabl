@@ -1,7 +1,10 @@
 <?php
 	//Import required PHP files
+	session_start();
+	
 	require 'database.php';
 	require 'util.php';
+
 	
 	function process_children($self)
 	{	
@@ -73,12 +76,13 @@
 		$rootQ = get_root_of_tree($roots->fetch_assoc()["jobname"]);
 		$root=$rootQ->fetch_assoc();
 	}
-	$title=$root['jobname'];
-	
+	$title = $root['jobname'];
+	$_SESSION['project'] = $root['jobname'];
+
 	$tree=$tree. "<ul> <li> <a href=\"link\"> 
 		<form action='tree_details.php' method='post'>
 			<input type='hidden' name='node' value={$root["jobID"]}>
-			<input type = submit value =\"{$root["jobname"]}\">
+			<input type = submit class='actionbutton' value =\"{$root["jobname"]}\">
 		</form>
 		</a>";
 	$rootChildren=get_children($root["jobID"]);
@@ -102,7 +106,7 @@
 	$employees="<ul>";
 	$employees=$employees.get_assigned($root["jobID"]);
 	$employees=$employees."</ul>";
-	$Report = <<<HTML
+	$_SESSION['report'] = <<<HTML
 		<h1>$title</h1>
 		<p>$desc</p>
 
@@ -120,7 +124,8 @@ HTML;
 	
 	$content = <<< HTML
 		<head><link rel="stylesheet" href="styles.css"></head>
-		$Report
+			<a href="download.php"> <button type="button" class='actionbutton'> Download Report </button> </a>
+
 		<div class="tree">
 		$tree
 		</div>

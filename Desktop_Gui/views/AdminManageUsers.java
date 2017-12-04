@@ -425,7 +425,7 @@ public class AdminManageUsers extends JFrame {
 		
 		layeredPaneAdmin = new JLayeredPane();
 		layeredPaneAdmin.setBackground(new Color(100, 149, 237));
-		layeredPane.setLayer(layeredPaneAdmin, 11);
+		layeredPane.setLayer(layeredPaneAdmin, 0);
 		layeredPaneAdmin.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneAdmin);
 		
@@ -438,7 +438,7 @@ public class AdminManageUsers extends JFrame {
 		layeredPaneAdminComponents.setBounds(0, 0, 937, 760);
 		
 		pnlReportGeneration = new JPanel();
-		layeredPaneAdminComponents.setLayer(pnlReportGeneration, 11);
+		layeredPaneAdminComponents.setLayer(pnlReportGeneration, 0);
 		pnlReportGeneration.setBounds(180, 38, 746, 720);
 		layeredPaneAdminComponents.add(pnlReportGeneration);
 		pnlReportGeneration.setLayout(null);
@@ -1759,7 +1759,8 @@ public class AdminManageUsers extends JFrame {
 		btnCreateReport.addActionListener(new ActionListener() {	
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				File file = new File("C:/Users/The Stil/Documents/report.txt");
+			
+				File file = new File("%s",txtReportPath.getSelectedText());
 				String s = "";
 				reportedjobs.add(jdbc.get_project(projectToGenerate)); //root
 				reportedjobs.addAll(jdbc.get_Branches(projectToGenerate));//branches

@@ -1017,6 +1017,30 @@ public static ArrayList<Task> getTasks() {
 	
 	return tasks;
 }
+public static ArrayList<Task> getTasks(int parentID) {
+	ArrayList<Task> tasks = new ArrayList<Task>();
+	
+	try {		
+		String query = String.format("SELECT * FROM db309amc2.tasks WHERE parentID=%d", parentID);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			Task t = new Task(rs.getString("taskname"), rs.getString("taskdesc"), rs.getString("taskreason"), rs.getInt("parentID"), rs.getInt("taskID"));
+			tasks.add(t);
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	return tasks;
+}
+
 
 public static ArrayList<Qualification> getAssignedJobQuals(int jobID) {
 	ArrayList<Qualification> jobQuals = new ArrayList<Qualification>();
@@ -1396,7 +1420,21 @@ public static void removeQualFromJob(String name, int jobID) {
 	}
 }
 
-public static void updateJob(String name, int jobID) {
-	
+public static void updateJob(String name, String desc, int jobID) {
+	try {
+
+		Statement statement = conn1.createStatement();
+		String sql = String.format("UPDATE db309amc2.jobs SET jobname= '%s', jobdesc='%s' WHERE jobID=%d", name, desc, jobID);
+		statement.executeUpdate(sql);
+		
+
+		// Close all statements
+		statement.close();
+
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
 }
 }

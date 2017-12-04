@@ -63,37 +63,10 @@ public class User {
    public void setEmail(String e) {
       email = e;
    }
-   /*
-    * set phone number given input of different formats 
-    * XXXXXXXXXX,
-    * XXX-XXXXXXX,
-    * XXXXXX-XXXX,
-    * XXX-XXX-XXXX
-    * to be XXX-XXX-XXXX format
-    */
+
    public boolean setPhone(String p) {
 	   phone =p;
 	   return true;
-//	  StringBuilder str = new StringBuilder(p);
-//      if(p.charAt(3)=='-' && p.charAt(7)=='-' &&p.length()==12){//properly formated
-//    	  phone = p;
-//    	  return true;
-//      }else if((p.charAt(3)=='-' &&p.length()==11) || (p.charAt(7)=='-' &&p.length()==11)){//format missing a -
-//    	  if(p.charAt(3)=='-'){//left -
-//    		  str.insert(3, '-');
-//    		  p = new String(str);
-//    		  phone = p;
-//    		  return true;
-//    	  }str.insert(7, '-');//right -
-//		  p = new String(str);
-//		  phone = p;
-//		  return true;
-//      }else{//format missing both or wrong
-//    	  if(p.length()!=10)return false;
-//    	  str.insert(3, '-');
-//    	  str.insert(7, '-');
-//		  p = new String(str);
-//      }return false;
    }
    
    public boolean active() {

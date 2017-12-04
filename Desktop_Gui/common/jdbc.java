@@ -1,7 +1,11 @@
 package common;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
@@ -72,6 +76,7 @@ public static int get_new_id(String tableName) {
 	map.put("tickets", "ticketID");
 	map.put("qualifications", "qualID");
 	map.put("tasks", "taskID");
+	map.put("messages", "msgID");
 	int randomNum = 0;
 	
 	while(true) {
@@ -147,8 +152,6 @@ public static void add_Manager(User user, int jobID) {
 public static void add_project(Job jobs){
 	try {
 		Statement statement = conn1.createStatement();
-	
-			System.out.printf("%d %s %d %s %s \n", jobs.jobID,jobs.jobname, jobs.jobtype,  jobs.jobdesc, jobs.parentID);
 			String sql = "INSERT INTO db309amc2.jobs " +
                "VALUES ("+jobs.jobID+",\""+jobs.jobname+"\","+jobs.jobtype+",\""+jobs.jobdesc+"\","+null+");";
   			statement.executeUpdate(sql);		
@@ -179,6 +182,7 @@ public static void add_requiredQuals(int id, java.util.List list){
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
 }
+
 //adds a task to the database
 public static void add_task(Task tasks){
 	try {
@@ -196,6 +200,7 @@ public static void add_task(Task tasks){
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
 }
+
 //returns a list of all managers
 public static ArrayList<User> get_Managers() {
 	ArrayList<User> users = new ArrayList<User>();
@@ -525,17 +530,17 @@ public static ArrayList<Job> getProjectsAndJobs() {
 }
 
 //returns a list of user w/ a qualification
-public static ArrayList<User> getUsersWithQual(Qualification q){
+public static ArrayList<User> getUsersWithQual(String s){
 	ArrayList<User> users = new ArrayList<User>();	
 	try{
 		String query = String.format("SELECT users.userID, usertype, username, firstname, lastname FROM ((db309amc2.users "
 		        + "INNER join db309amc2.qualification_assignments on users.userID=qualification_assignments.userID)"
-				+ "INNER join db309amc2.qualifications on qualification_assignments.qualID=qualifications.qualID) WHERE qualifications.qualID=%d", q.getQualID());
+				+ "INNER join db309amc2.qualifications on qualification_assignments.qualID=qualifications.qualID) WHERE qualifications.qualname='%s'", s);
 		Statement stmt = null;
 		stmt = conn1.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		while (rs.next()) {
-			    User u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), rs.getBoolean("isActive"));
+			    User u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), true);
 				users.add(u);
 				System.out.println(u);		
 		}
@@ -551,6 +556,40 @@ public static ArrayList<User> getUsersWithQual(Qualification q){
 	return users;
 }
 
+//returns a list of user w/ a qualification  TODO
+public static ArrayList<User> getUsersWithQual(List l){
+	String s = l.toString();
+	s=s.substring(1, s.length()-1);
+	s="'"+s+"'";
+	s=s.replace(",", "' AND ");
+	s=s.replace("  ", " '");
+
+
+	System.out.println(s);
+	ArrayList<User> users = new ArrayList<User>();	
+	try{
+		String query = String.format("SELECT users.userID, usertype, username, firstname, lastname FROM ((db309amc2.users "
+		        + "INNER join db309amc2.qualification_assignments on users.userID=qualification_assignments.userID)"
+				+ "INNER join db309amc2.qualifications on qualification_assignments.qualID=qualifications.qualID) WHERE qualifications.qualname=%s", s);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			    User u = new User(rs.getInt("userID"), rs.getInt("usertype"), rs.getString("username"), rs.getString("firstname"), rs.getString("lastname"), true);
+				users.add(u);
+				System.out.println(u);		
+		}
+		
+		// Close all statements
+		stmt.close();
+
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return users;
+}
 //returns a list of qualifications
 public static ArrayList<Qualification> get_qualifications(){
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();	
@@ -705,6 +744,27 @@ public static ArrayList<Qualification> getQualifications() {
 	}
 	return quals;
 }
+public static Qualification getQualification(String name) {
+	Qualification qual = null;
+	try {		
+		String query = String.format("SELECT * FROM db309amc2.qualifications WHERE qualname= '%s'",name);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			qual = new Qualification(rs.getInt("qualID"), rs.getString("qualname"), rs.getString("qualdescription"));
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return qual;
+}
+
 
 //creates a qualification
 public static boolean createQual(String name, String desc, ArrayList<String> usernames) {
@@ -851,6 +911,7 @@ public static void updateTicket(int id, boolean b) {
 public static HashMap<String, Integer> getConversations(int userID) {
 	HashMap<String, Integer> map = new HashMap<String, Integer>();
 	ArrayList<Integer> ids = new ArrayList<Integer>();
+	System.out.println("this is the userID:"+userID);
 	
 	try {		
 		String query = String.format("SELECT * FROM db309amc2.conversation_assignments WHERE memberID=%d", userID);
@@ -859,6 +920,7 @@ public static HashMap<String, Integer> getConversations(int userID) {
 		while (rs.next()) {
 			ids.add(rs.getInt("conversationID"));
 		}
+		System.out.println(ids);
 		
 		for(Integer i : ids) {
 			query = String.format("SELECT * FROM db309amc2.conversations WHERE conversationID=%d", i);
@@ -912,5 +974,487 @@ public static ArrayList<String> getConversationMessages(int conversationID, int 
 	}
 	
 	return messages;
+}
+
+public static void sendMessage(String text, int senderID, int receivingID) {
+	int newID = get_new_id("messages");
+	
+	String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+	System.out.println(time);
+	try {
+		Statement statement = conn1.createStatement();
+		String sql = String.format("INSERT INTO db309amc2.messages VALUES(%d, %s, '%s', %d, %d, '"+time+"')", newID, null, text, senderID, receivingID);
+		statement.executeUpdate(sql);
+		// Close all statements and connections
+		statement.close();
+		
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+}
+
+
+public static ArrayList<Task> getTasks() {
+	ArrayList<Task> tasks = new ArrayList<Task>();
+	
+	try {		
+		String query = "SELECT * FROM db309amc2.tasks";
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			Task t = new Task(rs.getString("taskname"), rs.getString("taskdesc"), rs.getString("taskreason"), rs.getInt("parentID"), rs.getInt("taskID"));
+			tasks.add(t);
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	return tasks;
+}
+public static ArrayList<Task> getTasks(int parentID) {
+	ArrayList<Task> tasks = new ArrayList<Task>();
+	
+	try {		
+		String query = String.format("SELECT * FROM db309amc2.tasks WHERE parentID=%d", parentID);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			Task t = new Task(rs.getString("taskname"), rs.getString("taskdesc"), rs.getString("taskreason"), rs.getInt("parentID"), rs.getInt("taskID"));
+			tasks.add(t);
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	return tasks;
+}
+
+
+public static ArrayList<Qualification> getAssignedJobQuals(int jobID) {
+	ArrayList<Qualification> jobQuals = new ArrayList<Qualification>();
+	ArrayList<Integer> qualIDs = new ArrayList<Integer>();
+	
+	try {		
+		String query = String.format("SELECT * FROM db309amc2.job_requirements WHERE jobID=%d", jobID);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			qualIDs.add(rs.getInt("qualID"));
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	StringBuilder s = new StringBuilder();
+	s.append('(');
+	for (int i = 0; i < qualIDs.size(); i++) {
+		if (i == qualIDs.size()-1) {
+			s.append(qualIDs.get(i)+")");
+			break;
+		} else {
+			s.append(qualIDs.get(i)+",");
+		}
+		
+	}
+	
+	
+	try {		
+		String query;
+		if (qualIDs.isEmpty()) {
+			return jobQuals;
+		} else {
+			query = String.format("SELECT * FROM db309amc2.qualifications WHERE qualID in %s", s);
+		}
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			Qualification q = new Qualification(rs.getInt("qualID"),rs.getString("qualname"),rs.getString("qualdescription"));
+			jobQuals.add(q);
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	return jobQuals;
+}
+
+public static ArrayList<Qualification> getAvailJobQuals(int jobID) {
+	ArrayList<Qualification> jobQuals = new ArrayList<Qualification>();
+	ArrayList<Integer> qualIDs = new ArrayList<Integer>();
+	
+	try {		
+		String query = String.format("SELECT * FROM db309amc2.job_requirements WHERE jobID=%d", jobID);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			qualIDs.add(rs.getInt("qualID"));
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("the assigned didnt work");
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	StringBuilder s = new StringBuilder();
+	s.append('(');
+	for (int i = 0; i < qualIDs.size(); i++) {
+		if (i == qualIDs.size()-1) {
+			s.append(qualIDs.get(i)+")");
+			break;
+		} else {
+			s.append(qualIDs.get(i)+",");
+		}
+		
+	}
+	
+	try {		
+		String query;
+		if (qualIDs.isEmpty()) {
+			query = "SELECT * FROM db309amc2.qualifications";
+		} else {
+			query = String.format("SELECT * FROM db309amc2.qualifications WHERE qualID not in %s", s);
+		}
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			Qualification q = new Qualification(rs.getInt("qualID"),rs.getString("qualname"),rs.getString("qualdescription"));
+			jobQuals.add(q);
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("the not assigned didnt work");
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	return jobQuals;
+}
+
+public static ArrayList<String> getAssignedJobUsers(int jobID) {
+	ArrayList<String> users = new ArrayList<String>();
+	ArrayList<Integer> userIDs = new ArrayList<Integer>();
+	
+	try {		
+		String query = String.format("SELECT * FROM db309amc2.job_assignments WHERE jobID=%d", jobID);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			userIDs.add(rs.getInt("userID"));
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	StringBuilder s = new StringBuilder();
+	s.append('(');
+	for (int i = 0; i < userIDs.size(); i++) {
+		if (i == userIDs.size()-1) {
+			s.append(userIDs.get(i)+")");
+			break;
+		} else {
+			s.append(userIDs.get(i)+",");
+		}
+		
+	}
+	
+	try {		
+		String query;
+		if (userIDs.isEmpty()) {
+			return users;
+		} else {
+			query = String.format("SELECT * FROM db309amc2.users WHERE userID in %s", s);
+		}
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			users.add(rs.getString("lastname")+", "+rs.getString("firstname"));
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return users;
+}
+
+public static ArrayList<String> getAvailJobUsers(int jobID) {
+	ArrayList<String> users = new ArrayList<String>();
+	ArrayList<Integer> userIDs = new ArrayList<Integer>();
+	//get list of userIDs who are assigned to the job
+	try {		
+		String query = String.format("SELECT * FROM db309amc2.job_assignments WHERE jobID=%d", jobID);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			userIDs.add(rs.getInt("userID"));
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("Failed in spot 1");
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	
+	StringBuilder s = new StringBuilder();
+	s.append('(');
+	for (int i = 0; i < userIDs.size(); i++) {
+		if (i == userIDs.size()-1) {
+			s.append(userIDs.get(i)+")");
+			break;
+		} else {
+			s.append(userIDs.get(i)+",");
+		}
+		
+	}
+	
+	//get list of qualifications assigned to a job
+	ArrayList<Qualification> q = getAssignedJobQuals(jobID);
+	
+	if (q.isEmpty()) {
+		return users;
+	}
+	
+	
+	StringBuilder s1 = new StringBuilder();
+	s1.append('(');
+	for (int i = 0; i < q.size(); i++) {
+		if (i == q.size()-1) {
+			s1.append(q.get(i).getQualID()+")");
+			break;
+		} else {
+			s1.append(q.get(i).getQualID()+",");
+		}
+		
+	}
+	
+	ArrayList<Integer> userIDwithQual = new ArrayList<Integer>();
+	
+	//get list of userIDs who have a specific qualification
+	try {		
+		String query;
+		query = String.format("SELECT * FROM db309amc2.qualification_assignments WHERE qualID in %s", s1);
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			userIDwithQual.add(rs.getInt("userID"));
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("Failed in spot 2");
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	StringBuilder s2 = new StringBuilder();
+	s2.append('(');
+	for (int i = 0; i < userIDwithQual.size(); i++) {
+		if (i == userIDwithQual.size()-1) {
+			s2.append(userIDwithQual.get(i)+")");
+			break;
+		} else {
+			s2.append(userIDwithQual.get(i)+",");
+		}
+	}
+	
+	
+	
+	try {		
+		String query = String.format("SELECT * FROM db309amc2.users WHERE userID in %s", s2);
+		
+		Statement stmt = null;
+		stmt = conn1.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			int userID = rs.getInt("userID");
+			boolean found = false;
+			for (Integer i : userIDs) {
+				if (userID == i) {
+					found = true;
+				}
+			}
+			if (!found) {
+				users.add(rs.getString("lastname")+", "+rs.getString("firstname"));
+			}
+			
+			
+		}
+		
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("Failed in spot 3");
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+	
+	
+	return users;
+	
+}
+
+
+public static void addUserToJob(String name, int jobID) {
+	int i = name.indexOf(',');
+	String first = name.substring(i+2, name.length());
+	String last = name.substring(0, i);
+	User u = get_user(first, last);
+
+	try {
+		Statement statement = conn1.createStatement();
+		String sql = String.format("INSERT INTO db309amc2.job_assignments VALUES(%d, %d)", jobID, u.get_userID());
+		statement.executeUpdate(sql);
+		// Close all statements and connections
+		statement.close();
+		
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	
+}
+
+public static void removeUserFromJob(String name, int jobID) {
+	int i = name.indexOf(',');
+	String first = name.substring(i+2, name.length());
+	String last = name.substring(0, i);
+	User u = get_user(first, last);
+	
+	try {
+		Statement statement = conn1.createStatement();
+		String sql = String.format("DELETE FROM db309amc2.job_assignments WHERE jobID = %d AND userID=%d", jobID, u.get_userID());
+		statement.executeUpdate(sql);
+		
+		statement.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+}
+
+public static void addQualToJob(String name, int jobID) {
+	Qualification q = getQualification(name);
+	try {
+		Statement statement = conn1.createStatement();
+		String sql = String.format("INSERT INTO db309amc2.job_requirements VALUES(%d, %d)", jobID, q.getQualID());
+		statement.executeUpdate(sql);
+		// Close all statements and connections
+		statement.close();
+		
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+}
+
+public static void removeQualFromJob(String name, int jobID) {
+	Qualification q = getQualification(name);
+	System.out.println("Here is the qualID"+q.getQualName());
+	try {
+		Statement statement = conn1.createStatement();
+		String sql = String.format("DELETE FROM db309amc2.job_requirements WHERE jobID = %d AND qualID=%d", jobID, q.getQualID());
+		statement.executeUpdate(sql);
+		// Close all statements and connections
+		statement.close();
+		
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+}
+
+public static void updateJob(String name, String desc, int jobID) {
+	try {
+
+		Statement statement = conn1.createStatement();
+		String sql = String.format("UPDATE db309amc2.jobs SET jobname= '%s', jobdesc='%s' WHERE jobID=%d", name, desc, jobID);
+		statement.executeUpdate(sql);
+		
+
+		// Close all statements
+		statement.close();
+
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+}
+
+public static void changePassword(int userID, String pass) {
+	try {
+
+		Statement statement = conn1.createStatement();
+		String sql = String.format("UPDATE db309amc2.users SET passhash= '%s' WHERE userID=%d", pass,  userID);
+		statement.executeUpdate(sql);
+		
+
+		// Close all statements
+		statement.close();
+
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
 }
 }

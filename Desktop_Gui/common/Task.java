@@ -1,11 +1,11 @@
 package common;
 
 public class Task {
-	String name;
-	String desc;
-	String reason;
-	int parentID;
-	int taskID;
+	public String name;
+	public String desc;
+	public String reason;
+	public int parentID;
+	public int taskID;
 	
 	public Task(String name, String desc, String reason, int parentID, int taskID){
 		this.name = name;

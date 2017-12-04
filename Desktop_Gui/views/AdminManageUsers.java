@@ -21,6 +21,10 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
@@ -58,6 +62,12 @@ import javax.swing.JInternalFrame;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.text.Position;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 import javax.swing.JTextField;
 import javax.swing.JSeparator;
 
@@ -77,6 +87,8 @@ import javax.swing.JTextArea;
 
 import java.awt.SystemColor;
 import java.awt.Component;
+import javax.swing.JTree;
+import javax.swing.JTable;
 
 public class AdminManageUsers extends JFrame {
 	private int currentSessionUserID;
@@ -150,7 +162,7 @@ public class AdminManageUsers extends JFrame {
 	private JScrollPane scrlPaneSuperJob;
 	DefaultListModel superJobsList = new DefaultListModel();
 	ArrayList<Job> superJobs = new ArrayList<Job>();
-	private JList listSuperJobs = new JList(superJobsList);
+	private JList listSuperJobs;
 	private String superJobString;
 	
 	//job creation tab
@@ -166,9 +178,13 @@ public class AdminManageUsers extends JFrame {
 	private JList listRequiredQuals;
 	private JList listAssignedUsers;								
 	private JList listAvailableUsers;
+	private List selectedQual;
 	private User manager;
-	java.util.List qualsArray;
-
+	DefaultListModel assignedUsersList = new DefaultListModel();
+	ArrayList<User> assignedUsers = new ArrayList<User>();
+	DefaultListModel unassignedUsersList = new DefaultListModel();
+	ArrayList<User> unassignedUser = new ArrayList<User>();
+	
 	//Layered Pane login
 	private JButton btnLogin;
 	private JPasswordField passwordLogin;
@@ -221,12 +237,24 @@ public class AdminManageUsers extends JFrame {
 	DefaultListModel projectsList = new DefaultListModel();
 	DefaultListModel conversationsList = new DefaultListModel();
 	DefaultListModel conversationMessagesList = new DefaultListModel();
+	
+	DefaultListModel assignedProjEmpList = new DefaultListModel();
+	DefaultListModel availProjEmpList = new DefaultListModel();
+	DefaultListModel projAssignQualList = new DefaultListModel();
+	DefaultListModel projAvailQualList = new DefaultListModel();
+	
+	DefaultListModel assignedJobEmpList = new DefaultListModel();
+	DefaultListModel availJobEmpList = new DefaultListModel();
+	DefaultListModel assignJobQualList = new DefaultListModel();
+	DefaultListModel availJobQualList = new DefaultListModel();
+	
 	int lastClickedIndex;
 	int lastClickeduserID;
 	int lastClickedUserType;
 	int currentOpenTicketId;
+	int currentOpenConversation;
+	int currentUsertype;
 	HashMap<String, Integer> conversationMap;
-	private JButton btn_settings;
 	private JButton btnLogout;
 	private JPanel pnlCreateQualification;
 	private JPanel contentPane;	
@@ -266,14 +294,78 @@ public class AdminManageUsers extends JFrame {
 	private JLabel lblNewLabel_7;
 	private JLabel lblNewLabel_8;
 	private JScrollPane scrlConversations;
-	private JScrollPane scrlProjects;
-	private JList listProjects;
 	private JList listConversations;
 	private JPanel pnlConversationDetails;
 	private JTextField txtNewMessage;
 	private JButton btnSendMessage;
 	private JList listConversationMessages;
 	private JLabel lblConversationTitle;
+	private JPanel pnlProjectViewerManager;
+	private JLabel lblProjectName;
+	private JTree tree;
+	private JPanel pnlProjectTree;
+	private JButton btnRefresh;
+	private JPanel pnlJobViewerManager;
+	private JLabel lblProjectDescrption;
+	private JScrollPane scrollPane_6;
+	private JTextField textFieldProjectName;
+	private JScrollPane sclPaneProjAvailQual;
+	private JScrollPane sclPaneProjAssignQual;
+	private JList listProjAssignQual;
+	private JList listProjAvailQual;
+	private JButton btnAssignProjQual;
+	private JButton btnUnassignProjQual;
+	private JLabel lblAvailable_2;
+	private JLabel lblAssigned_2;
+	private JLabel lblEmployees;
+	private JScrollPane scrollPane_7;
+	private JScrollPane scrollPane_8;
+	private JButton btnAssignEmployeeProj;
+	private JButton btnUnassignEmployeeProj;
+	private JList listAvailProjEmp;
+	private JList listAssignedProjEmp;
+	private JLabel label;
+	private JLabel label_1;
+	private JTextArea textProjectDesc;
+	private JButton btnSaveChangesProject;
+	private JLabel lblJobID;
+	private boolean treeIsBeingUpdated = false;
+	private JLabel lblJobName_1;
+	private JTextField textFieldJobName;
+	private JLabel lblJobDescription;
+	private JScrollPane scrollPane_9;
+	private JTextArea textAreaJobDesc;
+	private JScrollPane scrollPane_10;
+	private JScrollPane scrollPane_11;
+	private JScrollPane scrollPane_12;
+	private JScrollPane scrollPane_13;
+	private JList listAvailJobQual;
+	private JList listAssignJobQual;
+	private JList listAvailJobEmp;
+	private JList listAssignJobEmp;
+	private JLabel lblQualifications_1;
+	private JLabel lblEmployees_1;
+	private JLabel lblAvailable_3;
+	private JLabel lblAssigned_3;
+	private JLabel lblAvailable_4;
+	private JLabel lblAssigned_4;
+	private JButton btnAssignJobQual;
+	private JButton btnAssignJobEmp;
+	private JButton btnUnassignJobQual;
+	private JButton btnUnassignJobEmp;
+	private JButton btnSaveChangesJob;
+	private JLabel lblTasks;
+	private JTable tasksTable;
+	private DefaultTableModel dataModel = new DefaultTableModel();
+	boolean tasksTableInit = false;
+	private JLabel lblJobID2;
+	private JScrollPane scrollPane_14;
+	private JPanel pnlChangePassword;
+	private JLabel lblNew;
+	private JPasswordField passwordFieldNew;
+	private JPasswordField passwordFieldNewConfirm;
+	private JButton btnX;
+	private JButton btnSubmit;
 	
 	/**
 	 * Launch the application.
@@ -405,7 +497,7 @@ public class AdminManageUsers extends JFrame {
 		
 		layeredPaneAdmin = new JLayeredPane();
 		layeredPaneAdmin.setBackground(new Color(100, 149, 237));
-		layeredPane.setLayer(layeredPaneAdmin, 11);
+		layeredPane.setLayer(layeredPaneAdmin, 0);
 		layeredPaneAdmin.setBounds(0, 0, 896, 600);
 		layeredPane.add(layeredPaneAdmin);
 		
@@ -626,7 +718,7 @@ public class AdminManageUsers extends JFrame {
 		//create task end	
 		//edit user info start				
 		pnlUserEditInfo = new JPanel();
-		layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 0);
+		layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 30);
 		pnlUserEditInfo.setBounds(180, 38, 715, 565);
 		layeredPaneAdminComponents.add(pnlUserEditInfo);
 		pnlUserEditInfo.setBorder(new TitledBorder(null, "User Edit/Info", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -702,10 +794,10 @@ public class AdminManageUsers extends JFrame {
 		lblAssigned.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		btnChangePassword = new JButton("Change Password");
-		btnChangePassword.setBounds(318, 248, 120, 20);
+		btnChangePassword.setBounds(318, 248, 166, 20);
 		
 		btnSaveChanges = new JButton("Save Changes");
-		btnSaveChanges.setBounds(162, 248, 109, 20);
+		btnSaveChanges.setBounds(162, 248, 146, 20);
 		
 		btnSaveChanges.setToolTipText("Save Changes to Database");
 		
@@ -768,6 +860,40 @@ public class AdminManageUsers extends JFrame {
 		pnlUserEditInfo.add(rdbtnManagerDetails);
 		pnlUserEditInfo.add(rdbtnAdminDetails);
 		pnlUserEditInfo.add(lblUserType_1);
+		
+		pnlChangePassword = new JPanel();
+		pnlChangePassword.setBorder(new TitledBorder(null, "Change Password", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnlChangePassword.setBounds(554, 130, 151, 187);
+		pnlUserEditInfo.add(pnlChangePassword);
+		pnlChangePassword.setLayout(null);
+		
+		lblNew = new JLabel("NEW");
+		lblNew.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNew.setBounds(48, 41, 46, 14);
+		pnlChangePassword.add(lblNew);
+		
+		passwordFieldNew = new JPasswordField();
+		passwordFieldNew.setBounds(28, 66, 95, 20);
+		pnlChangePassword.add(passwordFieldNew);
+		
+		passwordFieldNewConfirm = new JPasswordField();
+		passwordFieldNewConfirm.setBounds(28, 114, 95, 20);
+		pnlChangePassword.add(passwordFieldNewConfirm);
+		
+		JLabel lblConfirm = new JLabel("Confirm");
+		lblConfirm.setHorizontalAlignment(SwingConstants.CENTER);
+		lblConfirm.setBounds(48, 89, 46, 14);
+		pnlChangePassword.add(lblConfirm);
+		
+		btnSubmit = new JButton("Submit");
+
+		btnSubmit.setBounds(10, 153, 79, 23);
+		pnlChangePassword.add(btnSubmit);
+		
+		btnX = new JButton("X");
+		
+		btnX.setBounds(83, 151, 58, 25);
+		pnlChangePassword.add(btnX);
 														
 		pnlViewTickets = new JPanel();
 		layeredPaneAdminComponents.setLayer(pnlViewTickets, 0);
@@ -933,6 +1059,8 @@ public class AdminManageUsers extends JFrame {
 		listArchivedUsers.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		scrollPane_5.setViewportView(listArchivedUsers);
 		pnlAdmin.add(layeredPaneAdminComponents);
+		
+		pnlChangePassword.setVisible(false);
 	}
 	
 	
@@ -965,7 +1093,9 @@ public class AdminManageUsers extends JFrame {
 		//Create task start			
 		pnlCreateTask = new JPanel();
 		layeredPaneManagerWorkerComponents.setLayer(pnlCreateTask, 0);
+
 		pnlCreateTask.setBounds(0, 0, 717, 567);
+
 		layeredPaneManagerWorkerComponents.add(pnlCreateTask);
 		pnlCreateTask.setVisible(false);
 		
@@ -973,13 +1103,17 @@ public class AdminManageUsers extends JFrame {
 		lblTaskName.setBounds(163, 70, 114, 14);
 		
 		JLabel lblTaskDescription = new JLabel("Description of the Task:");
+
 		lblTaskDescription.setBounds(137, 213, 140, 14);
+
 		
 		JLabel lblTaskReason = new JLabel("Reason why it should be added:");
 		lblTaskReason.setBounds(94, 327, 180, 14);
 		
 		JScrollPane scrlPaneDescription = new JScrollPane();
+
 		scrlPaneDescription.setBounds(365, 213, 216, 78);
+
 		
 		JScrollPane scrlPaneReason = new JScrollPane();
 		scrlPaneReason.setBounds(366, 327, 215, 105);
@@ -1015,13 +1149,14 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateTask.add(btnCreateNewTask);
 		
 		JLabel lblWhereItShould = new JLabel("Where it should fall under:");
+
 		lblWhereItShould.setBounds(137, 114, 171, 14);
 		pnlCreateTask.add(lblWhereItShould);
 		
 		scrlPaneSuperJob = new JScrollPane();
 		scrlPaneSuperJob.setBounds(366, 114, 180, 78);
+
 		pnlCreateTask.add(scrlPaneSuperJob);
-		//TODO
 		listSuperJobs = new JList(superJobsList);
 		scrlPaneSuperJob.setViewportView(listSuperJobs);
 		//create user end				
@@ -1109,8 +1244,10 @@ public class AdminManageUsers extends JFrame {
 		//edit user info end
 		//create job start				
 		pnlCreateJob = new JPanel();
+
 		layeredPaneManagerWorkerComponents.setLayer(pnlCreateJob, 0);
 		pnlCreateJob.setBounds(0, 0, 717, 567);
+
 		layeredPaneManagerWorkerComponents.add(pnlCreateJob);
 		pnlCreateJob.setVisible(false);
 		
@@ -1118,9 +1255,11 @@ public class AdminManageUsers extends JFrame {
 		lblCreateNewJob.setBounds(302, 22, 122, 22);
 		lblCreateNewJob.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		
+
 		JScrollPane scrlPaneJobDescription = new JScrollPane();
 		scrlPaneJobDescription.setBounds(395, 80, 224, 69);
 		
+
 		JScrollPane scrlPaneAssignableManagers = new JScrollPane();
 		scrlPaneAssignableManagers.setBounds(395, 171, 234, 69);
 		
@@ -1128,7 +1267,9 @@ public class AdminManageUsers extends JFrame {
 		scrlPaneRequiredQuals.setBounds(395, 251, 145, 104);
 		
 		JScrollPane scrlPaneAvailableUsers = new JScrollPane();
+
 		scrlPaneAvailableUsers.setBounds(319, 391, 148, 138);
+
 		
 		listAssignableManagers = new JList(managerList);
 		listAssignableManagers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -1140,7 +1281,8 @@ public class AdminManageUsers extends JFrame {
 		listRequiredQuals = new JList(listedQualList);
 		scrlPaneRequiredQuals.setViewportView(listRequiredQuals);
 		
-		listAvailableUsers = new JList(userList);
+		listAvailableUsers = new JList(unassignedUsersList);
+		listAvailableUsers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrlPaneAvailableUsers.setViewportView(listAvailableUsers);
 		
 		buttonAssignUsers = new JButton("->");
@@ -1152,14 +1294,30 @@ public class AdminManageUsers extends JFrame {
 		txtJobName = new JTextField();
 		txtJobName.setBounds(395, 49, 86, 20);
 		txtJobName.setColumns(10);
-		
+
 		btnCreateJob = new JButton("Create Job");
 		btnCreateJob.setBounds(561, 532, 103, 23);
 		
 		btnCancelJob  = new JButton("Cancel");
 		btnCancelJob.setBounds(91, 532, 86, 23);
 		
+		JLabel lblNewLabel_9 = new JLabel("Description:");
+		lblNewLabel_9.setBounds(176, 166, 88, 14);
+		
+		JLabel lblNewLabel_10 = new JLabel("Assignable Manager:");
+		lblNewLabel_10.setBounds(141, 241, 123, 14);
+		pnlCreateJob.setLayout(null);
+		pnlCreateJob.add(lblCreateNewJob);
+		pnlCreateJob.add(lblJobName);
+		pnlCreateJob.add(lblNewLabel_9);
+		pnlCreateJob.add(lblNewLabel_10);
+		
+		JLabel lblRequiredQualifications = new JLabel("Required Qualifications:");
+		lblRequiredQualifications.setBounds(119, 356, 145, 14);
+		pnlCreateJob.add(lblRequiredQualifications);
+		
 		JLabel lblAvailableUsers_1 = new JLabel("Available Users");
+
 		lblAvailableUsers_1.setBounds(324, 366, 100, 14);
 		
 		JLabel lblAssignedUsers = new JLabel("Assigned Users");
@@ -1168,31 +1326,42 @@ public class AdminManageUsers extends JFrame {
 		JLabel lblUsersList = new JLabel("User List:");
 		lblUsersList.setBounds(188, 393, 76, 14);
 		
-		JLabel lblNewLabel_9 = new JLabel("Description:");
+
 		lblNewLabel_9.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_9.setBounds(141, 77, 123, 14);
+
+
+
 		
-		JLabel lblNewLabel_10 = new JLabel("Assignable Manager:");
-		lblNewLabel_10.setBounds(155, 173, 123, 14);
+
+		pnlCreateJob.add(lblAssignedUsers);
 		
-		JLabel lblRequiredQualifications = new JLabel("Required Qualifications:");
-		lblRequiredQualifications.setBounds(150, 253, 145, 14);
+		pnlCreateJob.add(lblUsersList);
+		
+		pnlCreateJob.add(txtJobName);
+		
+		txtAreaJobDescription = new JTextArea();
+		scrlPaneJobDescription.setViewportView(txtAreaJobDescription);
+		pnlCreateJob.add(scrlPaneJobDescription);
+		pnlCreateJob.add(scrlPaneAssignableManagers);
+		pnlCreateJob.add(scrlPaneRequiredQuals);
+		pnlCreateJob.add(scrlPaneAvailableUsers);
 		
 		JScrollPane scrlPaneAssignedUsers = new JScrollPane();
 		scrlPaneAssignedUsers.setBounds(533, 391, 148, 130);
 		
-		listAssignedUsers = new JList();
+		listAssignedUsers = new JList(assignedUsersList);
+		listAssignedUsers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrlPaneAssignedUsers.setViewportView(listAssignedUsers);
+
 		pnlCreateJob.setLayout(null);
 		pnlCreateJob.add(lblCreateNewJob);
 		pnlCreateJob.add(lblJobName);
 		pnlCreateJob.add(txtJobName);
-		pnlCreateJob.add(lblNewLabel_9);
+
 		pnlCreateJob.add(scrlPaneJobDescription);
 		
 		txtAreaJobDescription = new JTextArea();
 		scrlPaneJobDescription.setViewportView(txtAreaJobDescription);
-		pnlCreateJob.add(lblNewLabel_10);
 		pnlCreateJob.add(scrlPaneAssignableManagers);
 		pnlCreateJob.add(lblRequiredQualifications);
 		pnlCreateJob.add(scrlPaneRequiredQuals);
@@ -1200,14 +1369,14 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateJob.add(lblAssignedUsers);
 		pnlCreateJob.add(lblUsersList);
 		pnlCreateJob.add(scrlPaneAvailableUsers);
+
 		pnlCreateJob.add(buttonAssignUsers);
 		pnlCreateJob.add(buttonRemoveUsers);
-		pnlCreateJob.add(scrlPaneAssignedUsers);
 		pnlCreateJob.add(btnCancelJob);
 		pnlCreateJob.add(btnCreateJob);
 		
 		btnCreateTicket = new JButton("Create Ticket");
-		btnCreateTicket.setBounds(762, 3, 136, 23);
+		btnCreateTicket.setBounds(762, 3, 115, 23);
 		
 		pnlCreateTicket = new JPanel();
 		pnlCreateTicket.setBorder(new TitledBorder(null, "Ticket Creator", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -1273,6 +1442,7 @@ public class AdminManageUsers extends JFrame {
 		txtNewMessage.setColumns(10);
 		
 		btnSendMessage = new JButton("Send");
+
 		btnSendMessage.setBounds(608, 525, 89, 23);
 		pnlConversationDetails.add(btnSendMessage);
 		
@@ -1283,9 +1453,249 @@ public class AdminManageUsers extends JFrame {
 		listConversationMessages = new JList(conversationMessagesList);
 		scrollPane.setViewportView(listConversationMessages);
 		
+		btnRefresh = new JButton("Refresh");
+
+		btnRefresh.setBounds(597, 36, 89, 23);
+		pnlConversationDetails.add(btnRefresh);
+		
+		pnlProjectViewerManager = new JPanel();
+		layeredPaneManagerWorkerComponents.setLayer(pnlProjectViewerManager, 0);
+		pnlProjectViewerManager.setBounds(0, 0, 717, 567);
+		layeredPaneManagerWorkerComponents.add(pnlProjectViewerManager);
+		pnlProjectViewerManager.setLayout(null);
+		
+		lblProjectName = new JLabel("Project Name: ");
+		lblProjectName.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblProjectName.setBounds(157, 0, 126, 32);
+		pnlProjectViewerManager.add(lblProjectName);
+		
+		lblProjectDescrption = new JLabel("Project Description:");
+		lblProjectDescrption.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblProjectDescrption.setBounds(31, 35, 139, 32);
+		pnlProjectViewerManager.add(lblProjectDescrption);
+		
+		scrollPane_6 = new JScrollPane();
+		scrollPane_6.setBounds(180, 43, 503, 40);
+		pnlProjectViewerManager.add(scrollPane_6);
+		
+		textProjectDesc = new JTextArea();
+		scrollPane_6.setViewportView(textProjectDesc);
+		
+		JLabel lblQualifications = new JLabel("Qualifications:");
+		lblQualifications.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblQualifications.setBounds(45, 103, 102, 14);
+		pnlProjectViewerManager.add(lblQualifications);
+		
+		btnSaveChangesProject = new JButton("Save Changes");
+		
+		btnSaveChangesProject.setBounds(294, 358, 115, 32);
+		pnlProjectViewerManager.add(btnSaveChangesProject);
+		
+		textFieldProjectName = new JTextField();
+		textFieldProjectName.setToolTipText("Click on a Project or Job to View Details");
+		textFieldProjectName.setBounds(283, 8, 400, 24);
+		pnlProjectViewerManager.add(textFieldProjectName);
+		textFieldProjectName.setColumns(10);
+		
+		sclPaneProjAvailQual = new JScrollPane();
+		sclPaneProjAvailQual.setBounds(31, 146, 115, 176);
+		pnlProjectViewerManager.add(sclPaneProjAvailQual);
+		
+		listProjAvailQual = new JList(projAvailQualList);
+		listProjAvailQual.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		sclPaneProjAvailQual.setViewportView(listProjAvailQual);
+		
+		sclPaneProjAssignQual = new JScrollPane();
+		sclPaneProjAssignQual.setBounds(197, 146, 126, 176);
+		pnlProjectViewerManager.add(sclPaneProjAssignQual);
+		
+		listProjAssignQual = new JList(projAssignQualList);
+		listProjAssignQual.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		sclPaneProjAssignQual.setViewportView(listProjAssignQual);
+		
+		btnAssignProjQual = new JButton("->");
+		
+		btnAssignProjQual.setBounds(150, 186, 45, 24);
+		pnlProjectViewerManager.add(btnAssignProjQual);
+		
+		btnUnassignProjQual = new JButton("<-");
+
+		btnUnassignProjQual.setBounds(150, 223, 45, 24);
+		pnlProjectViewerManager.add(btnUnassignProjQual);
+		
+		lblAvailable_2 = new JLabel("Available");
+		lblAvailable_2.setBounds(30, 128, 117, 14);
+		pnlProjectViewerManager.add(lblAvailable_2);
+		
+		lblAssigned_2 = new JLabel("Assigned");
+		lblAssigned_2.setBounds(197, 128, 126, 14);
+		pnlProjectViewerManager.add(lblAssigned_2);
+		
+		lblEmployees = new JLabel("Employees:");
+		lblEmployees.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblEmployees.setBounds(376, 103, 84, 14);
+		pnlProjectViewerManager.add(lblEmployees);
+		
+		scrollPane_7 = new JScrollPane();
+		scrollPane_7.setBounds(369, 146, 115, 176);
+		pnlProjectViewerManager.add(scrollPane_7);
+		
+		listAvailProjEmp = new JList(availProjEmpList);
+		listAvailProjEmp.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		scrollPane_7.setViewportView(listAvailProjEmp);
+		
+		scrollPane_8 = new JScrollPane();
+		scrollPane_8.setBounds(549, 146, 115, 176);
+		pnlProjectViewerManager.add(scrollPane_8);
+		
+		listAssignedProjEmp = new JList(assignedProjEmpList);
+		listAssignedProjEmp.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		scrollPane_8.setViewportView(listAssignedProjEmp);
+		
+		btnAssignEmployeeProj = new JButton("->");
+		
+		btnAssignEmployeeProj.setBounds(494, 187, 45, 24);
+		pnlProjectViewerManager.add(btnAssignEmployeeProj);
+		
+		btnUnassignEmployeeProj = new JButton("<-");
+		
+		btnUnassignEmployeeProj.setBounds(494, 224, 45, 24);
+		pnlProjectViewerManager.add(btnUnassignEmployeeProj);
+		
+		label = new JLabel("Available");
+		label.setBounds(369, 128, 115, 14);
+		pnlProjectViewerManager.add(label);
+		
+		label_1 = new JLabel("Assigned");
+		label_1.setBounds(549, 128, 115, 14);
+		pnlProjectViewerManager.add(label_1);
+		
+		lblJobID = new JLabel("JobID");
+		lblJobID.setBounds(197, 458, 46, 14);
+		pnlProjectViewerManager.add(lblJobID);
+		lblJobID.setVisible(false);
+		
+		pnlJobViewerManager = new JPanel();
+		layeredPaneManagerWorkerComponents.setLayer(pnlJobViewerManager, 0);
+		pnlJobViewerManager.setBounds(0, 0, 717, 567);
+		layeredPaneManagerWorkerComponents.add(pnlJobViewerManager);
+		pnlJobViewerManager.setLayout(null);
+		
+		lblJobName_1 = new JLabel("Job Name:");
+		lblJobName_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblJobName_1.setBounds(170, 11, 77, 23);
+		pnlJobViewerManager.add(lblJobName_1);
+		
+		textFieldJobName = new JTextField();
+		textFieldJobName.setBounds(291, 12, 357, 23);
+		pnlJobViewerManager.add(textFieldJobName);
+		textFieldJobName.setColumns(10);
+		
+		lblJobDescription = new JLabel("Job Description:");
+		lblJobDescription.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblJobDescription.setBounds(59, 52, 122, 23);
+		pnlJobViewerManager.add(lblJobDescription);
+		
+		scrollPane_9 = new JScrollPane();
+		scrollPane_9.setBounds(201, 58, 471, 41);
+		pnlJobViewerManager.add(scrollPane_9);
+		
+		textAreaJobDesc = new JTextArea();
+		scrollPane_9.setViewportView(textAreaJobDesc);
+		
+		scrollPane_10 = new JScrollPane();
+		scrollPane_10.setBounds(35, 146, 102, 154);
+		pnlJobViewerManager.add(scrollPane_10);
+		
+		listAvailJobQual = new JList(availJobQualList);
+		scrollPane_10.setViewportView(listAvailJobQual);
+		
+		scrollPane_11 = new JScrollPane();
+		scrollPane_11.setBounds(192, 146, 102, 154);
+		pnlJobViewerManager.add(scrollPane_11);
+		
+		listAssignJobQual = new JList(assignJobQualList);
+		scrollPane_11.setViewportView(listAssignJobQual);
+		
+		scrollPane_12 = new JScrollPane();
+		scrollPane_12.setBounds(381, 146, 102, 154);
+		pnlJobViewerManager.add(scrollPane_12);
+		
+		listAvailJobEmp = new JList(availJobEmpList);
+		scrollPane_12.setViewportView(listAvailJobEmp);
+		
+		scrollPane_13 = new JScrollPane();
+		scrollPane_13.setBounds(546, 146, 102, 154);
+		pnlJobViewerManager.add(scrollPane_13);
+		
+		listAssignJobEmp = new JList(assignedJobEmpList);
+		scrollPane_13.setViewportView(listAssignJobEmp);
+		
+		lblQualifications_1 = new JLabel("Qualifications");
+		lblQualifications_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblQualifications_1.setBounds(135, 106, 85, 14);
+		pnlJobViewerManager.add(lblQualifications_1);
+		
+		lblEmployees_1 = new JLabel("Employees");
+		lblEmployees_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblEmployees_1.setBounds(475, 106, 77, 14);
+		pnlJobViewerManager.add(lblEmployees_1);
+		
+		lblAvailable_3 = new JLabel("Available");
+		lblAvailable_3.setBounds(35, 131, 102, 14);
+		pnlJobViewerManager.add(lblAvailable_3);
+		
+		lblAssigned_3 = new JLabel("Assigned");
+		lblAssigned_3.setBounds(192, 131, 102, 14);
+		pnlJobViewerManager.add(lblAssigned_3);
+		
+		lblAvailable_4 = new JLabel("Available");
+		lblAvailable_4.setBounds(381, 131, 102, 14);
+		pnlJobViewerManager.add(lblAvailable_4);
+		
+		lblAssigned_4 = new JLabel("Assigned");
+		lblAssigned_4.setBounds(534, 131, 102, 14);
+		pnlJobViewerManager.add(lblAssigned_4);
+		
+		btnAssignJobQual = new JButton("->");
+
+		btnAssignJobQual.setBounds(135, 176, 57, 23);
+		pnlJobViewerManager.add(btnAssignJobQual);
+		
+		btnAssignJobEmp = new JButton("->");
+		btnAssignJobEmp.setBounds(485, 176, 57, 23);
+		pnlJobViewerManager.add(btnAssignJobEmp);
+		
+		btnUnassignJobQual = new JButton("<-");
+		btnUnassignJobQual.setBounds(135, 223, 57, 23);
+		pnlJobViewerManager.add(btnUnassignJobQual);
+		
+		btnUnassignJobEmp = new JButton("<-");
+		btnUnassignJobEmp.setBounds(485, 223, 57, 23);
+		pnlJobViewerManager.add(btnUnassignJobEmp);
+		
+		btnSaveChangesJob = new JButton("Save Changes");
+		
+		btnSaveChangesJob.setBounds(291, 311, 131, 23);
+		pnlJobViewerManager.add(btnSaveChangesJob);
+		
+		lblTasks = new JLabel("Tasks:");
+		lblTasks.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblTasks.setBounds(44, 360, 93, 23);
+		pnlJobViewerManager.add(lblTasks);
+		
+		lblJobID2 = new JLabel("New label");
+		lblJobID2.setBounds(37, 17, 46, 14);
+		pnlJobViewerManager.add(lblJobID2);
+		
+		
+		
+
+		lblJobID2.setVisible(false);
+		
 		pnlMessages = new JPanel();
 		pnlMessages.setBackground(Color.LIGHT_GRAY);
-		pnlMessages.setBounds(0, 260, 181, 28);
+		pnlMessages.setBounds(0, 363, 181, 28);
 		pnlManagerWorker.add(pnlMessages);
 		pnlMessages.setLayout(null);
 		
@@ -1306,20 +1716,19 @@ public class AdminManageUsers extends JFrame {
 		pnlProjects.add(lblNewLabel_8);
 		
 		scrlConversations = new JScrollPane();
-		scrlConversations.setBounds(0, 289, 179, 318);
+		scrlConversations.setBounds(0, 390, 179, 217);
 		pnlManagerWorker.add(scrlConversations);
 		
 		listConversations = new JList(conversationsList);
 		listConversations.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		scrlConversations.setViewportView(listConversations);
 		
-		scrlProjects = new JScrollPane();
-		scrlProjects.setBounds(0, 27, 181, 234);
-		pnlManagerWorker.add(scrlProjects);
+		pnlProjectTree = new JPanel();
+		pnlProjectTree.setBounds(0, 27, 181, 336);
+		pnlManagerWorker.add(pnlProjectTree);
+		pnlProjectTree.setLayout(null);
 		
-		listProjects = new JList(projectsList);
-		listProjects.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		scrlProjects.setViewportView(listProjects);
+		
 		
 		btnLogout = new JButton("LOGOUT");
 
@@ -1327,12 +1736,6 @@ public class AdminManageUsers extends JFrame {
 		btnLogout.setBounds(800, 11, 89, 23);
 		contentPane.add(btnLogout);
 		btnLogout.setVisible(false);
-		
-		btn_settings = new JButton("Settings");
-		btn_settings.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btn_settings.setBounds(701, 8, 89, 28);
-		contentPane.add(btn_settings);
-		btn_settings.setVisible(false);
 		
 		layeredPane_1 = new JLayeredPane();
 		layeredPane_1.setBounds(10, 8, 678, 25);
@@ -1344,6 +1747,12 @@ public class AdminManageUsers extends JFrame {
 		layeredPane_1.add(lblPortal);
 		lblPortal.setVisible(false);
 		//create job end		
+		
+	    tasksTable = new JTable();
+	    tasksTable.setModel(dataModel);
+	    scrollPane_14 = new JScrollPane(tasksTable);
+		scrollPane_14.setBounds(35, 394, 672, 154);
+		pnlJobViewerManager.add(scrollPane_14);
 		
 		loadProjects();
 		loadConversations();
@@ -1357,11 +1766,6 @@ public class AdminManageUsers extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				jdbc.closeSQLConnection();
-			}
-		});
-		
-		btn_settings.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
 
@@ -1385,6 +1789,7 @@ public class AdminManageUsers extends JFrame {
 				} else if (!u.active()) {
 					JOptionPane.showMessageDialog(null, "Your account has been inactivated.  Contact your manager for help");
 			    } else {
+			    	currentUsertype = u.get_usertype();
 					if (u.get_usertype() == 1) {
 						//They are an Admin
 						layeredPane.setLayer(layeredPaneAdmin, 10);
@@ -1399,17 +1804,22 @@ public class AdminManageUsers extends JFrame {
 						layeredPaneManagerWorker.setLayer(pnlManagerWorker, 10);
 						System.out.println("logged in as Manager");
 						lblPortal.setText("Manager Portal - "+u.get_firstname()+ " " + u.get_lastname());
+						clearAllManagerPanels();
 					} else {
 						//They are a Worker
 						layeredPane.setLayer(layeredPaneManagerWorker, 10);
+						layeredPane.setLayer(layeredPaneLogin, 0);
+						layeredPaneManagerWorker.setLayer(pnlManagerWorker, 10);
 						System.out.println("logged in as Worker");
 						lblPortal.setText("Worker Portal - "+u.get_firstname()+ " " + u.get_lastname());
+						clearAllManagerPanels();
 						
 					}
 					currentSessionUserID = u.get_userID();
+					loadConversations();
+					
 					btnLogout.setVisible(true);
 					lblPortal.setVisible(true);
-					btn_settings.setVisible(true);
 				}
 				
 			}
@@ -1422,9 +1832,9 @@ public class AdminManageUsers extends JFrame {
 				layeredPane.setLayer(layeredPaneManagerWorker, 0);
 				btnLogout.setVisible(false);
 				lblPortal.setVisible(false);
-				btn_settings.setVisible(false);
 				txtLoginUser.setText("");
 				passwordLogin.setText("");
+				
 			}
 		});
 	}
@@ -1440,6 +1850,7 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateTask.setVisible(false);
 				pnlCreateProject.setVisible(false);
 				pnlCreateQualification.setVisible(false);
+				clearAllManagerPanels();
 				pnlCreateUser.setVisible(true);
 				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);
 				layeredPaneAdminComponents.setLayer(pnlCreateUser, 3);
@@ -1454,6 +1865,7 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateTask.setVisible(false);
 				pnlCreateProject.setVisible(false);
 				pnlCreateUser.setVisible(false);
+				clearAllManagerPanels();
 				pnlCreateQualification.setVisible(true);
 				
 				
@@ -1466,13 +1878,22 @@ public class AdminManageUsers extends JFrame {
 				pnlCreateTask.setVisible(false);
 				pnlCreateProject.setVisible(false);
 				pnlCreateQualification.setVisible(false);
+				clearAllManagerPanels();
 				pnlUserEditInfo.setVisible(true);
 			}
 		});
 		//
-		//
 		btnChangePassword.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {				
+			public void actionPerformed(ActionEvent arg0) {	
+				pnlChangePassword.setVisible(true);
+			}
+			
+		});
+		btnX.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlChangePassword.setVisible(false);
+				passwordFieldNew.setText("");
+				passwordFieldNewConfirm.setText("");
 			}
 		});
 		//Display user information that was clicked on the left.
@@ -1482,6 +1903,7 @@ public class AdminManageUsers extends JFrame {
                 if (!arg0.getValueIsAdjusting() && !listUsers.isSelectionEmpty()) {
                   pnlViewTickets.setVisible(false);
                   pnlCreateQualification.setVisible(false);
+                  clearAllManagerPanels();
                   pnlUserEditInfo.setVisible(true);
                   displayUserInfo(listUsers.getSelectedValue().toString());
                   //saves the index of the array that was clicked on
@@ -1500,7 +1922,6 @@ public class AdminManageUsers extends JFrame {
                 }
             }
         });
-		
 		//Display user information that was clicked on the left.
 		listArchivedUsers.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -1644,6 +2065,7 @@ public class AdminManageUsers extends JFrame {
 				}
 			}
 		});
+		//
 		btnViewTickets.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				loadTickets();
@@ -1657,7 +2079,6 @@ public class AdminManageUsers extends JFrame {
 				}
 			}
 		});
-	
 		//Displays the closed ticket information
 		listClosedTickets.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -1693,6 +2114,23 @@ public class AdminManageUsers extends JFrame {
 				loadTickets();
 			}
 		});
+		btnSubmit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String pass = new String(passwordFieldNew.getPassword());
+				String pass1 = new String(passwordFieldNewConfirm.getPassword());
+				
+				if (pass.equals(pass1)) {
+					jdbc.changePassword(lastClickeduserID, pass);
+					passwordFieldNew.setText("");
+					passwordFieldNewConfirm.setText("");
+					pnlChangePassword.setVisible(false);
+					JOptionPane.showMessageDialog(null, "Password Changed!");
+				} else {
+					JOptionPane.showMessageDialog(null, "Entered Passwords do not match!");
+				}
+				
+			}
+		});
 	}
 	
 	/*
@@ -1718,9 +2156,7 @@ public class AdminManageUsers extends JFrame {
 					pnlCreateTicket.setVisible(false);
 				} else {
 					pnlCreateTicket.setVisible(true);
-					pnlCreateJob.setVisible(false);
-					pnlCreateTask.setVisible(false);
-					pnlCreateProject.setVisible(false);
+					clearAllManagerPanels();
 				}
 			}
 		});
@@ -1770,23 +2206,32 @@ public class AdminManageUsers extends JFrame {
 
 			}
 		});	
-		//assign users to job
+	
+		
+//		assign users to job		
 		buttonAssignUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub			
+				// TODO Auto-generated method stub	
+				Object x = listAvailableUsers.getSelectedValue();
+				assignedUsersList.addElement(x);
+			    unassignedUsersList.removeElement(x);
+				
 			}
 		});
 		//removes users from job
 		buttonRemoveUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub				
+				// TODO Auto-generated method stub		
+				Object x = listAssignedUsers.getSelectedValue();
+				unassignedUsersList.addElement(x);
+			    assignedUsersList.removeElement(x);
+
 			}
 		});
 		//Open create new project tab
 		btn_create_project.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				pnlCreateJob.setVisible(false);
-				pnlCreateTask.setVisible(false);
+				clearAllManagerPanels();
 				pnlCreateProject.setVisible(true);
 				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);	
 				createQualificationsList();
@@ -1802,8 +2247,7 @@ public class AdminManageUsers extends JFrame {
 		//open create new task tab
 		btn_create_task.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				pnlCreateJob.setVisible(false);
-				pnlCreateProject.setVisible(false);
+				clearAllManagerPanels();
 				pnlCreateTask.setVisible(true);
 				layeredPaneAdminComponents.setLayer(pnlUserEditInfo, 2);
 				loadJobs();
@@ -1819,8 +2263,7 @@ public class AdminManageUsers extends JFrame {
 		btn_create_job.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Qualification q=null;
-				pnlCreateProject.setVisible(false);
-				pnlCreateTask.setVisible(false);
+				clearAllManagerPanels();
 				pnlCreateJob.setVisible(true);	
 				createManagersList();
 				createAllUsersList();
@@ -1831,6 +2274,8 @@ public class AdminManageUsers extends JFrame {
 		btnCancelJob.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlCreateJob.setVisible(false);
+				txtJobName.setText("");
+				txtAreaJobDescription.setText("");
 			}
 		});	
 		//creates a new job w/ info, assigns a manager to it,
@@ -1840,19 +2285,22 @@ public class AdminManageUsers extends JFrame {
 				Job job =new Job(Id, txtJobName.getText(), 2, txtAreaJobDescription.getText(), 0);				
 				jdbc.add_project(job);
 				jdbc.add_Manager(manager, Id);
-				jdbc.add_requiredQuals(Id,qualsArray);
+				jdbc.add_requiredQuals(Id,selectedQual);//TODO only works w/ one
 				layeredPaneManagerWorker.setVisible(true);	
 				JOptionPane.showMessageDialog(null, "Job Created!");
 				pnlCreateJob.setVisible(false);
+				txtJobName.setText("");
+				txtAreaJobDescription.setText("");
+				
 			}
 		});
-		//Display user information that was clicked on the left.
+		//gets selected qualification from job and sets up users w/ it
 		listRequiredQuals.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
-                	qualsArray = listRequiredQuals.getSelectedValuesList(); 
-                	System.out.println(qualsArray.get(0).toString());
+                	 selectedQual = listRequiredQuals.getSelectedValuesList();
+                	 createAllUsersList(selectedQual);
                 }
             }
         });
@@ -1875,9 +2323,8 @@ public class AdminManageUsers extends JFrame {
 			public void valueChanged(ListSelectionEvent arg0) {
 				if (!arg0.getValueIsAdjusting()) {
 					String s = (String) listAssignableManagers.getSelectedValue();
-					Qualification q = new Qualification(0, s, "");
 					userList.clear();
-					ArrayList<User> users = jdbc.getUsersWithQual(q);
+					ArrayList<User> users = jdbc.getUsersWithQual(s);
 					for (int i = 0; i < users.size(); i++) {
 						userList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
 					}
@@ -1899,28 +2346,127 @@ public class AdminManageUsers extends JFrame {
 	        @Override
 	        public void valueChanged(ListSelectionEvent arg0) {
 	            if (!arg0.getValueIsAdjusting()) {
+	            	clearAllManagerPanels();
+	            	pnlConversationDetails.setVisible(true);
 	            	System.out.println(listConversations.getSelectedValue().toString());
 	            	loadConversationMessages(conversationMap.get(listConversations.getSelectedValue().toString()));
 	            	lblConversationTitle.setText(listConversations.getSelectedValue().toString());
 	            }
 	        }
 	    });
+		
+		btnSendMessage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				jdbc.sendMessage(txtNewMessage.getText().toString(), currentSessionUserID, currentOpenConversation);
+				loadConversationMessages(currentOpenConversation);
+			}
+		});
+		btnRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				loadConversationMessages(currentOpenConversation);
+			}
+		});
+		tree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
+		    @Override
+		    public void valueChanged(TreeSelectionEvent e) {
+		    	if (!treeIsBeingUpdated) {
+					DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+			        clearAllManagerPanels();
+			        displaySelectedNode(selectedNode.getUserObject().toString());
+				}
+		    }
+		});
+		//TODO for the project viewer
+		btnAssignProjQual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String name = listProjAvailQual.getSelectedValue().toString();
+				jdbc.addQualToJob(name, Integer.parseInt(lblJobID.getText()));
+				displaySelectedNode(name);
+			}
+		});
+		
+		btnUnassignProjQual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = listProjAssignQual.getSelectedValue().toString();
+				jdbc.removeQualFromJob(name, Integer.parseInt(lblJobID.getText()));
+				displaySelectedNode(name);
+			}
+		});
+		
+		btnAssignEmployeeProj.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = listAvailProjEmp.getSelectedValue().toString();
+				jdbc.addUserToJob(name, Integer.parseInt(lblJobID.getText()));
+				displaySelectedNode(name);
+			}
+		});
+		
+		btnUnassignEmployeeProj.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = listAssignedProjEmp.getSelectedValue().toString();
+				jdbc.removeUserFromJob(name, Integer.parseInt(lblJobID.getText()));
+				displaySelectedNode(name);
+			}
+		});
+		
+		btnSaveChangesProject.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+				selectedNode.setUserObject(textFieldProjectName.getText().toString());
+				jdbc.updateJob(textFieldProjectName.getText().toString(), textProjectDesc.getText().toString(), Integer.parseInt(lblJobID.getText()));
+			}
+		});
+		
+		btnAssignJobQual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = listAvailJobQual.getSelectedValue().toString();
+				jdbc.addQualToJob(name, Integer.parseInt(lblJobID2.getText()));
+				displaySelectedNode(name);
+			}
+		});
+		
+		btnUnassignJobQual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = listAssignJobQual.getSelectedValue().toString();
+				jdbc.removeQualFromJob(name, Integer.parseInt(lblJobID2.getText()));
+				displaySelectedNode(name);
+			}
+		});
+		
+		btnAssignJobEmp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = listAvailJobEmp.getSelectedValue().toString();
+				jdbc.addUserToJob(name, Integer.parseInt(lblJobID2.getText()));
+				displaySelectedNode(name);
+			}
+		});
+		
+		btnUnassignJobEmp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = listAssignJobEmp.getSelectedValue().toString();
+				jdbc.removeUserFromJob(name, Integer.parseInt(lblJobID2.getText()));
+				displaySelectedNode(name);
+			}
+		});
+		
+		btnSaveChangesJob.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+				selectedNode.setUserObject(textFieldJobName.getText().toString());
+				jdbc.updateJob(textFieldJobName.getText().toString(), textAreaJobDesc.getText().toString(), Integer.parseInt(lblJobID2.getText()));
+			}
+		});
 	}
-	
-
-	
 	
 	/*Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
 	This string is then added to the userList that is displayed on the left panel*/
 	private void createUserList() {
 		if (!userList.isEmpty() && !listUsers.isSelectionEmpty()) {
 			listUsers.clearSelection();
-		}
-		
+		}		
 		if (!archivedUserList.isEmpty() && !listArchivedUsers.isSelectionEmpty()) {
 			listArchivedUsers.clearSelection();
-		}
-		
+		}		
 		archivedUserList.clear();
 		userList.clear();
 		ArrayList<User> users = jdbc.get_users();
@@ -1929,8 +2475,7 @@ public class AdminManageUsers extends JFrame {
 				userList.addElement(String.format("%s, %s [%s]", users.get(i).get_lastname(), users.get(i).get_firstname(), users.get(i).get_username()));
 			} else {
 				archivedUserList.addElement(String.format("%s, %s [%s]", users.get(i).get_lastname(), users.get(i).get_firstname(), users.get(i).get_username()));
-			}
-			
+			}		
 		}
 	}
 	
@@ -1981,21 +2526,20 @@ public class AdminManageUsers extends JFrame {
 		String s = String.format("%s, %s [%s]", u.get_lastname(), u.get_firstname(), u.get_username());
 		userList.setElementAt(s, lastClickedIndex);
 	}
-	
 	//pulls all users with selected qualification
-	private void createAllUsersList(Qualification q){
-		userList.clear();
-		ArrayList<User> users = jdbc.getUsersWithQual(q);
+	private void createAllUsersList(List l){
+		unassignedUsersList.clear();
+		ArrayList<User> users = jdbc.getUsersWithQual(l);
 		for (int i = 0; i < users.size(); i++) {
-			userList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
+			unassignedUsersList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
 		}
 	}
 	//pulls all users 
 	private void createAllUsersList(){
-		userList.clear();
+		unassignedUsersList.clear();
 		ArrayList<User> users = jdbc.get_users();
 		for (int i = 0; i < users.size(); i++) {
-			userList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
+			unassignedUsersList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
 		}
 	}	
 	//pulls all managers and fills the list
@@ -2006,7 +2550,6 @@ public class AdminManageUsers extends JFrame {
 			managerList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
 		}
 	}
-	
 	//pulls all qualifications and fills in the list
 	private void createQualificationsList(){
 		listedQualList.clear();
@@ -2032,9 +2575,8 @@ public class AdminManageUsers extends JFrame {
 		}
 		
 	}
-	
-	//Loads all tickets into the openTickets list and the closedTickets list for the user to be able to click on a ticket
-	//to view its details and either mark it done or not done.
+	/*Loads all tickets into the openTickets list and the closedTickets list for the user to be able to click on a ticket
+	to view its details and either mark it done or not done.*/
 	private void loadTickets() {
 		openTickets.clear();
 		closedTickets.clear();
@@ -2064,8 +2606,7 @@ public class AdminManageUsers extends JFrame {
 			superJobsList.addElement(j.jobname);
 		}
 		
-	}
-	
+	}	
 	/*
 	 * Displays all of the details for a ticket once it has been clicked.
 	 */
@@ -2088,21 +2629,51 @@ public class AdminManageUsers extends JFrame {
 			rdbtnTicketDoneNo.setSelected(true);
 		}
 	}
-	
+
 	/*
 	 * Pulls a list of all projects into the Manager/Worker view
 	 */
 	private void loadProjects() {
-		projectsList.clear();
 		
-		ArrayList<Job> projects = jdbc.getProjects();
-		for (Job j : projects) {
-			projectsList.addElement(j.jobname);
+		DefaultMutableTreeNode projects = new DefaultMutableTreeNode("Company Projects");
+
+		ArrayList<Job> projectsList = jdbc.getProjectsAndJobs();
+		for (Job j : projectsList) {
+			if (!j.jobname.equals("") && j.jobtype == 1) {
+				DefaultMutableTreeNode job = new DefaultMutableTreeNode(j.jobname);
+				projects.add(job);
+			}
+
+			
 		}
+		tree = new JTree(projects);
+		
+		for (Job j : projectsList) {
+			if (!j.jobname.equals("") && j.jobtype == 2 && j.parentID != 0 && j.jobID < 12) {
+				DefaultMutableTreeNode parentNode = null;
+				DefaultMutableTreeNode job = new DefaultMutableTreeNode(j.jobname);
+				System.out.println(j.jobname);
+				String parentName;
+				for (Job i : projectsList) {
+					if (j.parentID == i.jobID && i.jobID < 12) {
+						String prefix = i.jobname.substring(0, 1);
+						TreePath path = tree.getNextMatch(prefix, 0, Position.Bias.Forward);
+						parentNode = (DefaultMutableTreeNode) (path.getLastPathComponent());
+						parentNode.add(job);
+					}
+				}
+			}
+		}
+		tree.setBounds(0, 0, 181, 325);
+		pnlProjectTree.add(tree);
+
 	}
 	
+
+	
+	
+	
 	private void loadConversations() {
-		currentSessionUserID = 1112;
 		conversationMap = jdbc.getConversations(currentSessionUserID);
 		Object[] names = conversationMap.keySet().toArray();
 		
@@ -2115,12 +2686,184 @@ public class AdminManageUsers extends JFrame {
 	
 	private void loadConversationMessages(int conversationID) {
 		ArrayList<String> messages = jdbc.getConversationMessages(conversationID, currentSessionUserID);
+		currentOpenConversation = conversationID;
 		
 		conversationMessagesList.clear();
 		
 		for (String s : messages) {
 			conversationMessagesList.addElement(s);
 		}
+	}
+	private void displaySelectedNode(String nodeName) {
+		ArrayList<Job> projectsList = jdbc.getProjectsAndJobs();
+		ArrayList<Task> tasksList = jdbc.getTasks();
+		
+		for (Job j : projectsList) {
+			if (j.jobname.equals(nodeName)) {
+				//its a project
+				if (j.jobtype == 1) {
+					displayProjectDetails(j);
+				} else {
+					//it is a job
+					displayJobDetails(j);
+				}
+				
+			}
+		}
+		
+		
+	}
+	
+	private void displayJobDetails(Job j) {
+		clearAllManagerPanels();
+		pnlJobViewerManager.setVisible(true);
+		if (tasksTableInit) {
+			dataModel.setRowCount(0);
+			
+		}
+		
+		
+		
+		lblJobID2.setText(String.format("%d", j.jobID));
+		
+		if (currentUsertype == 3) {
+			btnUnassignJobEmp.setVisible(false);
+			btnUnassignJobQual.setVisible(false);
+			btnAssignJobEmp.setVisible(false);
+			btnAssignJobQual.setVisible(false);
+			btnSaveChangesJob.setVisible(false);
+		}
+		
+		textFieldJobName.setText(j.jobname);
+		textAreaJobDesc.setText(j.jobdesc);
+		
+		assignedJobEmpList.clear();
+		availJobEmpList.clear();
+		assignJobQualList.clear();
+		availJobQualList.clear();
+		
+		ArrayList<Qualification> assignedJobQuals = jdbc.getAssignedJobQuals(j.jobID);
+		ArrayList<Qualification> availJobQuals = jdbc.getAvailJobQuals(j.jobID);
+		
+		ArrayList<String> assignedJobUsers = jdbc.getAssignedJobUsers(j.jobID);
+		ArrayList<String> availJobUsers = jdbc.getAvailJobUsers(j.jobID);
+		
+		if (assignedJobQuals.isEmpty()) {
+			availJobEmpList.addElement("No Quals Selected");
+		}
+		
+		for (Qualification q : assignedJobQuals) {
+			assignJobQualList.addElement(q.getQualName());
+		}
+		
+		for (Qualification q : availJobQuals) {
+			availJobQualList.addElement(q.getQualName());
+		}
+		
+		for (String s : assignedJobUsers) {
+			assignedJobEmpList.addElement(s);
+		}
+		
+		for (String s : availJobUsers) {
+			availJobEmpList.addElement(s);
+		}
+		
+		loadTasks(j);
+		
+
+	}
+	
+	private void loadTasks(Job j) {
+		Vector<String> columnNames = new Vector<String>();
+	    columnNames.addElement("Task Name");
+	    columnNames.addElement("Task Description");
+	    columnNames.addElement("Task Reason");
+	    
+	    Vector<Vector> rowData = new Vector<Vector>();
+		    
+		
+	    ArrayList<Task> tasks = jdbc.getTasks(j.jobID);
+		
+	    for (Task t : tasks) {
+	    	Vector<String> row = new Vector<String>();
+		    row.addElement(t.name);
+		    row.addElement(t.desc);
+		    row.addElement(t.reason);
+		    rowData.addElement(row);
+		    dataModel.addRow(row);
+	    }
+	    
+	
+	    dataModel.setColumnIdentifiers(columnNames);
+	    tasksTableInit = true;
+	}
+	
+	private void displayProjectDetails(Job j) {
+		lblJobID.setVisible(false);
+		listAssignedProjEmp.clearSelection();
+		listAvailProjEmp.clearSelection();
+		listProjAssignQual.clearSelection();
+		listProjAvailQual.clearSelection();
+		clearAllManagerPanels();
+		pnlProjectViewerManager.setVisible(true);
+		
+		textFieldProjectName.setText(j.jobname);
+		textProjectDesc.setText(j.jobdesc);
+		String id = String.format("%d", j.jobID);
+		lblJobID.setText(id);
+		
+		if (currentUsertype == 3) {
+			textFieldProjectName.setEnabled(false);
+			textProjectDesc.setEnabled(false);
+			btnUnassignProjQual.setVisible(false);
+			btnAssignProjQual.setVisible(false);
+			btnAssignEmployeeProj.setVisible(false);
+			btnUnassignEmployeeProj.setVisible(false);
+			btnSaveChangesProject.setVisible(false);
+		}
+		
+		assignedProjEmpList.clear();
+		availProjEmpList.clear();
+		projAssignQualList.clear();
+		projAvailQualList.clear();
+		
+		ArrayList<Qualification> assignedJobQuals = jdbc.getAssignedJobQuals(j.jobID);
+		ArrayList<Qualification> availJobQuals = jdbc.getAvailJobQuals(j.jobID);
+		
+		ArrayList<String> assignedJobUsers = jdbc.getAssignedJobUsers(j.jobID);
+		ArrayList<String> availJobUsers = jdbc.getAvailJobUsers(j.jobID);
+		
+		if (assignedJobQuals.isEmpty()) {
+			availProjEmpList.addElement("No Quals Selected");
+		}
+		
+		for (Qualification q : assignedJobQuals) {
+			projAssignQualList.addElement(q.getQualName());
+		}
+		
+		for (Qualification q : availJobQuals) {
+			projAvailQualList.addElement(q.getQualName());
+		}
+		
+		for (String s : assignedJobUsers) {
+			assignedProjEmpList.addElement(s);
+		}
+		
+		for (String s : availJobUsers) {
+			availProjEmpList.addElement(s);
+		}
+		
+	}
+	
+	
+	private void clearAllManagerPanels() {
+		pnlConversationDetails.setVisible(false);
+    	pnlCreateProject.setVisible(false);
+    	pnlCreateJob.setVisible(false);
+		pnlCreateTask.setVisible(false);
+    	pnlProjectViewerManager.setVisible(false);
+    	pnlJobViewerManager.setVisible(false);
+
 	}
 }
 

@@ -215,7 +215,37 @@ SQL;
 		//echo $result->num_rows."<br/>";
 		return $result;
 	}
-	
+
+	//Function that gets all workers of a tree from its root
+	function get_assigned($root)
+	{
+		$conn = data_open();
+		
+		$result="";
+
+		$workers=get_workers_on_id($root);
+
+		while($curWorker=$workers->fetch_assoc())
+		{
+			$workerInfo=data_specificUser($curWorker["userID"]);
+			$workerInfo=$workerInfo->fetch_assoc();
+			$result=$result."<li>".$workerInfo["firstname"]." ".$workerInfo["lastname"]."</li>";
+
+		}
+
+		$kids=get_children($root);
+		$numKids=$kids->num_rows;
+		while($numKids>0)
+		{
+			$result=$result.get_assigned($kids->fetch_assoc()["jobID"]);
+			$numKids=$numKids-1;
+		}
+
+		
+		return $result;
+	}		
+
+
 	//Get task details for task details page
 	function get_task_by_id($taskID)
 	{
@@ -325,6 +355,18 @@ SQL;
 		$conn->close();
 		return $result;
 	}
+
+	//Gets tasks for jobid
+	function get_tasks($id)
+	{
+		$conn=data_open();
+		$sql="Select * from tasks where parentID={$id}";
+		$result=$conn->query($sql);
+		$conn->close();
+		return $result;
+	
+	}
+
 
 	//Gets users with quallification by id
 	function get_active_users_by_qualid($id)

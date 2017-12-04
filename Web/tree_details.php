@@ -12,6 +12,16 @@
 	
 	$node=get_job($_POST['node']);
 	$node=$node->fetch_assoc();
+
+	$tasks="<ul>";
+	$taskList=get_tasks($node["jobID"]);
+
+	while($curtask=$taskList->fetch_assoc())
+	{
+		$tasks=$tasks."<li>".$curtask["taskname"]." - ".$curtask["taskdesc"]."</li>";
+	}
+	$tasks=$tasks."</ul>";
+
 	require 'navbar.php';
 	if($_SESSION['usertype'] == 0)
 	{
@@ -31,6 +41,9 @@
 							</br></br>	
 							<label>Job Description:</label></br>
 							{$node['jobdesc']}
+							</br></br>
+							<label>Tasks:</label></br>
+							{$tasks}
 						</fieldset>
 					</form>
 				</body>
@@ -117,6 +130,12 @@ HTML;
 							<label>Job Description:</label></br>
 							<textarea rows="4" cols="50" name="job_desc" form="edit_task">{$node['jobdesc']}</textarea>
 							</br></br>
+							
+							<label>Tasks:</label></br>
+							$tasks
+							</br></br>
+
+
 							<label>Qualifications:</label>
 							<br>
 							{$qualBoxes}

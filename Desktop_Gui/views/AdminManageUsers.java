@@ -51,6 +51,8 @@ import common.Task;
 
 import javax.swing.JLabel;
 
+import java.io.*;
+
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 
@@ -78,6 +80,7 @@ import javax.swing.JTextArea;
 
 import java.awt.SystemColor;
 import java.awt.Component;
+import java.io.IOException;
 
 import javax.swing.ListModel;
 
@@ -219,6 +222,17 @@ public class AdminManageUsers extends JFrame {
 	private JTextArea txtNewQualificationDesc;
 	private JTextField txtNewQualificationName;	
 	
+	//report generation
+	private JButton btnReportGenerator;
+	private JPanel pnlReportGeneration;
+	private JList listProjectsGeneratable;
+	private JScrollPane scrlPaneProjects;
+	private String projectToGenerate;
+	private JButton btnCancelReport;
+	private JButton btnCreateReport;
+	DefaultListModel reportedjobsList = new DefaultListModel();
+	ArrayList<Job> reportedjobs = new ArrayList<Job>();
+	
 	//other or unassigned vars
 	String lastClickedUser;
 	DefaultListModel managerList = new DefaultListModel();
@@ -278,6 +292,7 @@ public class AdminManageUsers extends JFrame {
 	private JList listProjects;
 	private JList listConversations;
 	private JScrollPane scrlPaneSuperJobs;
+	private JPanel pnlArchivedUsers;
 	
 	/**
 	 * Launch the application.
@@ -409,7 +424,7 @@ public class AdminManageUsers extends JFrame {
 		
 		layeredPaneAdmin = new JLayeredPane();
 		layeredPaneAdmin.setBackground(new Color(100, 149, 237));
-		layeredPane.setLayer(layeredPaneAdmin, 0);
+		layeredPane.setLayer(layeredPaneAdmin, 11);
 		layeredPaneAdmin.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneAdmin);
 		
@@ -420,6 +435,32 @@ public class AdminManageUsers extends JFrame {
 		
 		layeredPaneAdminComponents = new JLayeredPane();
 		layeredPaneAdminComponents.setBounds(0, 0, 937, 760);
+		
+		pnlReportGeneration = new JPanel();
+		layeredPaneAdminComponents.setLayer(pnlReportGeneration, 11);
+		pnlReportGeneration.setBounds(180, 38, 746, 720);
+		layeredPaneAdminComponents.add(pnlReportGeneration);
+		pnlReportGeneration.setLayout(null);
+		
+		scrlPaneProjects = new JScrollPane();
+		scrlPaneProjects.setBounds(378, 73, 160, 170);
+		pnlReportGeneration.add(scrlPaneProjects);
+		
+		listProjectsGeneratable = new JList(projectsList);
+		listProjectsGeneratable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrlPaneProjects.setViewportView(listProjectsGeneratable);
+		
+		JLabel lblSelectProjectTo = new JLabel("Select project to generate report:");
+		lblSelectProjectTo.setBounds(68, 75, 169, 14);
+		pnlReportGeneration.add(lblSelectProjectTo);
+		
+		btnCancelReport = new JButton("Cancel");
+		btnCancelReport.setBounds(628, 647, 83, 23);
+		pnlReportGeneration.add(btnCancelReport);
+		
+		btnCreateReport = new JButton("Create Report");
+		btnCreateReport.setBounds(482, 647, 109, 23);
+		pnlReportGeneration.add(btnCreateReport);
 		
 		Panel pnlUsers = new Panel();
 		layeredPaneAdminComponents.setLayer(pnlUsers, 0);
@@ -837,7 +878,7 @@ public class AdminManageUsers extends JFrame {
 		
 		btnViewTickets = new JButton("Ticket Viewer");
 														
-		btnViewTickets.setBounds(337, 5, 130, 23);
+		btnViewTickets.setBounds(328, 0, 139, 28);
 		layeredPaneAdminComponents.add(btnViewTickets);
 		
 		pnlTicketDetails = new JPanel();
@@ -917,7 +958,7 @@ public class AdminManageUsers extends JFrame {
 		btnTicketDoneSave.setBounds(280, 520, 89, 23);
 		pnlTicketDetails.add(btnTicketDoneSave);
 		
-		JPanel pnlArchivedUsers = new JPanel();
+		pnlArchivedUsers = new JPanel();
 		pnlArchivedUsers.setBackground(Color.LIGHT_GRAY);
 		pnlArchivedUsers.setBounds(0, 337, 157, 28);
 		layeredPaneAdminComponents.add(pnlArchivedUsers);
@@ -936,6 +977,14 @@ public class AdminManageUsers extends JFrame {
 		listArchivedUsers.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		scrollPane_5.setViewportView(listArchivedUsers);
 		pnlAdmin.add(layeredPaneAdminComponents);
+		
+		btnReportGenerator = new JButton("Generate Report");
+		btnReportGenerator.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnReportGenerator.setBounds(477, 0, 172, 28);
+		layeredPaneAdminComponents.add(btnReportGenerator);
 	}
 	
 	
@@ -944,7 +993,7 @@ public class AdminManageUsers extends JFrame {
 	 */
 	private void initManagerWorkerComponents() {
 		layeredPaneManagerWorker = new JLayeredPane();
-		layeredPane.setLayer(layeredPaneManagerWorker, 11);
+		layeredPane.setLayer(layeredPaneManagerWorker, 0);
 		layeredPaneManagerWorker.setBounds(0, 0, 941, 760);
 		layeredPane.add(layeredPaneManagerWorker);
 		
@@ -1029,7 +1078,7 @@ public class AdminManageUsers extends JFrame {
 		//create user end				
 		//create project start		
 		pnlCreateProject = new JPanel();
-		layeredPaneManagerWorkerComponents.setLayer(pnlCreateProject, 10);
+		layeredPaneManagerWorkerComponents.setLayer(pnlCreateProject, 0);
 		pnlCreateProject.setBounds(0, 0, 746, 720);
 		layeredPaneManagerWorkerComponents.add(pnlCreateProject);
 		pnlCreateProject.setVisible(false);
@@ -1220,7 +1269,7 @@ public class AdminManageUsers extends JFrame {
 		pnlCreateJob.add(btnCreateJob);
 		
 		JLabel lblWhereItFalls = new JLabel("Where it falls under:");
-		lblWhereItFalls.setBounds(67, 356, 100, 14);
+		lblWhereItFalls.setBounds(45, 356, 122, 14);
 		pnlCreateJob.add(lblWhereItFalls);
 		
 		btnCreateTicket = new JButton("Create Ticket");
@@ -1262,53 +1311,53 @@ public class AdminManageUsers extends JFrame {
 		txtNewTicketTitle.setColumns(10);
 		
 		btnSendTicket = new JButton("SEND");
-
-		btnSendTicket.setBounds(324, 347, 89, 23);
-		pnlCreateTicket.add(btnSendTicket);
-		pnlManagerWorker.setLayout(null);
-		pnlManagerWorker.add(btn_create_task);
-		pnlManagerWorker.add(btn_create_project);
-		pnlManagerWorker.add(btn_create_job);
-		pnlManagerWorker.add(btnCreateTicket);
-		pnlManagerWorker.add(layeredPaneManagerWorkerComponents);
 		
-		pnlMessages = new JPanel();
-		pnlMessages.setBackground(Color.LIGHT_GRAY);
-		pnlMessages.setBounds(0, 347, 181, 28);
-		pnlManagerWorker.add(pnlMessages);
-		pnlMessages.setLayout(null);
-		
-		lblNewLabel_7 = new JLabel("Conversations");
-		lblNewLabel_7.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel_7.setBounds(28, 5, 143, 14);
-		pnlMessages.add(lblNewLabel_7);
-		
-		pnlProjects = new JPanel();
-		pnlProjects.setBackground(Color.LIGHT_GRAY);
-		pnlProjects.setBounds(0, 0, 181, 28);
-		pnlManagerWorker.add(pnlProjects);
-		pnlProjects.setLayout(null);
-		
-		lblNewLabel_8 = new JLabel("Projects");
-		lblNewLabel_8.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel_8.setBounds(43, 5, 128, 14);
-		pnlProjects.add(lblNewLabel_8);
-		
-		scrlConversations = new JScrollPane();
-		scrlConversations.setBounds(2, 375, 179, 385);
-		pnlManagerWorker.add(scrlConversations);
-		
-		listConversations = new JList(conversationsList);
-		listConversations.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		scrlConversations.setViewportView(listConversations);
-		
-		scrlProjects = new JScrollPane();
-		scrlProjects.setBounds(0, 27, 181, 319);
-		pnlManagerWorker.add(scrlProjects);
-		
-		listProjects = new JList(projectsList);
-		listProjects.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		scrlProjects.setViewportView(listProjects);
+				btnSendTicket.setBounds(324, 347, 89, 23);
+				pnlCreateTicket.add(btnSendTicket);
+				pnlManagerWorker.setLayout(null);
+				pnlManagerWorker.add(btn_create_task);
+				pnlManagerWorker.add(btn_create_project);
+				pnlManagerWorker.add(btn_create_job);
+				pnlManagerWorker.add(btnCreateTicket);
+				pnlManagerWorker.add(layeredPaneManagerWorkerComponents);
+				
+				pnlMessages = new JPanel();
+				pnlMessages.setBackground(Color.LIGHT_GRAY);
+				pnlMessages.setBounds(0, 347, 181, 28);
+				pnlManagerWorker.add(pnlMessages);
+				pnlMessages.setLayout(null);
+				
+				lblNewLabel_7 = new JLabel("Conversations");
+				lblNewLabel_7.setFont(new Font("Tahoma", Font.BOLD, 14));
+				lblNewLabel_7.setBounds(28, 5, 143, 14);
+				pnlMessages.add(lblNewLabel_7);
+				
+				pnlProjects = new JPanel();
+				pnlProjects.setBackground(Color.LIGHT_GRAY);
+				pnlProjects.setBounds(0, 0, 181, 28);
+				pnlManagerWorker.add(pnlProjects);
+				pnlProjects.setLayout(null);
+				
+				lblNewLabel_8 = new JLabel("Projects");
+				lblNewLabel_8.setFont(new Font("Tahoma", Font.BOLD, 14));
+				lblNewLabel_8.setBounds(43, 5, 128, 14);
+				pnlProjects.add(lblNewLabel_8);
+				
+				scrlConversations = new JScrollPane();
+				scrlConversations.setBounds(2, 375, 179, 385);
+				pnlManagerWorker.add(scrlConversations);
+				
+				listConversations = new JList(conversationsList);
+				listConversations.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+				scrlConversations.setViewportView(listConversations);
+				
+				scrlProjects = new JScrollPane();
+				scrlProjects.setBounds(0, 27, 181, 319);
+				pnlManagerWorker.add(scrlProjects);
+				
+				listProjects = new JList(projectsList);
+				listProjects.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+				scrlProjects.setViewportView(listProjects);
 		
 		btnLogout = new JButton("LOGOUT");
 
@@ -1671,6 +1720,66 @@ public class AdminManageUsers extends JFrame {
 				loadTickets();
 			}
 		});
+		//opens report generation tab
+		btnReportGenerator.addActionListener(new ActionListener() {		
+			@Override
+			public void actionPerformed(ActionEvent e) {
+//				pnlUserEditInfo.setVisible(false);
+//				pnlCreateQualification.setVisible(false);
+//				pnlCreateUser.setVisible(false);
+//				pnlDeleteUser.setVisible(false);
+//				pnlViewTickets.setVisible(false);
+//				pnlTicketDetails.setVisible(false);
+//				pnlArchivedUsers.setVisible(false);
+				pnlReportGeneration.setVisible(true);
+				loadProjects();
+			}
+		});
+		//listens for selection of a project to generate a report of
+		listProjectsGeneratable.addListSelectionListener(new ListSelectionListener() {		
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+	            if (!arg0.getValueIsAdjusting()) {
+	                projectToGenerate= (String) listProjectsGeneratable.getSelectedValue();	
+	                System.out.println(projectToGenerate);
+	            }
+			}
+		});
+		//creates Report given a project name
+		btnCreateReport.addActionListener(new ActionListener() {	
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub	
+				File file = new File("C:/Users/The Stil/Documents/report.txt");
+				String s = "";
+				reportedjobs.add(jdbc.get_project(projectToGenerate)); //root
+				reportedjobs.addAll(jdbc.get_Branches(projectToGenerate));//branches
+				for (Job job : reportedjobs) {
+					s= s+job.jobname+" "+job.jobdesc+ '\r'+'\n';
+					try {
+						writeFileLine(s, file);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+//					s=String.format("%-15s, %15s, %30s \n", job.jobname, " ",job.jobdesc);
+//					try {
+//						writeFileLine(s, file);
+//					} catch (IOException e1) {
+//						e1.printStackTrace();
+//					}
+//					s="";
+				}
+				
+			}
+		});
+		//cancels report generation
+		btnCancelReport.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pnlReportGeneration.setVisible(false);
+				
+			}
+		});
 		//
 		btnTicketDoneSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1737,7 +1846,7 @@ public class AdminManageUsers extends JFrame {
 				String first;
 				String last;
 				String description = textAreaProjectDescription.getText();
-				Job job =new Job(Id, txtProjectName.getText(), 2, description);	//creates job
+				Job job =new Job(Id, txtProjectName.getText(), 1, description);	//creates project
 				job.setJobdesc(description);
 				jdbc.add_project(job);																		    //adds it to database
 				System.out.println(Id);
@@ -1773,7 +1882,7 @@ public class AdminManageUsers extends JFrame {
 
 			}
 		});	
-//		assign users to job		
+		//assign users to job		
 		buttonAssignUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub	
@@ -1920,7 +2029,6 @@ public class AdminManageUsers extends JFrame {
 			public void valueChanged(ListSelectionEvent arg0) {
 				if (!arg0.getValueIsAdjusting()) {
 					superJobString = (String) listSuperJobs.getSelectedValue();
-					System.out.println(superJobString);
 				}
 			}
 		});
@@ -1934,6 +2042,13 @@ public class AdminManageUsers extends JFrame {
 				}
 			}
 		});
+	}
+	//writes line to file
+	private void writeFileLine(String s, File file)throws IOException{
+		FileWriter filewriter = new FileWriter(file);
+		PrintWriter printWriter = new PrintWriter(filewriter);
+		printWriter.print(s);
+		printWriter.close();
 	}
 	
 	/*Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
@@ -2080,7 +2195,7 @@ public class AdminManageUsers extends JFrame {
 			}
 		}
 	}
-	
+
 	private void loadJobs(){
 		superJobsList.clear();
 		superJobs=jdbc.getProjectsAndJobs();
@@ -2111,7 +2226,6 @@ public class AdminManageUsers extends JFrame {
 			rdbtnTicketDoneNo.setSelected(true);
 		}
 	}
-
 	/*
 	 * Pulls a list of all projects into the Manager/Worker view
 	 */

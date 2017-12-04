@@ -10,12 +10,14 @@ public class Job {
    		this.jobID = jobID;
          this.jobname = jobname;
          this.jobtype = jobtype;
+         this.jobdesc= jobdesc;
    }
    
    public Job(int jobID, String jobname, int jobtype, String jobdesc) {
   		this.jobID = jobID;
         this.jobname = jobname;
         this.jobtype = jobtype;
+        this.jobdesc= jobdesc;
   }
    public void setJobdesc(String e) {
 		jobdesc = e;;

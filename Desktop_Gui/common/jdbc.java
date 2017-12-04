@@ -321,6 +321,57 @@ public static int getMaxJobID(){
 	
 }
 
+//Returns from server the branches of a project given project name
+public static ArrayList<Job> get_Branches(String root){
+	int rootID= getIdOfJob(root);
+	ArrayList<Job> branches = new ArrayList<Job>();
+	ArrayList<Job> morebranches = new ArrayList<Job>();
+	Job joby;
+		try {
+			String query = "SELECT * FROM db309amc2.jobs WHERE parentID = "+ rootID;
+			Statement stmt = null;
+			stmt = conn1.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			while (rs.next()) {
+				Job j = new Job(rs.getInt("jobID"), rs.getString("jobname"), rs.getInt("jobtype"), rs.getString("jobdesc"), rs.getInt("parentID"));
+				branches.add(j);
+				morebranches=get_Branches(j.jobname);
+				for (int i=0; i<morebranches.size(); i++) {
+					branches.add(morebranches.get(i));
+				}
+		}
+		// Close all statements
+		stmt.close();
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+		return branches;
+}
+
+//gets a single project given its name.
+public static Job get_project(String job) {
+	Job j = null;
+	try {
+	String query = String.format("SELECT * FROM db309amc2.jobs WHERE jobname='%s'", job);
+	Statement stmt = null;
+	stmt = conn1.createStatement();
+	ResultSet rs = stmt.executeQuery(query);
+	while (rs.next()) {
+		j = new Job(rs.getInt("jobID"), rs.getString("jobname"), rs.getInt("jobtype"), rs.getString("jobdesc"));
+	}
+	// Close all statements
+	stmt.close();
+
+	} catch (SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+	}
+	return j;
+}
+
 //Returns from server the task job id as an int
 public static int getMaxTaskID(){
 	int ID=0;
@@ -541,7 +592,7 @@ public static void get_projects() throws SQLException {
 public static ArrayList<Job> getProjects() {
 	ArrayList<Job> projects = new ArrayList<Job>();
 		try {
-			String query = "SELECT * FROM db309amc2.jobs WHERE parentID IS NULL";
+			String query = "SELECT * FROM db309amc2.jobs WHERE jobType = 1";
 			Statement stmt = null;
 			stmt = conn1.createStatement();
 			ResultSet rs = stmt.executeQuery(query);

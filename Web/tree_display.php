@@ -1,7 +1,7 @@
 <?php
 	//Import required PHP files
 	session_start();
-	
+
 	require 'database.php';
 	require 'util.php';
 
@@ -106,26 +106,59 @@
 	$employees="<ul>";
 	$employees=$employees.get_assigned($root["jobID"]);
 	$employees=$employees."</ul>";
-	$_SESSION['report'] = <<<HTML
-		<h1>$title</h1>
-		<p>$desc</p>
 
-		<h3>$title jobs</h3>
-		$table
-		<h3>Project Requirements</h3>
-		$reqList
+	$report = <<<HTML
+		<!DOCTYPE html>
+		<html>
+			<head>
+				<title> Project Report </title>
+				<style>
+					@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+					body
+					{
+						font-family: 'Open Sans', sans-serif;
+					}
+					tr:nth-child(even) 
+					{
+   						background-color: #bcbcbc;
+					}
+					td
+					{
+						border: 1px solid black;
+						padding: 3px;
+					}
+					table 
+					{
+ 						 border-collapse: collapse;
+					}
 
-		<h3>Project Staff</h3>
-		$employees
+				</style>
+			</head>
+			<body>
+				<h1>$title</h1>
+				<p>$desc</p>
+				<br><hr><br>
+				<h3>$title jobs</h3>
+				$table
+				<br>
+				<h3>Project Requirements</h3>
+				$reqList
+				<br>
+				<h3>Project Staff</h3>
+				$employees
+			</body>
+		</html>
 HTML;
+	$_SESSION['report'] = $report;
 
 	require 'navbar.php';
 
 	
 	$content = <<< HTML
 		<head><link rel="stylesheet" href="styles.css"></head>
-			<a href="download.php"> <button type="button" class='actionbutton'> Download Report </button> </a>
-
+			<a href="download.php"> 
+				<button type="button" class='actionbutton'> Download Report </button>
+			</a>
 		<div class="tree">
 		$tree
 		</div>

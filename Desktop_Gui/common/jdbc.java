@@ -11,6 +11,11 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author Devin Johnson and Jacob Stilwel
+ *
+ */
+
 public class jdbc {
 
 public static final String dbUrl = "jdbc:mysql://mysql.cs.iastate.edu:3306/db309amc2";
@@ -19,7 +24,10 @@ public static final String password = "x1cbBr23";
 public static Connection conn1;
 
 
-//called each time a GUI is opened to speed up the process. sets the global conn1 variable
+/**
+ * Called each time a GUI is opened to speed up the process. 
+ * Sets the global conn1 variable
+ */
 public static void openSQLConnection() {
 	try {
 		conn1 = DriverManager.getConnection(dbUrl, user, password);
@@ -31,8 +39,12 @@ public static void openSQLConnection() {
 	}
 }
 
-/*called when the 'X' button of the GUI in the top right is clicked
-Closes the SQL connection conn1*/
+
+
+/**
+ * Called when the 'X' button of the GUI in the top right is clicked. 
+ * Closes the SQL connection conn1
+ */
 public static void closeSQLConnection() {
 	try {
 		conn1.close();
@@ -44,7 +56,13 @@ public static void closeSQLConnection() {
 	}
 }
 
-//
+/**
+ * Called when the user clicks the login button. 
+ * Will check the database for the user logging in.  
+ * @param username username of User
+ * @param password password of User
+ * @return User object of person logging in
+ */
 public static User login(String username, String password) {
 	User u = null;
 	try {
@@ -67,8 +85,12 @@ public static User login(String username, String password) {
 	return u;
 }
 
-/*Create a random integer to be used as a user's userID between 1 and the max integer value.  
- * Checks the data base to see if that Id is present, and then keeps trying until a new one is created.*/
+/**
+ * Create a random integer to be used as a user's userID between 1 and the max integer value.  
+ * Checks the database to see if that Id is present, and then keeps trying until a new one is created.
+ * @param tableName the name of the table that a new ID will be checked and created for
+ * @return int randomNum  a new ID for some table record
+ */
 public static int get_new_id(String tableName) {
 	Map<String, String> map = new HashMap<String, String>();
 	map.put("users", "userID");
@@ -100,7 +122,18 @@ public static int get_new_id(String tableName) {
 	
 }
 
-//adds a user to the database, first randomly generates a userID using the get_user_id() function
+
+/**
+ * adds a user to the database, first randomly generates a userID using the get_new_id() function
+ * @param usertype  usertype of User
+ * @param username username of User
+ * @param firstname first name of User
+ * @param lastname last name of User
+ * @param email email address of User
+ * @param phone phone number of User
+ * @param passhash password of User
+ * @throws SQLException
+ */
 public static void add_user(int usertype, String username, String firstname, String lastname, String email, String phone, String passhash) throws SQLException {
 	int userID = get_new_id("users");
 	try {
@@ -117,7 +150,12 @@ public static void add_user(int usertype, String username, String firstname, Str
 	}
 }
 
-//removes a user from the database
+
+/**
+ * Finds a user in the database and changes their archive status to the boolean 'b' that is passed in.
+ * @param userID userID for person to be archived
+ * @param b a boolean for archived value
+ */
 public static void archiveUser(int userID, boolean b) {
 	try {
 		Statement statement = conn1.createStatement();
@@ -132,7 +170,12 @@ public static void archiveUser(int userID, boolean b) {
 	}
 }
 
-//adds a manager to a job 
+
+/**
+ * Assigns a manager to a job
+ * @param user User object of manager being assigned
+ * @param jobID job id of the job a manager is being assigned
+ */
 public static void add_Manager(User user, int jobID) {
 	try {
 		Statement statement = conn1.createStatement();
@@ -148,7 +191,11 @@ public static void add_Manager(User user, int jobID) {
 	}
 }
 
-//adds a project to the database
+
+/**
+ * Adds a job to the database.  Jobs table.
+ * @param jobs a Job object to be added as a record
+ */
 public static void add_project(Job jobs){
 	try {
 		Statement statement = conn1.createStatement();
@@ -164,8 +211,13 @@ public static void add_project(Job jobs){
 	}
 }
 
-//adds required qualifications to job x
-public static void add_requiredQuals(int id, java.util.List list){
+
+/**
+ * Adds required qualifications to  a job passed in by its ID
+ * @param id job ID to get qualification
+ * @param list list of qualifications
+ */
+public static void add_requiredQuals(int id, List list){
 	try {
 		Statement statement = conn1.createStatement();
 		//System.out.printf("%d %d \n", list.toString(), id);
@@ -182,8 +234,12 @@ public static void add_requiredQuals(int id, java.util.List list){
 		System.out.println("VendorError: " + e.getErrorCode());
 	}
 }
+ 
 
-//adds a task to the database
+/**
+ * adds a task to the database
+ * @param tasks  Task object to be added
+ */
 public static void add_task(Task tasks){
 	try {
 		Statement statement = conn1.createStatement();
@@ -201,7 +257,11 @@ public static void add_task(Task tasks){
 	}
 }
 
-//returns a list of all managers
+
+/**
+ * Returns a list of all managers
+ * @return users  ArrayList<User> of Users which are managers
+ */
 public static ArrayList<User> get_Managers() {
 	ArrayList<User> users = new ArrayList<User>();
 		try {
@@ -234,7 +294,11 @@ public static ArrayList<User> get_Managers() {
 	return users;
 }
 
-//Gets a list of all of the users for the Admin.  These users are displayed in the contentpane on the left side
+/**
+ * Gets a list of all of the users for the Admin. 
+ * These users are displayed in the contentpane on the left side
+ * @return users ArrayList<User> of users that the admin manages
+ */
 public static ArrayList<User> get_users() {
 	ArrayList<User> users = new ArrayList<User>();
 		try {
@@ -267,7 +331,12 @@ public static ArrayList<User> get_users() {
 	return users;
 }
 
-//Returns from server the max job id as an int
+
+
+/**
+ * Returns from server the max job id as an int
+ * @return ID int of the max jobID is the current table
+ */
 public static int getMaxJobID(){
 	int ID=0;
 	try {
@@ -288,7 +357,12 @@ public static int getMaxJobID(){
 	
 }
 
-//Returns from server the task job id as an int
+//
+
+/**
+ * Returns from server the task job id as an int
+ * @return ID int which is the max TaskID
+ */
 public static int getMaxTaskID(){
 	int ID=0;
 	try {
@@ -309,7 +383,12 @@ public static int getMaxTaskID(){
 	
 }
 
-//Returns from server the job id as an int given its name
+
+/**
+ * Returns from server the job id as an int given its name
+ * @param s String name of task
+ * @return ID taskID of the task passed in by name
+ */
 public static int getTaskID(String s){
 	int ID=0;
 	try {
@@ -330,7 +409,12 @@ public static int getTaskID(String s){
 	
 }
 
-//gets a single user given its username.
+
+/**
+ * Gets a single user given its username.
+ * @param username
+ * @return u User object
+ */
 public static User get_user(String username) {
 	User u = null;
 	try {
@@ -354,7 +438,14 @@ public static User get_user(String username) {
 	return u;
 }
 
-//gets a single user given its whole name.
+
+/**
+ * gets a single user given its whole name.
+ * Including firstname and lastname
+ * @param first String first name
+ * @param last String last name
+ * @return user User Object
+ */
 public static User get_user(String first, String last) {
 	User u = null;
 	try {
@@ -378,7 +469,12 @@ public static User get_user(String first, String last) {
 	return u;
 }
 
-//gets a single user given its userID.
+
+/**
+ * gets a single user given its userID.
+ * @param userID int userID of person to lookup and return
+ * @return user User object of person found
+ */
 public static User get_user(int userID) {
 	User u = null;
 	try {
@@ -402,7 +498,19 @@ public static User get_user(int userID) {
 	return u;
 }
 
-//Updates a user's information, called when the Admin clicks SAVE on the update user panel
+
+
+/**
+ * Updates a user's information, called when the Admin clicks SAVE on the update user panel
+ * @param id userID of user to update
+ * @param usertype usertype of user to update
+ * @param firstname first name of user to update
+ * @param lastname last name of user to update
+ * @param username username of user to update
+ * @param email email address of user to update
+ * @param phone phone number of user to update
+ * @throws SQLException 
+ */
 public static void updateUser(int id, int usertype, String firstname, String lastname, String username, String email, String phone) throws SQLException {
 	try {
 
@@ -421,7 +529,13 @@ public static void updateUser(int id, int usertype, String firstname, String las
 	}
 }
 
-//Gets the userID of a user given its username
+
+
+/**
+ * Gets the userID of a user given its username
+ * @param username String username
+ * @return userID int
+ */
 public static int getIdOfUser(String username) {
 	int userID = 0;
 	try {
@@ -440,7 +554,13 @@ public static int getIdOfUser(String username) {
 	return userID;
 }
 
-//Gets the qualID of a qual given its name
+
+
+/**
+ * Gets the qualID of a qual given its name
+ * @param qual String name of Qualification
+ * @return q Qualification object
+ */
 public static Qualification getQualwithString(String qual) {
 	Qualification q = null;
 	try {
@@ -461,31 +581,11 @@ public static Qualification getQualwithString(String qual) {
 	return q;
 }
 
-//returns a list of projects
-public static void get_projects() throws SQLException {
-		try {
-		String query = "SELECT * FROM db309amc2.jobs";
-		Statement stmt = null;
-		stmt = conn1.createStatement();
-		ResultSet rs = stmt.executeQuery(query);
-		while (rs.next()) {
-			int jobID = rs.getInt("jobID");
-   			String jobname = rs.getString("jobname");
-   			int jobtype = rs.getInt("jobtype");
-   			String jobdesc = rs.getString("jobdesc");
-   			int parentID = rs.getInt("parentID");
-   			System.out.println(jobID + "\t" + jobname + "\t" + jobtype + "\t" + jobdesc + "\t" + parentID);
-		}
-		// Close all statements
-		stmt.close();
-	} catch (SQLException e) {
-		System.out.println("SQLException: " + e.getMessage());
-		System.out.println("SQLState: " + e.getSQLState());
-		System.out.println("VendorError: " + e.getErrorCode());
-	}
-}
 
-//returns a list of projects
+/**
+ * returns a list of projects
+ * @return projects ArrayList<Job> list of projects (jobs with no parent ID)
+ */
 public static ArrayList<Job> getProjects() {
 	ArrayList<Job> projects = new ArrayList<Job>();
 		try {
@@ -507,7 +607,11 @@ public static ArrayList<Job> getProjects() {
 	return projects;
 }
 
-//returns a list of projects and jobs
+
+/**
+ * returns a list of projects and jobs
+ * @return projects ArrayList<Job> list containing all projects and jobs.
+ */
 public static ArrayList<Job> getProjectsAndJobs() {
 	ArrayList<Job> projects = new ArrayList<Job>();
 		try {
@@ -529,7 +633,12 @@ public static ArrayList<Job> getProjectsAndJobs() {
 	return projects;
 }
 
-//returns a list of user w/ a qualification
+
+/**
+ * returns a list of user w/ a qualification
+ * @param s String name of qualification
+ * @return users ArrayList<User>
+ */
 public static ArrayList<User> getUsersWithQual(String s){
 	ArrayList<User> users = new ArrayList<User>();	
 	try{
@@ -556,7 +665,12 @@ public static ArrayList<User> getUsersWithQual(String s){
 	return users;
 }
 
-//returns a list of user w/ a qualification  TODO
+
+/**
+ * 
+ * @param l List of qualification names
+ * @return users ArrayList<User>
+ */
 public static ArrayList<User> getUsersWithQual(List l){
 	String s = l.toString();
 	s=s.substring(1, s.length()-1);
@@ -590,7 +704,13 @@ public static ArrayList<User> getUsersWithQual(List l){
 	}
 	return users;
 }
-//returns a list of qualifications
+
+
+
+/**
+ * returns a list of qualifications
+ * @return quals ArrayList<Qualification>
+ */
 public static ArrayList<Qualification> get_qualifications(){
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();	
 	try{
@@ -617,7 +737,13 @@ public static ArrayList<Qualification> get_qualifications(){
 	return quals;
 }
 
-//Gets an ArrayList of all assigned qualifications given a userID
+//
+
+/**
+ * Gets an ArrayList of all assigned qualifications given a userID
+ * @param userID int id of user to get qualifications for
+ * @return quals ArrayList<Qualification>
+ */
 public static ArrayList<Qualification> getUserAssignedQuals(int userID) {
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();
 	try {		
@@ -645,8 +771,13 @@ public static ArrayList<Qualification> getUserAssignedQuals(int userID) {
 	return quals;
 }
 
-/*Gets an ArrayList of all available qualifications for a user, passed in a userID
-returns all unassigned qualifications*/
+/**/
+
+/**
+ * Gets an ArrayList of all available qualifications for a user
+ * @param userID int user ID passed in to get their available qualifications
+ * @return quals ArrayList<Qualification>
+ */
 public static ArrayList<Qualification> getUserAvailQuals(int userID) {
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();
 	try {		
@@ -672,9 +803,16 @@ public static ArrayList<Qualification> getUserAvailQuals(int userID) {
 	return quals;
 }
 
-/*removes a row from the qualification_assignments table to unassign a qualifications.
-can remove more than one at a time by building a string of qualID's to match
-example (1,2,5) or (1)*/
+
+
+/**
+ * Removes a row from the qualification_assignments table to unassign a qualifications.
+ * Can remove more than one at a time by building a string of qualID's to match.
+ * example (1,2,5) or (1)
+ * @param lastClickeduserID
+ * @param assignedQuals
+ * @param selectedIndices
+ */
 public static void UnassignQuals(int lastClickeduserID, ArrayList<Qualification> assignedQuals, int[] selectedIndices) {
 	StringBuilder s = new StringBuilder();
 	s.append('(');
@@ -701,7 +839,13 @@ public static void UnassignQuals(int lastClickeduserID, ArrayList<Qualification>
 	}
 }
 
-//Adds a row to the qualification_assignments table to assign a qualification to a user.
+
+/**
+ * Adds a row to the qualification_assignments table to assign a qualification to a user.
+ * @param lastClickeduserID
+ * @param availQuals
+ * @param selectedIndices
+ */
 public static void assignQuals(int lastClickeduserID, ArrayList<Qualification> availQuals, int[] selectedIndices) {
 	try {
 		for (int i = 0; i < selectedIndices.length; i++) {
@@ -721,7 +865,11 @@ public static void assignQuals(int lastClickeduserID, ArrayList<Qualification> a
 	
 }
 
-//
+
+/**
+ * Returns all qualifications in the database
+ * @return quals ArrayList<Qualification>
+ */
 public static ArrayList<Qualification> getQualifications() {
 	ArrayList<Qualification> quals = new ArrayList<Qualification>();
 	try {		
@@ -744,6 +892,12 @@ public static ArrayList<Qualification> getQualifications() {
 	}
 	return quals;
 }
+
+/**
+ * Get a qualifications from the database given its name
+ * @param name
+ * @return qual Qualification object
+ */
 public static Qualification getQualification(String name) {
 	Qualification qual = null;
 	try {		
@@ -766,7 +920,14 @@ public static Qualification getQualification(String name) {
 }
 
 
-//creates a qualification
+
+/**
+ * Creates a qualification in the database
+ * @param name
+ * @param desc
+ * @param usernames
+ * @return boolean value if it worked
+ */
 public static boolean createQual(String name, String desc, ArrayList<String> usernames) {
 	if (name.length() == 0 || desc.length() == 0) {
 		return false;
@@ -814,7 +975,15 @@ public static boolean createQual(String name, String desc, ArrayList<String> use
 	return true;
 }
 
-//
+
+
+/**
+ * Adds a new ticket to the database
+ * @param title  Title of the ticket to add
+ * @param message Message of the ticket to add
+ * @param submittedBy userID of the person submitting the ticket
+ * @return boolean value if it worked.  True if it did.
+ */
 public static boolean createTicket(String title, String message, int submittedBy) {
 	submittedBy = 123;
 	if (message.length() == 0 || submittedBy == 0) {
@@ -840,7 +1009,11 @@ public static boolean createTicket(String title, String message, int submittedBy
 	return true;
 }
 
-//
+
+/**
+ * Gets all tickets in the database
+ * @return tickets ArrayList<Ticket>
+ */
 public static ArrayList<Ticket> getTickets() {
 	ArrayList<Ticket> tickets = new ArrayList<Ticket>();
 	
@@ -865,7 +1038,12 @@ public static ArrayList<Ticket> getTickets() {
 	return tickets;
 }
 
-//
+
+/**
+ * Gets a ticket from the database given its ID
+ * @param ticketID
+ * @return t Ticket object
+ */
 public static Ticket getTicket(int ticketID) {
 	Ticket t = null;
 	
@@ -890,6 +1068,11 @@ public static Ticket getTicket(int ticketID) {
 	return t;
 }
 
+
+/**
+ * @param id int ticketID
+ * @param b boolean value if the ticket is to be marked completed or not
+ */
 public static void updateTicket(int id, boolean b) {
 	try {
 
@@ -908,6 +1091,13 @@ public static void updateTicket(int id, boolean b) {
 	}
 }
 
+//
+
+/**
+ * Gets all conversations for a given userID
+ * @param userID int userID
+ * @return map HashMap<String, Integer> map using a conversation name as the key and id as the value
+ */
 public static HashMap<String, Integer> getConversations(int userID) {
 	HashMap<String, Integer> map = new HashMap<String, Integer>();
 	ArrayList<Integer> ids = new ArrayList<Integer>();
@@ -941,6 +1131,15 @@ public static HashMap<String, Integer> getConversations(int userID) {
 	return map;
 }
 
+
+//
+
+/**
+ * Gets all messages in a conversation for a given conversation and user
+ * @param conversationID int id of conversation to get messages for
+ * @param userID int id of user in the conversation
+ * @return messages ArrayList<String> list of all messages
+ */
 public static ArrayList<String> getConversationMessages(int conversationID, int userID) {
 	ArrayList<String> messages = new ArrayList<String>();
 	
@@ -976,6 +1175,13 @@ public static ArrayList<String> getConversationMessages(int conversationID, int 
 	return messages;
 }
 
+
+/**
+ * Adds a message to a conversation in the database.
+ * @param text String of message content
+ * @param senderID userID of the person sending the message
+ * @param receivingID conversationID of the conversation the message will be a part of
+ */
 public static void sendMessage(String text, int senderID, int receivingID) {
 	int newID = get_new_id("messages");
 	
@@ -995,7 +1201,12 @@ public static void sendMessage(String text, int senderID, int receivingID) {
 	}
 }
 
+//
 
+/**
+ * Returns all tasks in the database
+ * @return tasks ArrayList<Task> list of Task objects
+ */
 public static ArrayList<Task> getTasks() {
 	ArrayList<Task> tasks = new ArrayList<Task>();
 	
@@ -1019,6 +1230,14 @@ public static ArrayList<Task> getTasks() {
 	
 	return tasks;
 }
+
+//
+
+/**
+ * Returns all of the tasks that are assigned to a specific job
+ * @param parentID jobID of the job that the task is assigned to
+ * @return tasks ArrayList<Task> list of tasks
+ */
 public static ArrayList<Task> getTasks(int parentID) {
 	ArrayList<Task> tasks = new ArrayList<Task>();
 	
@@ -1043,7 +1262,13 @@ public static ArrayList<Task> getTasks(int parentID) {
 	return tasks;
 }
 
+//
 
+/** 
+ * Gets all qualifications assigned to a specific job
+ * @param jobID int id of job that is being looked up
+ * @return quals ArrayList<Qualification> list of all qualifications
+ */
 public static ArrayList<Qualification> getAssignedJobQuals(int jobID) {
 	ArrayList<Qualification> jobQuals = new ArrayList<Qualification>();
 	ArrayList<Integer> qualIDs = new ArrayList<Integer>();
@@ -1104,6 +1329,14 @@ public static ArrayList<Qualification> getAssignedJobQuals(int jobID) {
 	return jobQuals;
 }
 
+//
+
+/**
+ * Gets all qualifications that are available for a job.
+ * The ones that are not assigned
+ * @param jobID int id of job to check
+ * @return quals ArrayList<Qualification> list of all available qualifications
+ */
 public static ArrayList<Qualification> getAvailJobQuals(int jobID) {
 	ArrayList<Qualification> jobQuals = new ArrayList<Qualification>();
 	ArrayList<Integer> qualIDs = new ArrayList<Integer>();
@@ -1165,6 +1398,13 @@ public static ArrayList<Qualification> getAvailJobQuals(int jobID) {
 	return jobQuals;
 }
 
+//
+
+/**
+ * Gets all users assigned to a specific job given its ID
+ * @param jobID int id of job to check
+ * @return users ArrayList<String> list of users assigned to job
+ */
 public static ArrayList<String> getAssignedJobUsers(int jobID) {
 	ArrayList<String> users = new ArrayList<String>();
 	ArrayList<Integer> userIDs = new ArrayList<Integer>();
@@ -1222,6 +1462,11 @@ public static ArrayList<String> getAssignedJobUsers(int jobID) {
 	return users;
 }
 
+/**
+ * Gets all users available for a specific job given its ID
+ * @param jobID int id of job to check
+ * @return users ArrayList<String> list of users available/not assigned to job
+ */
 public static ArrayList<String> getAvailJobUsers(int jobID) {
 	ArrayList<String> users = new ArrayList<String>();
 	ArrayList<Integer> userIDs = new ArrayList<Integer>();
@@ -1348,7 +1593,13 @@ public static ArrayList<String> getAvailJobUsers(int jobID) {
 	
 }
 
+//
 
+/**
+ * Adds a user to a job in the database
+ * @param name String name of user to add 
+ * @param jobID int jobID to add the user too
+ */
 public static void addUserToJob(String name, int jobID) {
 	int i = name.indexOf(',');
 	String first = name.substring(i+2, name.length());
@@ -1370,6 +1621,13 @@ public static void addUserToJob(String name, int jobID) {
 	
 }
 
+//
+
+/**
+ * Removes a user to a job in the database
+ * @param name String name of user to remove
+ * @param jobID int jobID to remove the user from
+ */
 public static void removeUserFromJob(String name, int jobID) {
 	int i = name.indexOf(',');
 	String first = name.substring(i+2, name.length());
@@ -1389,6 +1647,13 @@ public static void removeUserFromJob(String name, int jobID) {
 	}
 }
 
+//
+
+/**
+ * Adds a qualification to a job in the database
+ * @param name String name of qualification
+ * @param jobID int id of job to add the qualification to
+ */
 public static void addQualToJob(String name, int jobID) {
 	Qualification q = getQualification(name);
 	try {
@@ -1405,6 +1670,11 @@ public static void addQualToJob(String name, int jobID) {
 	}
 }
 
+/**
+ * Removes a qualification to a job in the database
+ * @param name String name of qualification
+ * @param jobID int id of job to remove the qualification from
+ */
 public static void removeQualFromJob(String name, int jobID) {
 	Qualification q = getQualification(name);
 	System.out.println("Here is the qualID"+q.getQualName());
@@ -1422,6 +1692,14 @@ public static void removeQualFromJob(String name, int jobID) {
 	}
 }
 
+//
+
+/**
+ * Updates values in the database for a job.
+ * @param name String name to update for the job
+ * @param desc String description to be updated
+ * @param jobID int jobId to look up the job by
+ */
 public static void updateJob(String name, String desc, int jobID) {
 	try {
 
@@ -1440,6 +1718,13 @@ public static void updateJob(String name, String desc, int jobID) {
 	}
 }
 
+//
+
+/**
+ * Updates a users password in the database
+ * @param userID int id of user to update their password
+ * @param pass String pass that is being changed too
+ */
 public static void changePassword(int userID, String pass) {
 	try {
 

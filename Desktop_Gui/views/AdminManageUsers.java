@@ -2359,6 +2359,7 @@ public class AdminManageUsers extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				jdbc.sendMessage(txtNewMessage.getText().toString(), currentSessionUserID, currentOpenConversation);
 				loadConversationMessages(currentOpenConversation);
+				txtNewMessage.setText("");
 			}
 		});
 		btnRefresh.addActionListener(new ActionListener() {

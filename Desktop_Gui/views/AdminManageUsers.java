@@ -1843,7 +1843,7 @@ public class AdminManageUsers extends JFrame {
 		//creates a new project with the given inputs
 		btnCreateNewProject.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub	
+					
 				int Id= jdbc.getMaxJobID()+1;
 				String s="";
 				String first;
@@ -1888,7 +1888,7 @@ public class AdminManageUsers extends JFrame {
 		//assign users to job		
 		buttonAssignUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub	
+					
 				Object x = listAvailableUsers.getSelectedValue();
 				assignedUsersList.addElement(x);
 			    unassignedUsersList.removeElement(x);			
@@ -1897,7 +1897,7 @@ public class AdminManageUsers extends JFrame {
 		//removes users from job
 		buttonRemoveUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub		
+						
 				Object x = listAssignedUsers.getSelectedValue();
 				unassignedUsersList.addElement(x);
 			    assignedUsersList.removeElement(x);
@@ -2046,7 +2046,13 @@ public class AdminManageUsers extends JFrame {
 			}
 		});
 	}
-	//writes line to file
+
+	/**
+	 * writes line to file
+	 * @param s	The line to be wrote to the file
+	 * @param file The designated file
+	 * @throws IOException
+	 */
 	private void writeFileLine(String s, File file)throws IOException{
 		FileWriter filewriter = new FileWriter(file);
 		PrintWriter printWriter = new PrintWriter(filewriter);
@@ -2054,8 +2060,10 @@ public class AdminManageUsers extends JFrame {
 		printWriter.close();
 	}
 	
-	/*Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
-	This string is then added to the userList that is displayed on the left panel*/
+	/**
+	 * Query's the SQL database to get all users, then constructs a string "Lastname, Firstname [username]"
+	 * This string is then added to the userList that is displayed on the left panel
+	 */
 	private void createUserList() {
 		if (!userList.isEmpty() && !listUsers.isSelectionEmpty()) {
 			listUsers.clearSelection();
@@ -2075,8 +2083,9 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 	
-	/*
+	/**
 	 * gets a list of user's qualifications from the database and then loads then into the correct list.
+	 *
 	 */
 	private void createUserListQual() {
 		userListAvailQual.clear();
@@ -2086,9 +2095,12 @@ public class AdminManageUsers extends JFrame {
 		}
 	}
 	
-	/*This function takes the string from the userList and uses a regular expression to get the username between the []
-	then it gets the user from the database, and displays that information in the view user panel
-	it also calls the createQualList method that gets both assigned and available qualifications*/ 
+	/**
+	 * This function takes the string from the userList and uses a regular expression to get the username between the []
+	 * then it gets the user from the database, and displays that information in the view user panel
+	 * it also calls the createQualList method that gets both assigned and available qualifications
+	 * @param name The name of the user whose info is to be displayed
+	 */
 	private void displayUserInfo(String name) {
 		String username = null;
 		Pattern p = Pattern.compile("\\[(.*?)\\]");
@@ -2114,15 +2126,21 @@ public class AdminManageUsers extends JFrame {
 		createQualLists(u.get_userID());
 	}
 	
-	/*This function is used when a user is updated because their firstname, lastname, or username could have changed
-	meaning they need to be displayed correctly on the left side panel
-	it gets the new information from the server and then users the lastClickedIndex to update the string at that spot*/
+	/**
+	 * This function is used when a user is updated because their firstname, lastname, or username could have changed
+	 * meaning they need to be displayed correctly on the left side panel
+	 * it gets the new information from the server and then users the lastClickedIndex to update the string at that spot.
+	 */
 	private void updateUserList() {
 		User u = jdbc.get_user(lastClickedUser);
 		String s = String.format("%s, %s [%s]", u.get_lastname(), u.get_firstname(), u.get_username());
 		userList.setElementAt(s, lastClickedIndex);
 	}
-	//pulls all users with selected qualification
+	
+	/**
+	 * pulls all users with selected qualification
+	 * @param s Qualification in the form of a string
+	 */
 	private void createAllUsersList(String s){
 		unassignedUsersList.clear();
 		listedUsersAddList.clear();
@@ -2132,7 +2150,10 @@ public class AdminManageUsers extends JFrame {
 			listedUsersAvailList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
 		}
 	}
-	//pulls all users 
+
+	/**
+	 * pulls all users regardless
+	 */
 	private void createAllUsersList(){
 		unassignedUsersList.clear();
 		listedUsersAvailList.clear();
@@ -2141,8 +2162,11 @@ public class AdminManageUsers extends JFrame {
 			unassignedUsersList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
 			listedUsersAvailList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
 		}
-	}	
-	//pulls all managers and fills the list
+	}
+	
+	/**
+	 * pulls all managers and fills the list regardless
+	 */
 	private void createManagersList(){
 		managerList.clear();
 		ArrayList<User> users = jdbc.get_Managers();
@@ -2150,7 +2174,10 @@ public class AdminManageUsers extends JFrame {
 			managerList.addElement(String.format("%s, %s", users.get(i).get_lastname(), users.get(i).get_firstname()));
 		}
 	}
-	//pulls all qualifications and fills in the list
+	
+	/**
+	 * pulls all qualifications and fills in the list
+	 */
 	private void createQualificationsList(){
 		listedQualList.clear();
 		listedQuals=jdbc.get_qualifications();
@@ -2158,8 +2185,12 @@ public class AdminManageUsers extends JFrame {
 			listedQualList.addElement(q.getQualName());
 		}
 	}
-	/*Populates both the assigned and available qualification lists for a user after clicked on one
-	Is also called each time a qualification is assigned or unassigned to update the lists.*/
+
+	/**
+	 * Populates both the assigned and available qualification lists for a user after clicked on one
+	 * Is also called each time a qualification is assigned or unassigned to update the lists.
+	 * @param userID The ID of the person the list is about
+	 */
 	private void createQualLists(int userID) {
 		assignedQualList.clear();
 		availableQualList.clear();
@@ -2175,8 +2206,11 @@ public class AdminManageUsers extends JFrame {
 		}
 		
 	}
-	/*Loads all tickets into the openTickets list and the closedTickets list for the user to be able to click on a ticket
-	to view its details and either mark it done or not done.*/
+
+	/**
+	 * Loads all tickets into the openTickets list and the closedTickets list for the user to be able to click on a ticket
+	 * to view its details and either mark it done or not done.
+	 */
 	private void loadTickets() {
 		openTickets.clear();
 		closedTickets.clear();
@@ -2198,7 +2232,10 @@ public class AdminManageUsers extends JFrame {
 			}
 		}
 	}
-
+	
+	/**
+	 * loads all jobs and projects to a list
+	 */
 	private void loadJobs(){
 		superJobsList.clear();
 		superJobs=jdbc.getProjectsAndJobs();
@@ -2207,8 +2244,10 @@ public class AdminManageUsers extends JFrame {
 		}
 		
 	}	
-	/*
+
+	/**
 	 * Displays all of the details for a ticket once it has been clicked.
+	 * @param s a string 
 	 */
 	private void displayTicketDetails(String s) {
 		int i = 0;
@@ -2229,8 +2268,10 @@ public class AdminManageUsers extends JFrame {
 			rdbtnTicketDoneNo.setSelected(true);
 		}
 	}
-	/*
+
+	/**
 	 * Pulls a list of all projects into the Manager/Worker view
+	 * 
 	 */
 	private void loadProjects() {
 		projectsList.clear();

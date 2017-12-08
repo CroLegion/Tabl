@@ -2,6 +2,14 @@
 	//This file contains a set of general utility methods
 	//By: Mason Wray - 09/20/2017
 
+	/**
+	*	Processes a login request.
+	*
+	*	@param $username The username of the user attempting to log in.
+	*	@param $password The password of the user attempting to log in.
+	*
+	*	@return TRUE if login successfrul, FALSE otherwise.
+	*/
 	function processLogin($username, $password)
 	{
 		$user = data_validUser($username, $password);
@@ -21,12 +29,15 @@
 		}
 	}
 
-	function logout()
-	{
-		
-	}
+	function logout(){}
 	
-	//Loads an HTML document from the specified filename, and returns the file's contents as HTML.
+	/**
+	*	Loads an HTML document from the specified filename, and returns the file's contents as HTML.
+	*
+	*	@param $filename The filename of the HTML to be loaded.
+	*
+	*	@return The HTML file as a string.
+	*/
 	function loadHTML($filename)
 	{
 		$doc = new DOMDocument();
@@ -34,7 +45,13 @@
 		return $doc->saveHTML();
 	}
 
-	//Loads an HTML document from the specified filename, and returns the file as a DOMDocument.
+	/**
+	*	Loads an HTML document from the specified filename, and returns the file as a DOMDocument.
+	*
+	*	@param $filename The filename of the HTML to be loaded.
+	*
+	*	@return The HTML file as a DOM document.
+	*/
 	function loadHTMLasDOM($filename)
 	{
 		$doc = new DOMDocument();

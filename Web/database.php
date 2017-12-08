@@ -3,14 +3,29 @@
 	//This file provides a 'connection' class for interacting with the MySQL database. This class should abstract database interactions to the level of 'getters' and 'setters'.
 	//By: Mason Wray - 09/20/2017
 
-	//Returns the properly hashed digest of the given username, password, and salt.
+	/**
+	*	Returns the properly hashed digest of the given username, password, and salt.
+	*
+	*	@param $username The username of the credential set to be hashed.
+	*	@param $password The password of the credential set to be hashed.
+	*	@param $salt The salt for the SHA256 hash operation.
+	*
+	*	@return The SHA256 hashed password.
+	*/
 	function hash_login($username, $password, $salt)
 	{
 		return $password;
 		//return hash("sha256", $username . $password . $salt, FALSE);
 	}
 
-	//Sets the global database connection parameters. Use this to specify which database you want to connect to at the beginning of a script.
+	/**
+	*	Sets the global database connection parameters. Use this to specify which database you want to connect to at the beginning of a script.
+	*
+	*	@param $servername The servername of the MySQL database server to be accessed.
+	*	@param $username The username for the MYSQL database to be accessed.
+	*	@param $password The password for the MySQL database to be accessed.
+	*	@param $database The name of the MySQL database to be accessed.
+	*/
 	function data_set($servername, $username, $password, $database)
 	{
 		$GLOBALS['servername'] = $servername;
@@ -19,13 +34,22 @@
 		$GLOBALS['database'] = $database;
 	}
 
-	//Opens a new database connection to the globally specified database and returns a MySQLI object.
+	/**
+	*	Opens a new database connection to the globally specified database and returns a MySQLI object.
+	*
+	*	@return A new mysqli database object.
+	*/
 	function data_open()
 	{
 		return new mysqli($GLOBALS['servername'], $GLOBALS['usernamea'], $GLOBALS['password'], $GLOBALS['database']);
 	}
 
-	//Performs a query on the users table, and returns the userID and usertype of the user if username and password are valid, -1 if they are not.
+	/**
+	*	Performs a query on the users table, and returns the userID and usertype of the user if username and password are valid, -1 if they are not.
+	*
+	*	@param $username The username of the user to be checked.
+	*	@param $password The passsword of the user to be checked.
+	*/
 	function data_validUser($username, $password)
 	{
 		$hash = hash_login($username, $password, "");
@@ -49,7 +73,9 @@ SQL;
 		}
 	}
 
-		//Performs a query on the users table and returns all users first and last names.
+	/**
+	*	Performs a query on the users table and returns all users first and last names.
+	*/
 	function data_usersList()
 	{
 		$sql = "SELECT firstname, lastname, userID FROM users";
@@ -67,7 +93,11 @@ SQL;
 		}
 	}
 
-	//Selects a user by their id number
+	/**
+	*	Selects a user by their id number
+	*
+	*	@param $userID The user ID of the user to be selected.
+	*/
 	function data_specificUser($userID)
 	{
 		$sql = "SELECT * FROM users WHERE userID={$userID}";
@@ -77,6 +107,13 @@ SQL;
 		return $result;
 	}
 
+	/**
+	*	Checks if teh username already exists in the database.
+	*
+	*	@param $username the username to be checked
+	*
+	*	@return TRUE if the username exists, FALSE otherwise.
+	*/
 	function data_usernameExists($username)
 	{
 		$sql = "SELECT COUNT(*) FROM users WHERE username = '{$username}'";
@@ -93,8 +130,11 @@ SQL;
 		}
 	}
 
-	//Performs a query on the qualifications table and returns all the qualifications.
-	//added for job creation and project creation
+	/**
+	*	Performs a query on the qualifications table and returns all the qualifications.
+	*
+	*	@return A array of qualifications.
+	*/
 	function data_qual_List()
 	{
 		$sql = "SELECT qualname, qualID FROM qualifications";
@@ -112,7 +152,11 @@ SQL;
 		}
 	}
 	
-	//Adds a new user to the database
+	/**
+	*	Adds a new user to the database
+	*
+	*	@param All reqiured user values.
+	*/
 	function data_add_new_user($usertype, $firstname, $lastname, $username, $email, $phone, $password)
 	{
 		$pass = hash_login($username, $password, "");
@@ -123,6 +167,11 @@ SQL;
 		$conn->close();
 	}
 
+	/**
+	*	Creates a new unused user ID
+	*
+	*	@return The new ID
+	*/
 	function get_and_create_new_user_id()
 	{
 		$conn = data_open();
@@ -137,8 +186,13 @@ SQL;
 		return $val;
 	}
 
-	
-	//function that returns users with a qualification
+	/**
+	*	Function that returns users with a qualification
+	*
+	*	@param $qualification the qualification to search for.
+	*
+	*	@return A list of all users with that qualification.
+	*/
 	function users_with_qualifications($qualification)
 	{
 	
@@ -155,8 +209,13 @@ SQL;
 	
 	}
 
-
-	//Function that gets qualifications for a user by id
+	/**
+	*	Function that gets qualifications for a user by id.
+	*
+	*	@param $userID The user ID number to get qualifications for.
+	*
+	*	@return A list of qualifications for the specified user.
+	*/
 	function qualifications_for_user($userID)
 	{
 		$sql = "select qualID from qualification_assignments where userID={$userID};";
@@ -166,10 +225,11 @@ SQL;
 		return $result;
 	}
 
-
-
-
-	//function that gets company details for view group
+	/**
+	*	Function that gets company details for view group
+	*
+	*	@return A list of the destails for the company
+	*/
 	function get_company_details()
 	{
 		$sql = "SELECT * FROM companydetails";
@@ -181,7 +241,13 @@ SQL;
 
 	}
 
-	//Get project root from jobs table
+	/**
+	*	Get project root from jobs table.
+	*
+	*	@param $project_name The project to get the root for.
+	*
+	*	@return
+	*/
 	function get_root_of_tree($project_name)
 	{
 		$sql = "Select jobID, jobname, jobdesc from jobs where jobs.jobname=\"$project_name\";";
@@ -193,7 +259,9 @@ SQL;
 		return $result;
 	}
 
-	//Get children of node by jobID
+	/**
+	*	Get children of node by jobID
+	*/
 	function get_children($jobID)
 	{	
 		$sql="Select jobID, jobname, jobdesc from jobs where jobs.parentID=\"$jobID\";";
@@ -204,7 +272,10 @@ SQL;
 		//echo $result->num_rows."<br/>";
 		return $result;
 	}
-	//Get all root nodes in database
+
+	/**
+	*	Get all root nodes in database
+	*/
 	function get_roots()
 	{
 		$sql="Select jobID, jobname, jobdesc from jobs where jobs.jobtype=1;";
@@ -216,7 +287,9 @@ SQL;
 		return $result;
 	}
 
-	//Function that gets all workers of a tree from its root
+	/**
+	*	Function that gets all workers of a tree from its root.
+	*/
 	function get_assigned($root)
 	{
 		$conn = data_open();
@@ -245,8 +318,9 @@ SQL;
 		return $result;
 	}		
 
-
-	//Get task details for task details page
+	/**
+	*	Get task details for task details page.
+	*/
 	function get_task_by_id($taskID)
 	{
 		$sql="Select * from tasks where taskID ='{$taskID}';";
@@ -257,8 +331,10 @@ SQL;
 		//echo $result->num_rows."<br/>";
 		return $result;
 	}
-	
-	//Insert new project ino database
+
+	/**
+	*	Insert new project ino database.
+	*/
 	function insert_project($name,$desc)
 	{
 		$minQ="SELECT max(jobID) from db309amc2.jobs;";
@@ -270,7 +346,9 @@ SQL;
 		$conn->close();
 	}
 	
-	//Insert new job ino database
+	/**
+	*	Insert new job ino database.
+	*/
 	function insert_job($name,$desc,$parent)
 	{
 		$minQ="SELECT max(jobID) from db309amc2.jobs;";
@@ -282,7 +360,9 @@ SQL;
 		$conn->close();
 	}
 	
-	//Temporary function for create project
+	/**
+	*	Temporary function for create project.
+	*/
 	function all_jobs()
 	{
 
@@ -294,7 +374,9 @@ SQL;
 		return $result;
 	}
 
-	//Modify a user in the database
+	/**
+	*	Modify a user in the database.
+	*/
 	function update_user($newID,$username,$usertype,$firstname,$lastname,$email,$phone,$passhash,$oldID,$active)
 	{
 		$sql="UPDATE db309amc2.users SET userID={$newID}, username =\"{$username}\", usertype=\"{$usertype}\", firstname=\"{$firstname}\", lastname=\"{$lastname}\", email=\"{$email}\", phone=\"{$phone}\",passhash=\"{$passhash}\",isActive=\"{$active}\" WHERE userID={$oldID};"; 
@@ -305,7 +387,9 @@ SQL;
 
 	}
 
-	//Removes all qualifitcations for auser, then adds in new ones
+	/**
+	*	Removes all qualifitcations for auser, then adds in new ones.
+	*/
 	function update_user_quals($userID,$qualList)
 	{
 		$sql="Delete from qualification_assignments where userID={$userID};";
@@ -320,7 +404,9 @@ SQL;
 		$conn->close();
 	}
 
-	//Adds qualifications to job
+	/**
+	*	Adds qualifications to job.
+	*/
 	function add_job_qual($jobName,$qualList)
 	{
 		$conn=data_open();
@@ -336,7 +422,9 @@ SQL;
 		$conn->close();
 	}
 
-	//Gets job related info by ID
+	/**
+	*	Gets job related info by ID.
+	*/
 	function get_job($jobID)
 	{
 		$conn=data_open();
@@ -346,7 +434,9 @@ SQL;
 		return $result;
 	}
 
-	//Gets qualification requirements for a job
+	/**
+	*	Gets qualification requirements for a job.
+	*/
 	function get_job_reqs($id)
 	{
 		$sql="select * from job_requirements join qualifications on job_requirements.qualID=qualifications.qualID and job_requirements.jobID={$id};";
@@ -356,7 +446,9 @@ SQL;
 		return $result;
 	}
 
-	//Gets tasks for jobid
+	/**
+	*	Gets tasks for jobid.
+	*/
 	function get_tasks($id)
 	{
 		$conn=data_open();
@@ -364,11 +456,11 @@ SQL;
 		$result=$conn->query($sql);
 		$conn->close();
 		return $result;
-	
 	}
 
-
-	//Gets users with quallification by id
+	/**
+	*	Gets users with quallification by id.
+	*/
 	function get_active_users_by_qualid($id)
 	{
 		$sql="select * from qualification_assignments join users on qualification_assignments.userID=users.userID and qualID={$id} and isActive=1;";
@@ -378,7 +470,9 @@ SQL;
 		return $result;
 	}
 
-	//Gets qualification information from its ID
+	/**
+	*	Gets qualification information from its ID
+	*/
 	function get_qual_by_id($id)
 	{
 		$sql="select * from qualifications where qualID={$id};";
@@ -388,7 +482,9 @@ SQL;
 		return $result;
 	}
 
-	//Removes all qualification assignemnts, then assigns new ones
+	/**
+	*	Removes all qualification assignemnts, then assigns new ones.
+	*/
 	function update_job_reqs($jobID,$qualList)
 	{
 		$sql="Delete from job_requirements where jobID={$jobID};";
@@ -403,7 +499,9 @@ SQL;
 		$conn->close();
 	}
 
-	//Gets a list of users that are on a job
+	/**
+	*	Gets a list of users that are on a job.
+	*/
 	function get_workers_on_id($jobID)
 	{
 		$sql="Select * from job_assignments where jobID={$jobID};";
@@ -415,7 +513,9 @@ SQL;
 
 	}	
 
-	//Removes all job assignemnts, then assigns new ones
+	/**
+	*	Removes all job assignemnts, then assigns new ones.
+	*/
 	function update_job_assignments($jobID,$userList)
 	{
 		$sql="Delete from job_assignments where jobID={$jobID};";
@@ -430,7 +530,9 @@ SQL;
 		$conn->close();
 	}
 
-	//Gets all conversations that a given userID is a member of
+	/**
+	*	Gets all conversations that a given userID is a member of.
+	*/
 	function get_convos($userID)
 	{
 		$sql = "SELECT * FROM conversations JOIN conversation_assignments ON conversations.conversationID = conversation_assignments.conversationID WHERE memberID = $userID";
@@ -440,7 +542,9 @@ SQL;
 		return $result;
 	}
 
-	//Gets all messages in the specified conversation thread
+	/**
+	*	Gets all messages in the specified conversation thread.
+	*/
 	function get_thread($conversationID)
 	{
 		// $sql = "SELECT * FROM messages WHERE msgdest = $conversationID";
@@ -451,7 +555,9 @@ SQL;
 		return $result;
 	}
 
-	//Sends a message to the specified message thread
+	/**
+	*	Sends a message to the specified message thread.
+	*/
 	function add_message($sender, $destination, $content)
 	{
 		$sql = "INSERT INTO messages (msgsender, msgdest, msgcontent) VALUES ($sender, $destination, '$content')";
@@ -460,7 +566,9 @@ SQL;
 		$conn->close();
 	}
 
-	//Gets basic ticket information
+	/**
+	*	Gets basic ticket information.
+	*/
 	function get_tickets()
 	{
 		$sql = "SELECT * from tickets";
@@ -469,8 +577,10 @@ SQL;
 		$conn->close();
 		return $result;
 	}
-		
-	//Gets info for one ticket by ID
+
+	/**
+	*	Gets info for one ticket by ID.
+	*/
 	function get_ticket_by_ID($id)
 	{
 		$sql = "Select * from tickets where ticketID=$id";
